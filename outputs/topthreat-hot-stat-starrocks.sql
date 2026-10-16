@@ -1,9 +1,11 @@
 -- topthreat_hot_stat 的 StarRocks 草稿
--- 库表按 DEC-014。default.log_audit_source 改为 csc.ods_csc_log_audit。
+-- 库表按 docs/StarRocks语句转换规则.md（DEC-014）。
+-- default.log_audit_source 改为 csc.ods_csc_log_audit。
 -- sodl.network_security_log、sodl.sip_iocstat_log：截图未列出 sodl 表，保留原名。
+-- 字段按 DEC-015：标识符 log_app_id 改为 app_id。
 -- day=20261001、hour=0 是 all.sql 实验窗口，不是生产调度参数。
--- 截图没有字段清单。log_app_id、module_id、str1、str10、long1、hour、day 来自旧压缩 SQL
--- （log/LOG_COMPRESS_AUDIT_DETAIL.md L28–35），不表示当前 StarRocks 物理列已经核对。
+-- module_id、str1、str10、long1、hour、day 仍用旧名，标明「缺少新平台字段名」。
+-- 这些列来自旧压缩 SQL（log/LOG_COMPRESS_AUDIT_DETAIL.md L28–35），截图没有字段清单。
 -- long1、day、hour、log_num、record_count 的比较和求和按 DEC-009 需要按实际编码转换。
 
 -- 黑域名
@@ -19,7 +21,7 @@ FROM
              str2 AS devid
       FROM csc.ods_csc_log_audit,
            unnest(ifnull(cast(parse_json(regexp_replace(str10, '\\\\+"', '"')) AS ARRAY<JSON>), [])) AS str10_tbl(str10_tmp)
-      WHERE log_app_id IN ('domain-proxy-svc', 'cloudcheck')
+      WHERE app_id IN ('domain-proxy-svc', 'cloudcheck')
         AND module_id IN ('domain-proxy-svc', 'CloudCheck')
         AND str1 IN ('VNGAF', 'NGAF', 'EDR', 'EDR_BOTNET', 'SIP', 'SIP_SMTP', 'SIP_SMB',
                      'AC', 'VAC', 'CWPP', 'SASE', 'EDR_WEBSITE', 'EDR_NPE',
@@ -76,7 +78,7 @@ FROM
           str2 AS devid
    FROM csc.ods_csc_log_audit,
         unnest(ifnull(cast(parse_json(regexp_replace(str10, '\\\\+"', '"')) AS ARRAY<JSON>), [])) AS str10_tbl(str10_tmp)
-   WHERE log_app_id = 'analysis-proxy-api'
+   WHERE app_id = 'analysis-proxy-api'
      AND module_id IN ('file_hash', 'file_scan')
      AND str1 IN ('VNGAF', 'NGAF', 'EDR', 'EDR_BOTNET', 'SIP', 'SIP_SMTP', 'SIP_SMB',
                   'AC', 'VAC', 'CWPP', 'SASE', 'EDR_WEBSITE', 'EDR_NPE',
@@ -104,7 +106,7 @@ FROM
              str2 AS devid
       FROM csc.ods_csc_log_audit,
            unnest(ifnull(cast(parse_json(regexp_replace(str10, '\\\\+"', '"')) AS ARRAY<JSON>), [])) AS str10_tbl(str10_tmp)
-      WHERE log_app_id IN ('url-proxy-svc', 'cloudcheck')
+      WHERE app_id IN ('url-proxy-svc', 'cloudcheck')
         AND module_id IN ('url-proxy-svc', 'CloudCheck')
         AND str1 IN ('VNGAF', 'NGAF', 'EDR', 'EDR_BOTNET', 'SIP', 'SIP_SMTP', 'SIP_SMB',
                      'AC', 'VAC', 'CWPP', 'SASE', 'EDR_WEBSITE', 'EDR_NPE',

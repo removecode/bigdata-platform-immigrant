@@ -16,22 +16,13 @@
 
 用户给出旧平台查询语句时，转换成新平台 StarRocks（SR）语句。旧平台用 Hive 或 Trino 查询，语句一般是 Spark SQL 或 Trino SQL。新平台用 StarRocks 查询。
 
-新平台的库、表和路径与旧平台不同。转换时替换语句中的旧库、旧表和旧路径。
+新平台的库、表、路径和部分字段与旧平台不同。每次把旧平台 SQL 改成 StarRocks 之前，先读 `docs/StarRocks语句转换规则.md`，并替换该文件里每一条已确认规则。
 
-2026-10-16 用户给出的当前 StarRocks 目录（`docs/迁移事项进度与决策追踪.md` 的 DEC-014）作为后续转换的已知名。截图里的库是 `csc`、`sodl`、`ti`。`sodl` 库存在，截图没有展开其中的表，所以 `sodl.*` 先保留原名，并标明「截图未列出 sodl 表」。不在下表、也不在当次新名称里的对象，保留原名并标明「缺少新平台表名」，不自行补表名。
+该文件目前包含 DEC-014 的库表对照，以及 DEC-015 的字段规则：标识符 `log_app_id` 改为 `app_id`。已经写成 `app_id` 的列保持不动。文件里没有的库、表和字段保留原名，库表标明「缺少新平台表名」，字段标明「缺少新平台字段名」，不自行补名。
 
-| 旧平台名 | 当前 StarRocks 名 | 依据 |
-| --- | --- | --- |
-| `default.log_audit_source` | `csc.ods_csc_log_audit` | 截图中 `csc` 只有这张表。`log/DATA_FLOW.md` L101、`log/LOG_COMPRESS_AUDIT_DETAIL.md` L28–39 写明它由 `default.log_audit_source` 写入 |
-| `csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync` | `ti.ods_ti_db_intelligence_tb_ip_reputation_sync` | 截图表名。Mongo 来源 `db_intelligence.tb_ip_reputation` 见 `docs/datax-server-SZ-MongoDB到Hive同步任务映射.md` |
-| `csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync` | `ti.ods_ti_db_domain_intelligence_tb_domain_reputation_sync` | 截图表名。Mongo 来源 `db_domain_intelligence.tb_domain_reputation` 见同一映射 |
-| `csc.ods_csc_db_url_intelligence_tb_url_reputation_sync` | `ti.ods_ti_db_url_intelligence_tb_url_reputation_sync` | 截图表名。旧名见 `log/DATA_FLOW.md` L109 与映射中的 `tb_url_reputation` |
-| `sri.ods_sri_ti_tags` | `ti.ods_ti_db_scia_analysis_tb_syn_ti_tags_sync` | 截图表名含 `scia_analysis` 与 `syn_ti_tags`。映射中 `syn_ti_tags_mongo2hive.py` 的来源是 `SCIA_ANALYSIS` / `SynTiTags`，Hive 路径 `/hive/ods/sri/ti_tags` |
-| `sri.ods_sri_hashinfo` | `ti.ods_ti_db_fc_hashinfo_tb_fc_hashinfo_sync` | 截图中的 hashinfo 表。旧表材料来自 Mongo 文件云查；新表名保留 `db_fc_hashinfo` / `tb_fc_hashinfo`。两边字符串不完全相同 |
+`sodl.*` 在该文件写明「截图未列出 sodl 表」之前，保留原名并带上这句标注。`ti.ads_ti_ip_heat_produce` 不填进旧 SQL。`module_id`、`str1`–`str10`、`long1`、`hour`、`day` 仍按旧名保留。DEC-009 继续有效。
 
-截图还出现 `ti.ads_ti_ip_heat_produce`。材料没有写明它对应哪张旧表，不把它填进旧 SQL。
-
-`csc.ods_csc_log_audit` 的旧压缩 SQL 选出过 `log_app_id`、`module_id`、`str1`–`str10`、`long1`、`hour`、`day`。截图没有字段清单，不能把这段旧列清单写成当前 StarRocks 物理列。DEC-009 继续有效。
+用户后续确认新的库、表、路径或字段时，追加到 `docs/StarRocks语句转换规则.md`，并在 `docs/迁移事项进度与决策追踪.md` 末尾追加记录。不要只改本段。
 
 输出包含三部分：
 
