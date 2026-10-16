@@ -57,7 +57,7 @@ PAGE = """<!DOCTYPE html>
     <h2>引擎</h2>
     <div id="status" class="status">检查中</div>
     <h2>示例</h2>
-    <button type="button" id="sample-sr">StarRocks 表</button>
+    <button type="button" id="sample-starrocks">StarRocks 表</button>
     <button type="button" id="sample-hive">Hive 表</button>
     <button type="button" id="sample-join">Trino 关联两边</button>
   </section>
@@ -111,14 +111,16 @@ document.getElementById("run").onclick = async () => {
     render(payload);
   } finally { button.disabled = false; }
 };
+refresh();
+setInterval(refresh, 10000);
 for (const [id, value] of Object.entries(samples)) {
-  document.getElementById("sample-" + id).onclick = () => {
+  const button = document.getElementById("sample-" + id);
+  if (!button) continue;
+  button.onclick = () => {
     document.getElementById("engine").value = value[0];
     document.getElementById("sql").value = value[1];
   };
 }
-refresh();
-setInterval(refresh, 10000);
 </script>
 </body>
 </html>
@@ -170,9 +172,12 @@ def query_hive(sql: str) -> tuple[list[str], list[list[object]]]:
 
 
 def query_trino(sql: str) -> tuple[list[str], list[list[object]]]:
+    statement = sql.strip()
+    if statement.endswith(";"):
+        statement = statement[:-1].strip()
     request = Request(
         "http://127.0.0.1:8080/v1/statement",
-        data=sql.encode(),
+        data=statement.encode(),
         headers={"X-Trino-User": "lab", "Content-Type": "text/plain"},
         method="POST",
     )
