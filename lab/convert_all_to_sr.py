@@ -409,14 +409,6 @@ def apply_dialect(sql: str) -> tuple[str, list[str]]:
             flags=re.I,
         )
         notes.append("ClickHouse formatDateTime/toDateTime 改为 date_format(from_unixtime(...))")
-    if "jsonextractstring" in sql.lower():
-        sql = re.sub(
-            r"splitByChar\s*\(\s*':'\s*,\s*JSONExtractString\s*\(\s*(\w+)\s*,\s*'ip'\s*\)\s*\)",
-            r"split(get_json_string(\1, '$.ip'), ':')",
-            sql,
-            flags=re.I,
-        )
-        notes.append("ClickHouse splitByChar/JSONExtractString 改为 split/get_json_string")
     if "array join" in sql.lower():
         sql = re.sub(
             r"ARRAY\s+JOIN\s+JSONExtractArrayRaw\s*\(\s*(\w+)\s*\)\s+AS\s+(\w+)",
@@ -455,6 +447,14 @@ def apply_dialect(sql: str) -> tuple[str, list[str]]:
     if "split(" in sql.lower():
         sql = bump_hive_split_index(sql)
         notes.append("Hive 数组下标从 0 起，StarRocks 从 1 起")
+    if "splitbychar" in sql.lower():
+        sql = re.sub(
+            r"splitByChar\s*\(\s*':'\s*,\s*JSONExtractString\s*\(\s*(\w+)\s*,\s*'ip'\s*\)\s*\)",
+            r"split(get_json_string(\1, '$.ip'), ':')",
+            sql,
+            flags=re.I,
+        )
+        notes.append("ClickHouse splitByChar 下标本来从 1 起，改为 split/get_json_string 后保持原下标")
     if r"'\\.'" in sql:
         sql = sql.replace(r"'\\.'", "'.'")
         notes.append("split 分隔符在 StarRocks 是字面量，正则 '\\.' 改为 '.'")
@@ -799,6 +799,9 @@ def self_check(text: str) -> None:
     assert "`key`" in joined
     assert "array_sort(" in joined
     assert "regexp_extract(dstip,'^((0\\\\.0\\\\.0\\\\.0)" in joined or "regexp_extract(dstip, '^((0\\\\.0\\\\.0\\\\.0)" in joined
+    assert "split(get_json_string(element, '$.ip'), ':')[1] AS ip_address" in joined
+    assert "split(get_json_string(element, '$.ip'), ':')[2] AS port" in joined
+    assert "split(get_json_string(element, '$.ip'), ':')[3]" not in joined
     assert "'^\\\\['" in joined
     assert any("原文在 log_stat 闭合前重复了 bug_id_stat" in "；".join(item["notes"]) for item in statements)
     assert all(not item["sql"].lstrip().startswith(",") for item in statements)

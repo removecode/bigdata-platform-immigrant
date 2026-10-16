@@ -782,12 +782,12 @@ FROM (
 
 -- 语句 24
 -- 应用：ti-ip-detection-send-prc  (CIPD/IP)   [Go app]
--- 方言：占位符 {LAST_TS} 用本机实验值填入；占位符 {END_TS} 用本机实验值填入；ClickHouse splitByChar/JSONExtractString 改为 split/get_json_string；ClickHouse ARRAY JOIN 改为 unnest(parse_json(...))；Hive 数组下标从 0 起，StarRocks 从 1 起
+-- 方言：占位符 {LAST_TS} 用本机实验值填入；占位符 {END_TS} 用本机实验值填入；ClickHouse ARRAY JOIN 改为 unnest(parse_json(...))；ClickHouse splitByChar 下标本来从 1 起，改为 split/get_json_string 后保持原下标
 -- 表：sodl.operation_rdp_event_log（缺少新平台表名）
 -- 字段编码未给出，DEC-009 需显式转换：insertTimestamp >= 1790901000 AND insertTimestamp <；>= 1790901000；< 1790901600
 SELECT DISTINCT
-    split(get_json_string(element, '$.ip'), ':')[2] AS ip_address,
-    split(get_json_string(element, '$.ip'), ':')[3] AS port,
+    split(get_json_string(element, '$.ip'), ':')[1] AS ip_address,
+    split(get_json_string(element, '$.ip'), ':')[2] AS port,
     insertTimestamp
 FROM
     sodl.operation_rdp_event_log
