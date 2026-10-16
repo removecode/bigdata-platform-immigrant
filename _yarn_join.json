@@ -1,0 +1,2276 @@
+{
+  "n_yarn": 45,
+  "n_src": 40,
+  "n_both": 40,
+  "only_yarn": [
+    "secevent-to-hive-batch",
+    "secevent_analyse",
+    "sp-old-update-report-cron-job",
+    "thug-task-monitor-prc",
+    "yara-sample-query-job"
+  ],
+  "only_src": [],
+  "by_layer": {
+    "业务层": 23,
+    "原始层": 15,
+    "中间层": 2
+  },
+  "by_src_status": {
+    "(空)": 39,
+    "可下线": 1
+  },
+  "conflicts": [
+    [
+      "apt-hunting-monitor-process-job",
+      "待确认",
+      "可下线",
+      "刘俊",
+      "历史废弃业务"
+    ]
+  ],
+  "read_old": [
+    "active-domain-elt-job",
+    "apt-hunting-monitor-process-job",
+    "black-file-clean-cronjob",
+    "black-ti-context-produce-prc",
+    "domain-hit-devnum-cronjob",
+    "log_compress"
+  ],
+  "read_new": [
+    "active-domain-elt-job",
+    "apt-hunting-monitor-process-job",
+    "black-file-clean-cronjob",
+    "black-ti-context-produce-prc",
+    "ctig-report-data-analysis-prc",
+    "domain-heat-stats-cron-job",
+    "sodl_dwb_info"
+  ],
+  "read_both": [
+    "active-domain-elt-job",
+    "apt-hunting-monitor-process-job",
+    "black-file-clean-cronjob",
+    "black-ti-context-produce-prc"
+  ],
+  "read_ip_old": [
+    "apt-hunting-monitor-process-job"
+  ],
+  "read_url_new": [
+    "apt-hunting-monitor-process-job",
+    "sodl_dwb_info"
+  ],
+  "read_ngaf": [
+    "asset-discovery-task",
+    "vuln-assert-analysis"
+  ],
+  "joined": [
+    {
+      "key": "active-domain-elt-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "active-domain-elt-job"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "活跃域名回扫",
+      "yarn_cat": "域名情报生产-主动降误报",
+      "yarn_ttype": "tez",
+      "yarn_queue": "default",
+      "yarn_sched": "0 1 * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync",
+        "default.dwb_domain_info",
+        "default.ods_custom_upload_data",
+        "sodl.dwb_sodl_domain_info",
+        "深二MongoDB"
+      ],
+      "outputs": [
+        "深二Redis"
+      ],
+      "tables_in": [
+        "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync",
+        "default.dwb_domain_info",
+        "default.ods_custom_upload_data",
+        "sodl.dwb_sodl_domain_info"
+      ],
+      "tables_out": [],
+      "read_old_dwb": true,
+      "read_new_dwb": true,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": true,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "apt-hunting-monitor-process-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "apt-hunting-monitor-process-job"
+      ],
+      "yarn_status": "待确认",
+      "yarn_prio": "",
+      "yarn_owner": "段宁强",
+      "yarn_purpose": "持续监控定时任务",
+      "yarn_cat": "",
+      "yarn_ttype": "tez",
+      "yarn_queue": "business",
+      "yarn_sched": "7 5 * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "可下线",
+      "src_confirmer": "刘俊",
+      "src_remark": "历史废弃业务",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_apt_hunting",
+        "default.dwb_domain_info",
+        "default.dwb_ip_info",
+        "default.dwb_md5_info",
+        "default.dwb_url_info",
+        "default.ods_custom_upload_data",
+        "default.ods_devicemanager_deviceinfo",
+        "sodl.dwb_sodl_domain_info",
+        "sodl.dwb_sodl_ip_info",
+        "sodl.dwb_sodl_md5_info",
+        "sodl.dwb_sodl_url_info"
+      ],
+      "outputs": [
+        "HDFS目录/hive/ods/csc/apt_hunting/{task_id}/{ioc_type}/related/"
+      ],
+      "tables_in": [
+        "csc.ods_csc_apt_hunting",
+        "default.dwb_domain_info",
+        "default.dwb_ip_info",
+        "default.dwb_md5_info",
+        "default.dwb_url_info",
+        "default.ods_custom_upload_data",
+        "default.ods_devicemanager_deviceinfo",
+        "sodl.dwb_sodl_domain_info",
+        "sodl.dwb_sodl_ip_info",
+        "sodl.dwb_sodl_md5_info",
+        "sodl.dwb_sodl_url_info"
+      ],
+      "tables_out": [],
+      "read_old_dwb": true,
+      "read_new_dwb": true,
+      "read_old_dwb_ip": true,
+      "read_new_dwb_url": true,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": true,
+      "write_hive_table": false
+    },
+    {
+      "key": "asset-discovery-task",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "asset-discovery-task"
+      ],
+      "yarn_status": "可下线",
+      "yarn_prio": "",
+      "yarn_owner": "肖扬",
+      "yarn_purpose": "资产发现任务",
+      "yarn_cat": "",
+      "yarn_ttype": "spark",
+      "yarn_queue": "business",
+      "yarn_sched": "？",
+      "yarn_remark": "全部FAILED->没在用？最近一次提交在3年前",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台（？没有ngaf库了",
+        "ngaf.ods_ngaf_dns",
+        "ngaf.ods_ngaf_seclog_dos",
+        "深二MongoDB"
+      ],
+      "outputs": [
+        "深二MongoDB",
+        "HDFS目录/apps/hive/warehouse"
+      ],
+      "tables_in": [
+        "ngaf.ods_ngaf_dns",
+        "ngaf.ods_ngaf_seclog_dos"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": true,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": true,
+      "write_redis": false,
+      "write_hdfs": true,
+      "write_hive_table": false
+    },
+    {
+      "key": "ati-pdns-cache-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "ati-pdns-cache-job"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "肖扬",
+      "yarn_purpose": "数据接入过滤模块",
+      "yarn_cat": "图数据库-dns信息更新",
+      "yarn_ttype": "tez",
+      "yarn_queue": "operation",
+      "yarn_sched": "6 1 * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_ioc_vertex"
+      ],
+      "outputs": [
+        "深二MongoDB",
+        "深二Redis"
+      ],
+      "tables_in": [
+        "csc.ods_csc_ioc_vertex"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": true,
+      "write_redis": true,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "ati-relations-loader-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "ati-relations-loader-job"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "肖扬",
+      "yarn_purpose": "融合后的关系数据，spark任务提交Job",
+      "yarn_cat": "",
+      "yarn_ttype": "spark",
+      "yarn_queue": "default",
+      "yarn_sched": "常驻",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二Kafka"
+      ],
+      "outputs": [
+        "深二大数据平台",
+        "csc.ods_csc_vertex",
+        "csc.ods_csc_edge",
+        "Nebula图数据库"
+      ],
+      "tables_in": [],
+      "tables_out": [
+        "csc.ods_csc_vertex",
+        "csc.ods_csc_edge"
+      ],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": true
+    },
+    {
+      "key": "attack-ip-analysis-cronjob",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "*attack-ip-analysis-cronjob"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "攻击者IP情报生产",
+      "yarn_cat": "攻击者IP情报生产",
+      "yarn_ttype": "tez",
+      "yarn_queue": "operation",
+      "yarn_sched": "30 3 * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync",
+        "csc.ods_csc_tim_db_unknown_intelligence_tb_skyeye_ip_info_sync",
+        "default.ods_custom_upload_data",
+        "sodl.network_security_log"
+      ],
+      "outputs": [
+        "深二MongoDB",
+        "深二Redis",
+        "深二Kafka"
+      ],
+      "tables_in": [
+        "csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync",
+        "csc.ods_csc_tim_db_unknown_intelligence_tb_skyeye_ip_info_sync",
+        "default.ods_custom_upload_data",
+        "sodl.network_security_log"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": true,
+      "write_mongo": true,
+      "write_redis": true,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "black-file-clean-cronjob",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "black-file-clean-cronjob"
+      ],
+      "yarn_status": "待确认",
+      "yarn_prio": "",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "黑文件去误报",
+      "yarn_cat": "",
+      "yarn_ttype": "tez",
+      "yarn_queue": "default",
+      "yarn_sched": "1 3 * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "default.dwb_md5_info",
+        "sodl.dwb_sodl_md5_info"
+      ],
+      "outputs": [
+        "Hive查询作为VT查询输入数据，输出为白文件MD5列表同步到文件云系统"
+      ],
+      "tables_in": [
+        "default.dwb_md5_info",
+        "sodl.dwb_sodl_md5_info"
+      ],
+      "tables_out": [],
+      "read_old_dwb": true,
+      "read_new_dwb": true,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "black-ti-context-produce-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "black-ti-context-produce-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "恶意IOC活跃次数统计",
+      "yarn_cat": "情报上下文-攻击次数统计",
+      "yarn_ttype": "tez",
+      "yarn_queue": "default",
+      "yarn_sched": "",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync",
+        "csc.ods_csc_tb_tenant_subscribe_info",
+        "csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync",
+        "default.dwb_md5_info",
+        "sodl.dwb_sodl_domain_info",
+        "sodl.dwb_sodl_ip_info",
+        "sodl.dwb_sodl_md5_info",
+        "深二数据湖Pulsar(XDR告警日志)",
+        "EDS(东巽沙箱报告文件)"
+      ],
+      "outputs": [
+        "深二MongoDB",
+        "深二Redis"
+      ],
+      "tables_in": [
+        "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync",
+        "csc.ods_csc_tb_tenant_subscribe_info",
+        "csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync",
+        "default.dwb_md5_info",
+        "sodl.dwb_sodl_domain_info",
+        "sodl.dwb_sodl_ip_info",
+        "sodl.dwb_sodl_md5_info"
+      ],
+      "tables_out": [],
+      "read_old_dwb": true,
+      "read_new_dwb": true,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": true,
+      "write_redis": true,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "cert-app-samplesync-country-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "cert-app-samplesync-country-job"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "肖扬",
+      "yarn_purpose": "蓝军 cert数据上报",
+      "yarn_cat": "",
+      "yarn_ttype": "tez",
+      "yarn_queue": "",
+      "yarn_sched": "0 4 * * 1",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_business_data",
+        "sri.ods_sri_hashinfo"
+      ],
+      "outputs": [
+        "HDFS目录/hive/ods/csc/business_data/cert_report/",
+        "SCP目标服务器"
+      ],
+      "tables_in": [
+        "csc.ods_csc_business_data",
+        "sri.ods_sri_hashinfo"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": true,
+      "write_hive_table": false
+    },
+    {
+      "key": "cert-app-samplesync-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "cert-app-samplesync-job"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "肖扬",
+      "yarn_purpose": "蓝军 cert数据上报",
+      "yarn_cat": "",
+      "yarn_ttype": "tez",
+      "yarn_queue": "",
+      "yarn_sched": "0 0 3 * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_business_data",
+        "sri.ods_sri_hashinfo"
+      ],
+      "outputs": [
+        "HDFS目录/hive/ods/csc/business_data/cert_report/[日期]/"
+      ],
+      "tables_in": [
+        "csc.ods_csc_business_data",
+        "sri.ods_sri_hashinfo"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": true,
+      "write_hive_table": false
+    },
+    {
+      "key": "cipd-product-resource-monitor-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "cipd-product-resource-monitor-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "中",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "云情报网关设备数量监控",
+      "yarn_cat": "云情报网关监控-设备数量",
+      "yarn_ttype": "tez",
+      "yarn_queue": "default",
+      "yarn_sched": "/",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_log_stats",
+        "深二Redis"
+      ],
+      "outputs": [
+        "Prometheus指标"
+      ],
+      "tables_in": [
+        "csc.ods_csc_log_stats"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "cloud-display-manager-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "cloud-display-manager-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "肖扬",
+      "yarn_purpose": "云鉴防护运营数据管理APP",
+      "yarn_cat": "云鉴页面",
+      "yarn_ttype": "spark",
+      "yarn_queue": "business",
+      "yarn_sched": "常驻",
+      "yarn_remark": "全部FAILED->没在用？",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二Kafka"
+      ],
+      "outputs": [
+        "深二MongoDB",
+        "深二Redis",
+        "HDFS目录 /backup/cloud_display/statistic/{yyyy-MM-dd}/"
+      ],
+      "tables_in": [],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": true,
+      "write_redis": true,
+      "write_hdfs": true,
+      "write_hive_table": false
+    },
+    {
+      "key": "create_hive_partition",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "create_hive_partition(oozie)"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "刘树文",
+      "yarn_purpose": "创建Hive分区",
+      "yarn_cat": "",
+      "yarn_ttype": "MAPREDUCE",
+      "yarn_queue": "oozie",
+      "yarn_sched": "30 12,15,18 * * *",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "无"
+      ],
+      "outputs": [
+        "- Hive表分区：多个Hive表的日分区和小时分区",
+        "- HDFS目录结构：按时间维度组织的目录结构",
+        "- 主要涉及的Hive表：",
+        "- cloudeye库：ods_cloudeye_tamper、ods_cloudeye_vuln",
+        "- sri库：ods_sri_nta_business、ods_sri_nta_ioccustom、ods_sri_nta_ipgroup、ods_sri_nta_riskbusiness、ods_sri_nta_riskevent、ods_sri_nta_riskterminal、ods_sri_nta_secevent、ods_sri_nta_terminal、ods_sri_nta_weakpasswd、ods_sri_save_featureinfo、ods_sri_save_summaryinfo",
+        "- csc库：ods_csc_vertex、ods_csc_edge",
+        "- default库：log_audit_source、log_stats_source",
+        "- sodl库：dns_log、endpoint_security_log、http_log、network_security_log、sip_iocstat_log、url_log"
+      ],
+      "tables_in": [],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": true,
+      "write_hive_table": false
+    },
+    {
+      "key": "ctig-report-data-analysis-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "ctig-report-data-analysis-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "云情报网关报告分析",
+      "yarn_cat": "云情报网关-报告分析",
+      "yarn_ttype": "tez",
+      "yarn_queue": "cipd",
+      "yarn_sched": "/",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync",
+        "csc.ods_csc_db_url_intelligence_tb_url_reputation_sync",
+        "csc.ods_csc_tb_tenant_subscribe_info",
+        "csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync",
+        "sodl.dwb_sodl_domain_info",
+        "sodl.dwb_sodl_ip_info",
+        "sri.ods_sri_hashinfo"
+      ],
+      "outputs": [
+        "深二Kafka"
+      ],
+      "tables_in": [
+        "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync",
+        "csc.ods_csc_db_url_intelligence_tb_url_reputation_sync",
+        "csc.ods_csc_tb_tenant_subscribe_info",
+        "csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync",
+        "sodl.dwb_sodl_domain_info",
+        "sodl.dwb_sodl_ip_info",
+        "sri.ods_sri_hashinfo"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": true,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "dashboard-stats-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "dashboard-stats-job"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "公司大屏",
+      "yarn_cat": "情报公司大屏展示",
+      "yarn_ttype": "tez",
+      "yarn_queue": "operation",
+      "yarn_sched": "1 * * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "default.ods_devicemanager_deviceinfo",
+        "sodl.endpoint_security_log",
+        "sodl.network_security_log"
+      ],
+      "outputs": [
+        "深二MongoDB"
+      ],
+      "tables_in": [
+        "default.ods_devicemanager_deviceinfo",
+        "sodl.endpoint_security_log",
+        "sodl.network_security_log"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": true,
+      "write_mongo": true,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "datax-server",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "datax-server"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "mongodb表同步hive",
+      "yarn_cat": "情报信誉mongodb同步hive",
+      "yarn_ttype": "/",
+      "yarn_queue": "default",
+      "yarn_sched": "/",
+      "yarn_remark": "非yarn任务",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二MongoDB"
+      ],
+      "outputs": [
+        "HDFS目录",
+        "/hive/ods/ngaf/assetinfo/ - 资产信息数据（SZ）",
+        "/hive/ods/csc/int_scia_intelligence_cloudlibip/ - 云情报IP数据",
+        "/hive/ods/csc/int_scia_intelligence_cloudlibdomain/ - 云情报域名数据"
+      ],
+      "tables_in": [],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": true,
+      "write_hive_table": false
+    },
+    {
+      "key": "dns-intelligence-dispatch-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "dns-intelligence-dispatch-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "数据湖未知上报dns分发",
+      "yarn_cat": "云情报网关-数据分发",
+      "yarn_ttype": "pulsar",
+      "yarn_queue": "",
+      "yarn_sched": "/",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二数据湖Pulsar",
+        "深二Kafka"
+      ],
+      "outputs": [
+        "深二Kafka"
+      ],
+      "tables_in": [],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "domain-heat-stats-cron-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "domain-heat-stats-cron-job"
+      ],
+      "yarn_status": "待确认",
+      "yarn_prio": "高",
+      "yarn_owner": "彭宜",
+      "yarn_purpose": "域名热度库统计生产",
+      "yarn_cat": "GPT钓鱼联动封锁-降误报",
+      "yarn_ttype": "tez",
+      "yarn_queue": "operation",
+      "yarn_sched": "5 1 * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "sodl.dwb_sodl_domain_info"
+      ],
+      "outputs": [
+        "深二MongoDB"
+      ],
+      "tables_in": [
+        "sodl.dwb_sodl_domain_info"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": true,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": true,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "domain-hit-devnum-cronjob",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "domain-hit-devnum-cronjob"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "域名命中设备数统计（降误报）",
+      "yarn_cat": "域名情报生产-降误报",
+      "yarn_ttype": "tez",
+      "yarn_queue": "operation",
+      "yarn_sched": "0 9 * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "default.dwb_domain_info",
+        "default.ods_custom_upload_data"
+      ],
+      "outputs": [
+        "深二MongoDB"
+      ],
+      "tables_in": [
+        "default.dwb_domain_info",
+        "default.ods_custom_upload_data"
+      ],
+      "tables_out": [],
+      "read_old_dwb": true,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": true,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "domain-security-log-etl-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "domain-security-log-etl-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "基于网络安全告警日志规则鉴定域名",
+      "yarn_cat": "域名情报生产-安全日志",
+      "yarn_ttype": "tez",
+      "yarn_queue": "default",
+      "yarn_sched": "/",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "sodl.network_security_log"
+      ],
+      "outputs": [
+        "深二MongoDB"
+      ],
+      "tables_in": [
+        "sodl.network_security_log"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": true,
+      "write_mongo": true,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "filter-layout-ip-seg-stat-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "filter-layout-ip-seg-stat-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "ip C端统计",
+      "yarn_cat": "云情报网关-C段过滤",
+      "yarn_ttype": "tez",
+      "yarn_queue": "etl",
+      "yarn_sched": "/",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync",
+        "csc.ods_csc_log_audit"
+      ],
+      "outputs": [
+        "深二Redis"
+      ],
+      "tables_in": [
+        "csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync",
+        "csc.ods_csc_log_audit"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": true,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "gnn-domain-hive-query-cronjob",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "gnn-domain-hive-query-cronjob"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "查询图数据库域名",
+      "yarn_cat": "域名情报生产-图神经网络",
+      "yarn_ttype": "tez",
+      "yarn_queue": "operation",
+      "yarn_sched": "30 * * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_ioc_vertex"
+      ],
+      "outputs": [
+        "深二Redis"
+      ],
+      "tables_in": [
+        "csc.ods_csc_ioc_vertex"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": true,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "ip-intelligence-dispatch-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "ip-intelligence-dispatch-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "数据湖未知上报c2 ip分发",
+      "yarn_cat": "云情报网关-数据分发",
+      "yarn_ttype": "pulsar",
+      "yarn_queue": "",
+      "yarn_sched": "/",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二数据湖Pulsar"
+      ],
+      "outputs": [
+        "深二Kafka"
+      ],
+      "tables_in": [],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "ip-security-log-etl-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "ip-security-log-etl-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "基于安全告警日志规则鉴定C2 IP",
+      "yarn_cat": "C2 IP情报生产-安全日志",
+      "yarn_ttype": "tez",
+      "yarn_queue": "",
+      "yarn_sched": "/",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "sodl.network_security_log"
+      ],
+      "outputs": [
+        "深二Redis"
+      ],
+      "tables_in": [
+        "sodl.network_security_log"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": true,
+      "write_mongo": false,
+      "write_redis": true,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "log_compress",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "*log_compress(oozie)",
+        "log_compress"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "刘树文",
+      "yarn_purpose": "日志压缩",
+      "yarn_cat": "",
+      "yarn_ttype": "MAPREDUCE",
+      "yarn_queue": "oozie",
+      "yarn_sched": "30 00 * * *",
+      "yarn_remark": "",
+      "src_layer": "中间层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync",
+        "csc.ods_csc_db_url_intelligence_tb_url_reputation_sync",
+        "csc.ods_csc_log_audit",
+        "default.dwb_url_info",
+        "default.log_audit_source",
+        "default.log_stats_source",
+        "default.ods_devicemanager_deviceinfo",
+        "sri.ods_sri_hashinfo",
+        "sri.ods_sri_ti_tags"
+      ],
+      "outputs": [
+        "深二大数据平台",
+        "压缩日志表",
+        "csc.ods_csc_log_audit",
+        "csc.ods_csc_log_stats",
+        "旧中间表",
+        "default.dwb_md5_info - MD5信息表，存储在/hive/dwb/default/md5_info/",
+        "default.dwb_url_info - URL信息表，存储在/hive/dwb/default/url_info/",
+        "default.dwb_domain_info - 域名信息表，存储在/hive/dwb/default/domain_info/"
+      ],
+      "tables_in": [
+        "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync",
+        "csc.ods_csc_db_url_intelligence_tb_url_reputation_sync",
+        "csc.ods_csc_log_audit",
+        "default.dwb_url_info",
+        "default.log_audit_source",
+        "default.log_stats_source",
+        "default.ods_devicemanager_deviceinfo",
+        "sri.ods_sri_hashinfo",
+        "sri.ods_sri_ti_tags"
+      ],
+      "tables_out": [
+        "csc.ods_csc_log_audit",
+        "csc.ods_csc_log_stats",
+        "default.dwb_md5_info - MD5信息表，存储在/hive/dwb/default/md5_info/",
+        "default.dwb_url_info - URL信息表，存储在/hive/dwb/default/url_info/",
+        "default.dwb_domain_info - 域名信息表，存储在/hive/dwb/default/domain_info/"
+      ],
+      "read_old_dwb": true,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": true
+    },
+    {
+      "key": "online-dev-warehousing-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "online-dev-warehousing-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "段宁强",
+      "yarn_purpose": "实时在线设备统计",
+      "yarn_cat": "",
+      "yarn_ttype": "flink",
+      "yarn_queue": "business",
+      "yarn_sched": "常驻",
+      "yarn_remark": "最近一次修改在4年前",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二Kafka"
+      ],
+      "outputs": [
+        "深二MongoDB"
+      ],
+      "tables_in": [],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": true,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "phishing-url-operation-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "phishing-url-operation-prc"
+      ],
+      "yarn_status": "待确认",
+      "yarn_prio": "",
+      "yarn_owner": "彭宜",
+      "yarn_purpose": "URL漏报自动化运营",
+      "yarn_cat": "",
+      "yarn_ttype": "tez",
+      "yarn_queue": "default",
+      "yarn_sched": "/",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_log_audit",
+        "深二MongoDB"
+      ],
+      "outputs": [
+        "深二MongoDB"
+      ],
+      "tables_in": [
+        "csc.ods_csc_log_audit"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": false,
+      "write_mongo": true,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "secevent-to-hive-batch",
+      "in_yarn": true,
+      "in_src": false,
+      "yarn_names": [
+        "secevent-to-hive-batch",
+        "secevent-to-hive-batch(oozie)"
+      ],
+      "yarn_status": "已下线",
+      "yarn_prio": "",
+      "yarn_owner": "明瞻",
+      "yarn_purpose": "压缩产品线上报日志",
+      "yarn_cat": "",
+      "yarn_ttype": "spark",
+      "yarn_queue": "etl",
+      "yarn_sched": "15 * * * *",
+      "yarn_remark": "最近一次修改在4年前，疑似有流处理方案（？",
+      "src_layer": "",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [],
+      "outputs": [],
+      "tables_in": [],
+      "tables_out": []
+    },
+    {
+      "key": "secevent-to-hive-partition-pruned-cron-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "secevent-to-hive-partition-pruned-cron-job"
+      ],
+      "yarn_status": "待确认",
+      "yarn_prio": "",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "spark-SQL分区定时修剪",
+      "yarn_cat": "",
+      "yarn_ttype": "spark",
+      "yarn_queue": "etl",
+      "yarn_sched": "1 12 * * *",
+      "yarn_remark": "最近一次修改在4年前",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "HDFS目录/real-time/config/secevent-to-hive-stream/config.json配置文件"
+      ],
+      "outputs": [
+        "预加载Hive表的分区数据"
+      ],
+      "tables_in": [],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "secevent-to-hive-stream-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "secevent-to-hive-stream-prc"
+      ],
+      "yarn_status": "待确认",
+      "yarn_prio": "",
+      "yarn_owner": "明瞻",
+      "yarn_purpose": "安全事件实时入hive库进程服务",
+      "yarn_cat": "",
+      "yarn_ttype": "flink",
+      "yarn_queue": "online",
+      "yarn_sched": "常驻",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二Kafka"
+      ],
+      "outputs": [
+        "HDFS目录",
+        "/real-time/out/ -输出数据目录",
+        "/real-time/dirty-data/ -脏数据目录"
+      ],
+      "tables_in": [],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": true,
+      "write_hive_table": false
+    },
+    {
+      "key": "secevent_analyse",
+      "in_yarn": true,
+      "in_src": false,
+      "yarn_names": [
+        "secevent_analyse(oozie)"
+      ],
+      "yarn_status": "已下线",
+      "yarn_prio": "",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "",
+      "yarn_cat": "",
+      "yarn_ttype": "MAPREDUCE",
+      "yarn_queue": "oozie",
+      "yarn_sched": "",
+      "yarn_remark": "",
+      "src_layer": "",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [],
+      "outputs": [],
+      "tables_in": [],
+      "tables_out": []
+    },
+    {
+      "key": "soapa-logger-stream-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "soapa-logger-stream-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "刘俊",
+      "yarn_purpose": "日志系统从kafka转发数据到ES、HDFS",
+      "yarn_cat": "",
+      "yarn_ttype": "flink",
+      "yarn_queue": "online",
+      "yarn_sched": "常驻",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二Kafka"
+      ],
+      "outputs": [
+        "ES集群",
+        "HDFS目录",
+        "基础路径：hdfs://{cluster_name}/soapa_logs/",
+        "Dev日志目录：`/soapa_logs/dev_stream/",
+        "Stats日志目录：`/soapa_logs/stats_stream/",
+        "Audit日志目录：`/soapa_logs/audit_stream/"
+      ],
+      "tables_in": [],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": true,
+      "write_hive_table": false
+    },
+    {
+      "key": "sodl_dwb_info",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "*sodl_dwb_info(oozie)",
+        "sodl_dwb_info"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "中间表",
+      "yarn_cat": "",
+      "yarn_ttype": "MAPREDUCE",
+      "yarn_queue": "oozie",
+      "yarn_sched": "30 02 * * *",
+      "yarn_remark": "",
+      "src_layer": "中间层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync",
+        "csc.ods_csc_db_url_intelligence_tb_url_reputation_sync",
+        "default.ods_devicemanager_deviceinfo",
+        "sodl.dns_log",
+        "sodl.dwb_sodl_domain_info",
+        "sodl.dwb_sodl_ip_info",
+        "sodl.dwb_sodl_md5_info",
+        "sodl.dwb_sodl_url_info",
+        "sodl.endpoint_security_log",
+        "sodl.http_log",
+        "sodl.network_security_log",
+        "sodl.sip_iocstat_log",
+        "sodl.url_log",
+        "sri.ods_sri_hashinfo",
+        "sri.ods_sri_ti_tags"
+      ],
+      "outputs": [
+        "深二大数据平台",
+        "新中间表",
+        "sodl.dwb_sodl_md5_info - MD5信息表，存储在/hive/dwb/sodl/md5_info/",
+        "sodl.dwb_sodl_url_info - URL信息表，存储在/hive/dwb/sodl/url_info/",
+        "sodl.dwb_sodl_domain_info - 域名信息表，存储在/hive/dwb/sodl/domain_info/",
+        "sodl.dwb_sodl_ip_info - IP信息表，存储在/hive/dwb/sodl/ip_info/"
+      ],
+      "tables_in": [
+        "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync",
+        "csc.ods_csc_db_url_intelligence_tb_url_reputation_sync",
+        "default.ods_devicemanager_deviceinfo",
+        "sodl.dns_log",
+        "sodl.dwb_sodl_domain_info",
+        "sodl.dwb_sodl_ip_info",
+        "sodl.dwb_sodl_md5_info",
+        "sodl.dwb_sodl_url_info",
+        "sodl.endpoint_security_log",
+        "sodl.http_log",
+        "sodl.network_security_log",
+        "sodl.sip_iocstat_log",
+        "sodl.url_log",
+        "sri.ods_sri_hashinfo",
+        "sri.ods_sri_ti_tags"
+      ],
+      "tables_out": [
+        "sodl.dwb_sodl_md5_info - MD5信息表，存储在/hive/dwb/sodl/md5_info/",
+        "sodl.dwb_sodl_url_info - URL信息表，存储在/hive/dwb/sodl/url_info/",
+        "sodl.dwb_sodl_domain_info - 域名信息表，存储在/hive/dwb/sodl/domain_info/",
+        "sodl.dwb_sodl_ip_info - IP信息表，存储在/hive/dwb/sodl/ip_info/"
+      ],
+      "read_old_dwb": false,
+      "read_new_dwb": true,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": true,
+      "read_ngaf": false,
+      "read_csc_ods": true,
+      "read_sodl_ods": true,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": true
+    },
+    {
+      "key": "sodl_ods_info",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "*sodl_ods_info(oozie)",
+        "sodl_ods_info"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "数据同步（拉取数据湖数据）",
+      "yarn_cat": "数据湖数据同步",
+      "yarn_ttype": "MAPREDUCE",
+      "yarn_queue": "oozie",
+      "yarn_sched": "07 * * * *",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二数据湖ClickHouse",
+        "sodl.dns_log - DNS日志表",
+        "sodl.endpoint_security_log - 端点安全日志表",
+        "sodl.http_log - HTTP日志表",
+        "sodl.network_security_log - 网络安全日志表",
+        "sodl.sip_iocstat_log - SIP IOC统计日志表",
+        "sodl.url_log - URL日志表"
+      ],
+      "outputs": [
+        "深二大数据平台(存储在`/hive/ods/sodl/`目录)",
+        "sodl.dns_log - DNS日志表",
+        "sodl.endpoint_security_log - 端点安全日志表",
+        "sodl.http_log - HTTP日志表",
+        "sodl.network_security_log - 网络安全日志表",
+        "sodl.sip_iocstat_log - SIP IOC统计日志表",
+        "sodl.url_log - URL日志表"
+      ],
+      "tables_in": [
+        "sodl.dns_log - DNS日志表",
+        "sodl.endpoint_security_log - 端点安全日志表",
+        "sodl.http_log - HTTP日志表",
+        "sodl.network_security_log - 网络安全日志表",
+        "sodl.sip_iocstat_log - SIP IOC统计日志表",
+        "sodl.url_log - URL日志表"
+      ],
+      "tables_out": [
+        "sodl.dns_log - DNS日志表",
+        "sodl.endpoint_security_log - 端点安全日志表",
+        "sodl.http_log - HTTP日志表",
+        "sodl.network_security_log - 网络安全日志表",
+        "sodl.sip_iocstat_log - SIP IOC统计日志表",
+        "sodl.url_log - URL日志表"
+      ],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": true,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": true
+    },
+    {
+      "key": "sp-old-update-report-cron-job",
+      "in_yarn": true,
+      "in_src": false,
+      "yarn_names": [
+        "sp-old-update-report-cron-job"
+      ],
+      "yarn_status": "待确认",
+      "yarn_prio": "",
+      "yarn_owner": "",
+      "yarn_purpose": "sp数据采集升级反馈上报中台",
+      "yarn_cat": "",
+      "yarn_ttype": "tez",
+      "yarn_queue": "",
+      "yarn_sched": "/",
+      "yarn_remark": "",
+      "src_layer": "",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [],
+      "outputs": [],
+      "tables_in": [],
+      "tables_out": []
+    },
+    {
+      "key": "svd-activity-stat-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "svd-activity-stat-job"
+      ],
+      "yarn_status": "待确认",
+      "yarn_prio": "",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "通过设备上报日志统计漏洞及规则的活跃度",
+      "yarn_cat": "",
+      "yarn_ttype": "tez",
+      "yarn_queue": "default",
+      "yarn_sched": "14 2 * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "sodl.network_security_log",
+        "深二MongoDB"
+      ],
+      "outputs": [
+        "深二MongoDB"
+      ],
+      "tables_in": [
+        "sodl.network_security_log"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": true,
+      "write_mongo": true,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "sync-mongo2hive-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "sync-mongo2hive-job"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "王坤",
+      "yarn_purpose": "文件云查同步到hive",
+      "yarn_cat": "",
+      "yarn_ttype": "spark",
+      "yarn_queue": "未设定",
+      "yarn_sched": "常驻",
+      "yarn_remark": "连续两天在operation跑，etl太满？",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二MongoDB"
+      ],
+      "outputs": [
+        "深二大数据平台",
+        "sri.ods_sri_hashinfo(全量表)",
+        "sri.ods_sri_hashinfo_increment(增量表)"
+      ],
+      "tables_in": [],
+      "tables_out": [
+        "sri.ods_sri_hashinfo(全量表)",
+        "sri.ods_sri_hashinfo_increment(增量表)"
+      ],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": true
+    },
+    {
+      "key": "thug-task-monitor-prc",
+      "in_yarn": true,
+      "in_src": false,
+      "yarn_names": [
+        "thug-task-monitor-prc\n容器:thug-task-monitor-hive-source-prc"
+      ],
+      "yarn_status": "已下线",
+      "yarn_prio": "",
+      "yarn_owner": "彭宜",
+      "yarn_purpose": "thug任务队列监控",
+      "yarn_cat": "",
+      "yarn_ttype": "tez",
+      "yarn_queue": "operation",
+      "yarn_sched": "一天约1500次",
+      "yarn_remark": "分区一直是20240401，且一天执行大约1500次；\n下线的是thug-task-monitor-hive-source-prc这个容器",
+      "src_layer": "",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [],
+      "outputs": [],
+      "tables_in": [],
+      "tables_out": []
+    },
+    {
+      "key": "ti-hot-data-detection-fusing-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "ti-hot-data-detection-fusing-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "肖扬",
+      "yarn_purpose": "从数据湖获取aES上报MD5",
+      "yarn_cat": "aes检测",
+      "yarn_ttype": "ck",
+      "yarn_queue": "",
+      "yarn_sched": "5 * * * *",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二数据湖ClickHouse",
+        "sodl.handle_info_log"
+      ],
+      "outputs": [
+        "深二Kafka"
+      ],
+      "tables_in": [
+        "sodl.handle_info_log"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "ti-ip-detection-send-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "ti-ip-detection-send-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "肖扬",
+      "yarn_purpose": "从数据湖获取aES上报IP",
+      "yarn_cat": "aes检测",
+      "yarn_ttype": "ck",
+      "yarn_queue": "",
+      "yarn_sched": "1 * * * *",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二数据湖ClickHouse",
+        "sodl.handle_info_log"
+      ],
+      "outputs": [
+        "深二Kafka",
+        "Prometheus指标"
+      ],
+      "tables_in": [
+        "sodl.handle_info_log"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "top-visit-host-produce-job",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "*top-visit-host-produce-job"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "访问TOP库建设(云情报网关过滤包)",
+      "yarn_cat": "云情报网关-过滤包生产",
+      "yarn_ttype": "tez",
+      "yarn_queue": "operation",
+      "yarn_sched": "5 3 * * *",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "default.log_audit_source",
+        "sodl.dns_log",
+        "sodl.url_log"
+      ],
+      "outputs": [
+        "深二Redis"
+      ],
+      "tables_in": [
+        "default.log_audit_source",
+        "sodl.dns_log",
+        "sodl.url_log"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": true,
+      "write_mongo": false,
+      "write_redis": true,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "topthreat_hot_stat",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "*topthreat_hot_stat(oozie)",
+        "topthreat_hot_stat"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "文件MD5、URL统计表、域名统计表入库",
+      "yarn_cat": "",
+      "yarn_ttype": "MAPREDUCE",
+      "yarn_queue": "oozie",
+      "yarn_sched": "07 * * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "default.log_audit_source",
+        "sodl.network_security_log",
+        "sodl.sip_iocstat_log"
+      ],
+      "outputs": [
+        "深二MongoDB"
+      ],
+      "tables_in": [
+        "default.log_audit_source",
+        "sodl.network_security_log",
+        "sodl.sip_iocstat_log"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": true,
+      "write_mongo": true,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "url-intelligence-dispatch-prc",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "url-intelligence-dispatch-prc"
+      ],
+      "yarn_status": "保留",
+      "yarn_prio": "高",
+      "yarn_owner": "王绪寒",
+      "yarn_purpose": "数据湖未知上报url分发",
+      "yarn_cat": "云情报网关-数据分发",
+      "yarn_ttype": "pulsar",
+      "yarn_queue": "",
+      "yarn_sched": "/",
+      "yarn_remark": "",
+      "src_layer": "原始层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二数据湖Pulsar",
+        "深二Kafka"
+      ],
+      "outputs": [
+        "深二Kafka"
+      ],
+      "tables_in": [],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": false,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": false,
+      "write_redis": false,
+      "write_hdfs": false,
+      "write_hive_table": false
+    },
+    {
+      "key": "vuln-assert-analysis",
+      "in_yarn": true,
+      "in_src": true,
+      "yarn_names": [
+        "vuln-assert-analysis"
+      ],
+      "yarn_status": "可下线",
+      "yarn_prio": "",
+      "yarn_owner": "",
+      "yarn_purpose": "资产关联漏洞分析",
+      "yarn_cat": "",
+      "yarn_ttype": "spark",
+      "yarn_queue": "business",
+      "yarn_sched": "10 * * * *",
+      "yarn_remark": "",
+      "src_layer": "业务层",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [
+        "深二大数据平台",
+        "ngaf.ods_ngaf_seclog_pvs",
+        "深二MongoDB"
+      ],
+      "outputs": [
+        "深二MongoDB",
+        "HDFS目录/apps/hive/warehouse"
+      ],
+      "tables_in": [
+        "ngaf.ods_ngaf_seclog_pvs"
+      ],
+      "tables_out": [],
+      "read_old_dwb": false,
+      "read_new_dwb": false,
+      "read_old_dwb_ip": false,
+      "read_new_dwb_url": false,
+      "read_ngaf": true,
+      "read_csc_ods": false,
+      "read_sodl_ods": false,
+      "write_mongo": true,
+      "write_redis": false,
+      "write_hdfs": true,
+      "write_hive_table": false
+    },
+    {
+      "key": "yara-sample-query-job",
+      "in_yarn": true,
+      "in_src": false,
+      "yarn_names": [
+        "yara-sample-query-job"
+      ],
+      "yarn_status": "待确认",
+      "yarn_prio": "",
+      "yarn_owner": "段宁强",
+      "yarn_purpose": "样本查询",
+      "yarn_cat": "",
+      "yarn_ttype": "tez",
+      "yarn_queue": "",
+      "yarn_sched": "3 * * * *",
+      "yarn_remark": "编译即结束，没向tez提交任务",
+      "src_layer": "",
+      "src_status": "",
+      "src_confirmer": "",
+      "src_remark": "",
+      "sources": [],
+      "outputs": [],
+      "tables_in": [],
+      "tables_out": []
+    }
+  ],
+  "consumers_by_table": {
+    "csc.ods_csc_apt_hunting": [
+      "apt-hunting-monitor-process-job"
+    ],
+    "csc.ods_csc_business_data": [
+      "cert-app-samplesync-country-job",
+      "cert-app-samplesync-job"
+    ],
+    "csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync": [
+      "active-domain-elt-job",
+      "black-ti-context-produce-prc",
+      "ctig-report-data-analysis-prc",
+      "log_compress",
+      "sodl_dwb_info"
+    ],
+    "csc.ods_csc_db_url_intelligence_tb_url_reputation_sync": [
+      "ctig-report-data-analysis-prc",
+      "log_compress",
+      "sodl_dwb_info"
+    ],
+    "csc.ods_csc_ioc_vertex": [
+      "ati-pdns-cache-job",
+      "gnn-domain-hive-query-cronjob"
+    ],
+    "csc.ods_csc_log_audit": [
+      "filter-layout-ip-seg-stat-prc",
+      "log_compress",
+      "phishing-url-operation-prc"
+    ],
+    "csc.ods_csc_log_stats": [
+      "cipd-product-resource-monitor-prc"
+    ],
+    "csc.ods_csc_tb_tenant_subscribe_info": [
+      "black-ti-context-produce-prc",
+      "ctig-report-data-analysis-prc"
+    ],
+    "csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync": [
+      "attack-ip-analysis-cronjob",
+      "black-ti-context-produce-prc",
+      "ctig-report-data-analysis-prc",
+      "filter-layout-ip-seg-stat-prc"
+    ],
+    "csc.ods_csc_tim_db_unknown_intelligence_tb_skyeye_ip_info_sync": [
+      "attack-ip-analysis-cronjob"
+    ],
+    "default.dwb_domain_info": [
+      "active-domain-elt-job",
+      "apt-hunting-monitor-process-job",
+      "domain-hit-devnum-cronjob"
+    ],
+    "default.dwb_ip_info": [
+      "apt-hunting-monitor-process-job"
+    ],
+    "default.dwb_md5_info": [
+      "apt-hunting-monitor-process-job",
+      "black-file-clean-cronjob",
+      "black-ti-context-produce-prc"
+    ],
+    "default.dwb_url_info": [
+      "apt-hunting-monitor-process-job",
+      "log_compress"
+    ],
+    "default.log_audit_source": [
+      "log_compress",
+      "top-visit-host-produce-job",
+      "topthreat_hot_stat"
+    ],
+    "default.log_stats_source": [
+      "log_compress"
+    ],
+    "default.ods_custom_upload_data": [
+      "active-domain-elt-job",
+      "apt-hunting-monitor-process-job",
+      "attack-ip-analysis-cronjob",
+      "domain-hit-devnum-cronjob"
+    ],
+    "default.ods_devicemanager_deviceinfo": [
+      "apt-hunting-monitor-process-job",
+      "dashboard-stats-job",
+      "log_compress",
+      "sodl_dwb_info"
+    ],
+    "ngaf.ods_ngaf_dns": [
+      "asset-discovery-task"
+    ],
+    "ngaf.ods_ngaf_seclog_dos": [
+      "asset-discovery-task"
+    ],
+    "ngaf.ods_ngaf_seclog_pvs": [
+      "vuln-assert-analysis"
+    ],
+    "sodl.dns_log": [
+      "sodl_dwb_info",
+      "top-visit-host-produce-job"
+    ],
+    "sodl.dns_log - DNS日志表": [
+      "sodl_ods_info"
+    ],
+    "sodl.dwb_sodl_domain_info": [
+      "active-domain-elt-job",
+      "apt-hunting-monitor-process-job",
+      "black-ti-context-produce-prc",
+      "ctig-report-data-analysis-prc",
+      "domain-heat-stats-cron-job",
+      "sodl_dwb_info"
+    ],
+    "sodl.dwb_sodl_ip_info": [
+      "apt-hunting-monitor-process-job",
+      "black-ti-context-produce-prc",
+      "ctig-report-data-analysis-prc",
+      "sodl_dwb_info"
+    ],
+    "sodl.dwb_sodl_md5_info": [
+      "apt-hunting-monitor-process-job",
+      "black-file-clean-cronjob",
+      "black-ti-context-produce-prc",
+      "sodl_dwb_info"
+    ],
+    "sodl.dwb_sodl_url_info": [
+      "apt-hunting-monitor-process-job",
+      "sodl_dwb_info"
+    ],
+    "sodl.endpoint_security_log": [
+      "dashboard-stats-job",
+      "sodl_dwb_info"
+    ],
+    "sodl.endpoint_security_log - 端点安全日志表": [
+      "sodl_ods_info"
+    ],
+    "sodl.handle_info_log": [
+      "ti-hot-data-detection-fusing-prc",
+      "ti-ip-detection-send-prc"
+    ],
+    "sodl.http_log": [
+      "sodl_dwb_info"
+    ],
+    "sodl.http_log - HTTP日志表": [
+      "sodl_ods_info"
+    ],
+    "sodl.network_security_log": [
+      "attack-ip-analysis-cronjob",
+      "dashboard-stats-job",
+      "domain-security-log-etl-prc",
+      "ip-security-log-etl-prc",
+      "sodl_dwb_info",
+      "svd-activity-stat-job",
+      "topthreat_hot_stat"
+    ],
+    "sodl.network_security_log - 网络安全日志表": [
+      "sodl_ods_info"
+    ],
+    "sodl.sip_iocstat_log": [
+      "sodl_dwb_info",
+      "topthreat_hot_stat"
+    ],
+    "sodl.sip_iocstat_log - SIP IOC统计日志表": [
+      "sodl_ods_info"
+    ],
+    "sodl.url_log": [
+      "sodl_dwb_info",
+      "top-visit-host-produce-job"
+    ],
+    "sodl.url_log - URL日志表": [
+      "sodl_ods_info"
+    ],
+    "sri.ods_sri_hashinfo": [
+      "cert-app-samplesync-country-job",
+      "cert-app-samplesync-job",
+      "ctig-report-data-analysis-prc",
+      "log_compress",
+      "sodl_dwb_info"
+    ],
+    "sri.ods_sri_ti_tags": [
+      "log_compress",
+      "sodl_dwb_info"
+    ]
+  }
+}

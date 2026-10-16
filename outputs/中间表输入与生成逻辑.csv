@@ -1,0 +1,8 @@
+中间表,主要输入日志/数据,关联补充表,主要生成逻辑
+default.dwb_domain_info,csc.ods_csc_log_audit,"csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync、sri.ods_sri_ti_tags、default.ods_devicemanager_deviceinfo","从 cloudcheck、cloud-check-handler 日志提取域名并聚合；通过子域匹配黑DNS标签；设备表补充城市、行业等画像"
+default.dwb_md5_info,csc.ods_csc_log_audit,"sri.ods_sri_hashinfo、default.ods_devicemanager_deviceinfo","从 analysis-proxy-api 的 file_hash、file_scan 日志提取MD5并聚合；Hash表补充文件属性；设备表补充画像"
+default.dwb_url_info,csc.ods_csc_log_audit,"csc.ods_csc_db_url_intelligence_tb_url_reputation_sync、default.ods_devicemanager_deviceinfo","从 cloudcheck、cloud-check-handler 日志提取URL；通过URL mask关联信誉和分类；设备表补充画像"
+sodl.dwb_sodl_domain_info,"sodl.network_security_log、sodl.dns_log、sodl.sip_iocstat_log、sodl.endpoint_security_log、sodl.url_log","域名信誉表、sri.ods_sri_ti_tags、default.ods_devicemanager_deviceinfo","多类SODL日志合并，按域名及设备信息聚合；补充黑DNS分类、标签和设备画像"
+sodl.dwb_sodl_ip_info,"sodl.network_security_log、sodl.dns_log、sodl.url_log、sodl.http_log、sodl.sip_iocstat_log","csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync、sri.ods_sri_ti_tags、default.ods_devicemanager_deviceinfo","多类SODL日志合并，按源IP/目的IP聚合；通过黑IP信誉表补充分类；设备表补充画像"
+sodl.dwb_sodl_md5_info,"sodl.network_security_log、sodl.endpoint_security_log、sodl.sip_iocstat_log","sri.ods_sri_hashinfo、default.ods_devicemanager_deviceinfo","提取网络、EDR和SIP文件IOC中的文件哈希；统一为 filehash；Hash表补充文件属性；设备表补充画像"
+sodl.dwb_sodl_url_info,"sodl.network_security_log、sodl.url_log、sodl.sip_iocstat_log、sodl.http_log","csc.ods_csc_db_url_intelligence_tb_url_reputation_sync、default.ods_devicemanager_deviceinfo","多类日志提取URL并进行URL脱敏/标准化；通过mask关联URL信誉表；设备表补充画像"

@@ -1,0 +1,6 @@
+{
+  "last_turn_at": "2026-06-22T07:56:49.737Z",
+  "turn_count": 7,
+  "last_progress_at": "2026-06-22T07:56:49.737Z",
+  "last_agent_output": "`ALTER TABLE` 是 **DDL 命令**，也就是修改表结构或表元数据的命令。\n\n在 Hive 里常见用途：\n\n```sql\nALTER TABLE table_name ADD PARTI"
+}

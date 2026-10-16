@@ -1,0 +1,3737 @@
+﻿"【保留】：
+检查是否可以优化 SQL 语句。
+【可下线】：
+下线相应的服务。
+【待确认】：
+确认该服务是否仍需使用：
+->如果需要使用：检查是否可以优化 SQL 语句。
+->如果不再需要使用：评估是否可以进行下线处理。
+【异常任务】：
+异常信息记录在备注栏中，请进行检查：
+->如果服务仍需使用：修复错误的服务，并检查是否可以优化 SQL 语句。
+->如果服务不再需要：评估是否可以执行下线处理。",,,  首列标*说明有多个子任务/一个任务有多条sql语句，这里只举例一个,,,,,,,,,,任务资源使用情况（常驻进程）,,,,任务资源使用情况（非常驻）,,,,,,,,,,,,,,,
+服务名称,任务类型,负责人,业务作用,子任务,业务类别,备注,业务分类,优先级,task type,queue,调度时间,频次,集群占比%,container,CPU,memory（M）,ARA-MB-seconds,ARA-MB-hours,ARA-vcore-seconds,运行时间,代码库,语句,,Application,,,,,,,,
+soapa-logger-stream-prc,保留,刘俊,"日志系统从kafka转发数据到ES、HDFS
+与宁强对齐，迁移后可下线",soapa-logger-dev-es,基础设施,与宁强对齐，迁移后可下线,,高,flink,online,常驻,,0.8,3,3,18432,/,/,/,/,http://code.sangfor.org/SRI/SCIA/warehouse/soapa-logger-stream-prc/blob/master/app/soapa-logger-stream-prc/src/main/scala/com/sangfor/cloud/logger/conf/BaseConfig.scala,/,/,,,,,,,,,
+,可下线,刘俊,,soapa-logger-stats-es,基础设施,,,高,flink,online,常驻,,0.8,3,3,18432,/,/,/,/,http://code.sangfor.org/SRI/SCIA/warehouse/soapa-logger-stream-prc/blob/master/app/soapa-logger-stream-prc/src/main/scala/com/sangfor/cloud/logger/conf/BaseConfig.scala,/,/,,,,,,,,,
+,可下线,刘俊,,soapa-logger-audit-hdfs,基础设施,,,高,flink,online,常驻,,0.8,3,3,18432,/,/,/,/,http://code.sangfor.org/SRI/SCIA/warehouse/soapa-logger-stream-prc/blob/master/app/soapa-logger-stream-prc/src/main/scala/com/sangfor/cloud/logger/conf/BaseConfig.scala,/,/,,,,,,,,,
+,可下线,刘俊,,soapa-logger-stats-hdfs,基础设施,,,高,flink,online,常驻,,0.8,3,3,18432,/,/,/,/,http://code.sangfor.org/SRI/SCIA/warehouse/soapa-logger-stream-prc/blob/master/app/soapa-logger-stream-prc/src/main/scala/com/sangfor/cloud/logger/conf/BaseConfig.scala,/,/,,,,,,,,,
+secevent-to-hive-stream-prc,可下线,段宁强,安全事件实时入hive库进程服务。基于 Apache Flink 的实时安全事件数据处理服务，负责从 Kafka 消费安全事件数据，经过解析、分发、转换处理后，写入 HDFS 并最终入库 Hive 数仓,secevent-to-hive-stream-csc,安全事件,已对齐过可下线,,,flink,online,常驻,,0.1,1,1,2048,/,/,/,/,http://code.sangfor.org/SRI/SCIA/warehouse/secevent-to-hive-stream-prc/blob/master/start/start-sec2hive.sh,/,/,,,,,,,,,
+online-dev-warehousing-prc,保留,段宁强,实时在线设备统计,online-dev-warehousing-prc,,最近一次修改在5年前，疑似可下线,,,flink,business,常驻,,1.2,4,4,28672,/,/,/,/,http://code.sangfor.org/SRI/SCIA/devid/online-dev-warehousing-prc/blob/master/src/myapp/src/main/scala/com/sangfor/cloud/online/dev/warehouse/config/AppConfig.scala,/,/,,,,,,,,,
+cloud-display-manager-prc,保留,肖扬,云鉴防护运营数据管理系统，负责云查数据的统计分析和持久化存储，以及数据生命周期管理,cloud-display-detail-new,云鉴,全部FAILED->没在用？,云鉴页面,,spark,business,常驻,,1.4,11,11,32768,？,/,？,？,http://code.sangfor.org/SRI/SCIA/YJ/cloud-display-manager-prc/blob/master/src/scala/cloud_detail_stream/src/com/sangfor/cloud_display/detail/conf/Settings.scala,/,/,,,,,,,,,
+,保留,肖扬,,cloud-display-statistic,云鉴,,云鉴页面,,spark,business,常驻,,1.2,6,6,27648,/,/,/,/,http://code.sangfor.org/SRI/SCIA/YJ/cloud-display-manager-prc/blob/master/src/scala/cloud_statistic_stream/src/com/sangfor/cloud_display/statistic/conf/Settings.scala,/,/,,,,,,,,,
+asset-discovery-task,可下线,肖扬,资产发现任务,asset-discovery-task,,全部FAILED->没在用？最近一次提交在3年前,,,spark,business,？,,0.8,/,/,/,？,/,？,？,http://code.sangfor.org/SRI/SCIA/devid/asset-discovery-task/blob/master/src/scala/asset-discovery-task/src/com/sangfor/assetdiscovery/dao/HiveUtil.scala,/,/,,,,,,,,,
+vuln-assert-analysis,可下线,,资产关联漏洞分析,vuln_assert_analysis,,,,,spark,business,10 * * * *,24,,,,,2967841,,577,"2mins, 1sec",http://code.sangfor.org/SRI/SCIA/vuln/vuln-assert-analysis/blob/master/src/scala/vuln-analysis/com.sangfor/vulnassertanalysis/dao/HiveUtil.scala,/,/,,,,,,,,,
+secevent-to-hive-partition-pruned-cron-job,可下线,刘俊,本项目是一个基于Spark的定时任务服务，用于解决Spark SQL首次查询Hive表时分区修剪（Partition Pruning）性能损耗问题。通过每日定时对目标Hive表执行一次查询操作，预先触发分区修剪，确保后续的Spark SQL查询不再重复执行该操作，从而提升整体查询性能并避免因分区数过大导致的OOM异常。,secevent-to-hive-partition-pruned,安全事件,最近一次修改在4年前，疑似迁移后可下线，安全事件可下线,,,spark,etl,1 12 * * *,1,,/,/,/,1652615,459.0597222222222,276,43sec,http://code.sangfor.org/SRI/SCIA/warehouse/secevent-to-hive-partition-pruned-cron-job/blob/master/src/scala/secevent-to-hive-partition-pruned-cron-job/com/sangfor/cloud/warehouse/partition_pruned/conf/Config.scala,/,/,,,,,,,,,
+secevent-to-hive-batch,已下线,明瞻,压缩产品线上报日志,secevent-to-hive-batch,,最近一次修改在4年前，疑似有流处理方案（？,,,spark,etl,15 * * * *,24,,/,/,/,30361,8.43361111111111,29,29sec,http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/src/scala/secevent-to-hive-batch/com/sangfor/cloud/secevent/batch/config/BaseConfig.scala,/,/,,,,,,,,,
+sync-mongo2hive-job,可下线,王坤,文件云查同步到hive,hashinfo-to-hive,基础设施,mongo数据同步，迁移后可下线,mongo数据同步,,spark,未设定,常驻,,5.2,9,9,123904,15247545468,4235429.296666667,1107542,"34hrs, 11mins, 45sec",http://code.sangfor.org/SRI/SCIA/sync/sync-mongo2hive-job/blob/master/src2/scala/sync-mongo2hive/src/main/scala/com/sangfor/cloud/config/BaseConfig.scala,/,/,,,,,,,,,
+ati-relations-loader-job,保留,肖扬,是一个基于大数据技术的图数据库关系数据加载服务，主要负责将威胁情报（IOC）的关系数据从 Kafka 实时消费并加载到 Hive 数仓和 Nebula Graph 图数据库中，为上层安全分析提供数据支撑。,load_tag2hive,基础设施,,图数据库,,spark,default,常驻,,1.4,6,6,32768,/,/,/,/,http://code.sangfor.org/SRI/SCIA/ATI/ati-relations-loader-job/blob/master/start-load2hive.sh,/,/,,,,,,,,,
+,保留,肖扬,,load_edge2hive,基础设施,,图数据库,,spark,default,常驻,,1.4,6,6,32678,/,/,/,/,http://code.sangfor.org/SRI/SCIA/ATI/ati-relations-loader-job/blob/master/start-load2hive.sh,/,/,,,,,,,,,
+,保留,肖扬,,AtiRelationsLoader-iocEdges,基础设施,,图数据库,,spark,default,6 * * * *,24,,/,/,/,1450978,403.0494444444444,499,"1mins, 39sec",http://code.sangfor.org/SRI/SCIA/ATI/ati-relations-loader-job/blob/master/start-ioc-edges-cron-job.sh,/,/,,,,,,,,,
+,保留,肖扬,,AtiRelationsLoader-iocTags,基础设施,,图数据库,,spark,default,6 * * * *,24,,/,/,/,1450791,402.9975,501,"1mins, 34sec",http://code.sangfor.org/SRI/SCIA/ATI/ati-relations-loader-job/blob/master/start-ioc-tags-cron-job.sh,/,/,,,,,,,,,
+*sodl_ods_info(oozie),保留,王绪寒,数据同步（拉取数据湖数据）,/,基础设施,迁移后预计可下线，链路由数据湖负责？,数据湖数据同步,,MAPREDUCE,oozie,07 * * * *,144,,/,/,/,6991226,1942.0072222222223,1365,"11mins, 27sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/sodl_ods_info/config.xml,/,/,,,,,,,,,
+secevent-to-hive-batch(oozie),已下线,王绪寒,安全事件批处理入hive库（？,/,基础设施,,数据湖数据同步,,MAPREDUCE,oozie,15 * * * *,24,,/,/,/,546984,151.94,106,55sec,http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/src/scala/secevent-to-hive-batch/com/sangfor/cloud/secevent/batch/config/BaseConfig.scala,/,/,,,,,,,,,
+*sodl_dwb_info(oozie),保留,王绪寒,中间表,、,基础设施,,,,MAPREDUCE,oozie,30 02 * * *,4,,/,/,/,53522319,14867.310833333333,10453,"1hrs, 27mins, 14sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/sodl_dwb_info/config.xml,/,/,,,,,,,,,
+*log_compress(oozie),可下线,刘树文,日志压缩,/,基础设施,,,,MAPREDUCE,oozie,30 00 * * *,1,,/,/,/,609103973,169195.54805555556,118965,"16hrs, 31mins, 25sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/log_compress/config.xml,/,/,,,,,,,,,
+*topthreat_hot_stat(oozie),保留,王绪寒,文件MD5、URL统计表、域名统计表入库 ,/,基础设施,,,,MAPREDUCE,oozie,07 * * * *,72,,/,/,/,4017565,1115.9902777777777,783,"6mins, 36sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/topthreat_hot_stat/config.xml,/,/,,,,,,,,,
+secevent_analyse(oozie),已下线,王绪寒,,/,基础设施,,,,MAPREDUCE,oozie,,72,,/,/,/,603181,167.55027777777778,116,"1mins, 0sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/secevent_analyse/config.xml,/,/,,,,,,,,,
+create_hive_partition(oozie),保留,刘树文,创建Hive分区,/,基础设施,,,,MAPREDUCE,oozie,"30 12,15,18 * * *",3,,/,/,/,1321758,367.155,257,"2mins, 13sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/create_hive_partition/config.xml,/,/,,,,,,,,,
+gnn-domain-hive-query-cronjob,保留,王绪寒,查询图数据库域名,/,,,域名情报生产-图神经网络,高,tez,operation,30 * * * *,24,,/,/,/,37019654,10283.237222222222,8999,"11mins, 30sec",http://code.sangfor.org/SRI/SCIA/CIPD/DOMAIN/PRE/gnn-domain-hive-query-cronjob/blob/master/unittest/data/app_cfg.json,"SELECT DISTINCT key FROM csc.ods_csc_ioc_vertex WHERE graph_type='Domain' and atime>=1756202400 and atime<1756206000 and utime>=1755601200 and str1 in ('2','3','4')",/,application_1751683746773_96605,,,,,,,,
+dashboard-stats-job,保留,王绪寒,公司大屏,DEVICE_STATS_SQL,运营展示,,情报公司大屏展示,高,tez,operation,1 * * * *,24,,/,/,/,4204875,1168.0208333333333,1004,"1mins, 39sec",http://code.sangfor.org/SRI/SCIA/analysis/dashboard-stats-job/blob/master/app-sdk/soapa-sangfor-lib/python/common/sql.py,"SELECT product,
+count(DISTINCT(dev_id)) as dev_num
+FROM default.ods_devicemanager_deviceinfo
+GROUP BY product",/,application_1751683746773_96645,,,,,,,,
+,保留,王绪寒,,IP_SECURITY_SQL ,运营展示,,情报公司大屏展示,高,tez,operation,,24,,/,/,/,7890698,2191.8605555555555,1882,"1mins, 40sec",,"SELECT t1.threatclass as threatclass,
+t1.threattype as threattype,
+t1.threatsubtype as threatsubtype,
+t1.producttype as producttype,
+t1.url as ioc,
+regexp_extract(t2.customer_info, 'city=(.*?)[,}]', 1) AS city,
+regexp_extract(t2.customer_info, 'ip=(.*?)[,}]', 1) AS ip
+FROM sodl.network_security_log t1
+LEFT JOIN default.ods_devicemanager_deviceinfo t2 ON t1.manage = t2.dev_id
+WHERE t1.reqruleid >='14000000'
+AND t1.reqruleid < '14999999'
+AND t1.titype = 2
+AND t1.threatclass=209
+AND t1.threattype NOT IN (9,
+14,
+15)
+AND t1.producttype != 'NULL'
+AND t1.manage != 'NULL'
+AND t1.url != 'NULL'
+AND t2.customer_info != 'NULL'
+AND t1.DAY = 20250825
+AND t1.hour = 1
+LIMIT 1000",/,application_1751683746773_96646,,,,,,,,
+,保留,王绪寒,,DOMAIN_SECURITY_SQL,运营展示,,情报公司大屏展示,高,tez,operation,,24,,/,/,/,13078388,3632.8855555555556,3131, 50sec,,"SELECT t1.threatclass as threatclass,
+t1.threattype as threattype,
+t1.threatsubtype as threatsubtype,
+t1.producttype as producttype,
+t1.url as ioc,
+regexp_extract(t2.customer_info, 'city=(.*?)[,}]', 1) AS city,
+regexp_extract(t2.customer_info, 'ip=(.*?)[,}]', 1) AS ip
+FROM sodl.network_security_log t1
+LEFT JOIN default.ods_devicemanager_deviceinfo t2 ON t1.manage = t2.dev_id
+WHERE t1.reqruleid >='14000000'
+AND t1.reqruleid < '14999999'
+AND t1.titype = 0
+AND t1.threatclass=209
+AND t1.threattype NOT IN (9,
+14,
+15)
+AND t1.producttype != 'NULL'
+AND t1.manage != 'NULL'
+AND t1.url != 'NULL'
+AND t2.customer_info != 'NULL'
+AND t1.DAY = 20250825
+AND t1.hour = 1
+LIMIT 1000",/,application_1751683746773_96648,,,,,,,,
+,保留,王绪寒,,URL_SECURITY_SQL ,运营展示,,情报公司大屏展示,高,tez,operation,,24,,/,/,/,14022017,3895.0047222222224,3368,"2mins, 55sec",,"SELECT t1.threatclass as threatclass,
+t1.threattype as threattype,
+t1.threatsubtype as threatsubtype,
+t1.producttype as producttype,
+t1.url as ioc,
+regexp_extract(t2.customer_info, 'city=(.*?)[,}]', 1) AS city,
+regexp_extract(t2.customer_info, 'ip=(.*?)[,}]', 1) AS ip
+FROM sodl.network_security_log t1
+LEFT JOIN default.ods_devicemanager_deviceinfo t2 ON t1.manage = t2.dev_id
+WHERE t1.reqruleid >='14000000'
+AND t1.reqruleid < '14999999'
+AND t1.titype = 1
+AND t1.threatclass=214
+AND t1.threattype NOT IN (2,
+3)
+AND t1.producttype != 'NULL'
+AND t1.manage != 'NULL'
+AND t1.dstip != 'NULL'
+AND t1.url != 'NULL'
+AND t2.customer_info != 'NULL'
+AND t1.DAY = 20250825
+AND t1.hour = 1
+LIMIT 1000",/,application_1751683746773_96650,,,,,,,,
+,保留,王绪寒,,FILE_SECURITY_SQL ,运营展示,,情报公司大屏展示,高,tez,operation,,24,,/,/,/,1660490,461.2472222222222,398,23sec,,"SELECT t1.threatclass as threatclass,
+t1.threattype as threattype,
+t1.threatsubtype as threatsubtype,
+t1.producttype as producttype,
+t1.filemd5 as ioc,
+regexp_extract(t2.customer_info, 'city=(.*?)[,}]', 1) AS city,
+regexp_extract(t2.customer_info, 'ip=(.*?)[,}]', 1) AS ip
+FROM sodl.endpoint_security_log t1
+LEFT JOIN default.ods_devicemanager_deviceinfo t2 ON t1.manage = t2.dev_id
+WHERE t1.threatclass=209
+AND t1.threattype NOT IN (9,
+14,
+15)
+AND t1.producttype != 'NULL'
+AND t1.manage != 'NULL'
+AND t1.filemd5 != 'NULL'
+AND t1.filemd5 != ''
+AND t2.customer_info != 'NULL'
+AND t1.DAY = 20250825
+AND t1.hour = 1
+LIMIT 1000",/,application_1751683746773_96654,,,,,,,,
+topthreat_hot_stat,保留,王绪寒,文件MD5、URL统计表、域名统计表入库 ,blcak_file_stat,热门威胁生产,,热门威胁-热度统计,高,tez,etl,07 * * * *,24,,/,/,/,24667215,6852.004166666667,5960,"3mins, 39sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/topthreat_hot_stat/code/black_file_stat.yaml,"SELECT md5,   count(1)AS md5_num,                                                                                                                                                                                 
+count(DISTINCT devid) AS device_num
+FROM
+(SELECT lower(get_json_object(str10_tmp, ""$.filemd5"")) AS md5,
+get_json_object(str10_tmp, ""$.info.attr"") AS attr,
+str2 AS devid
+FROM default.log_audit_source LATERAL VIEW explode(default.format_json_list(regexp_replace(str10, '[\\\\]+""', '""'))) str10_tbl AS str10_tmp
+WHERE log_app_id = 'analysis-proxy-api'
+AND module_id IN ('file_hash' ,
+'file_scan')
+AND str1 IN ('VNGAF' ,
+'NGAF' ,
+'EDR' ,
+'EDR_BOTNET' ,
+'SIP' ,
+'SIP_SMTP' ,
+'SIP_SMB' ,
+'AC' ,
+'VAC' ,
+'CWPP' ,
+'SASE' ,
+'EDR_WEBSITE' ,
+'EDR_NPE' ,
+'EDR_CLOUD_IDENTIFY' ,
+'EDR_PK')
+AND long1 = 0
+AND day = 20250826
+AND hour = 01) a
+WHERE md5 IS NOT NULL
+AND md5 NOT IN ('',
+'-')
+AND attr='0'
+GROUP BY md5,
+devid
+ORDER BY md5_num DESC
+LIMIT 100000",/,,,,,,,,,
+,保留,王绪寒,,blcak_url_stat,热门威胁生产,,热门威胁-热度统计,高,tez,etl,,24,,/,/,/,60947554,16929.876111111113,14657," 3mins, 9sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/topthreat_hot_stat/code/blcak_url_stat.yaml,"          SELECT url,  sum(url_num) AS url_num,
+                 count(DISTINCT devid) AS device_num
+          FROM
+            (SELECT url,
+                    devid,
+                    count(1) AS url_num
+             FROM
+               (SELECT lower(get_json_object(str10_tmp, ""$.url"")) AS url,
+                       str2 AS devid
+                FROM default.log_audit_source LATERAL VIEW explode(default.format_json_list(regexp_replace(str10, '[\\\\]+""', '""'))) str10_tbl AS str10_tmp
+                WHERE log_app_id IN ('url-proxy-svc' ,
+                                     'cloudcheck')
+                  AND module_id IN ('url-proxy-svc' ,
+                                    'CloudCheck')
+                  AND str1 IN ('VNGAF' ,
+                               'NGAF' ,
+                               'EDR' ,
+                               'EDR_BOTNET' ,
+                               'SIP' ,
+                               'SIP_SMTP' ,
+                               'SIP_SMB' ,
+                               'AC' ,
+                               'VAC' ,
+                               'CWPP' ,
+                               'SASE' ,
+                               'EDR_WEBSITE' ,
+                               'EDR_NPE' ,
+                               'EDR_CLOUD_IDENTIFY' ,
+                               'EDR_PK')
+                  AND long1 = 0
+                  AND get_json_object(str10_tmp, ""$.info.attr"")='0'
+                  AND day = ${day}
+                  AND hour = ${hour} ) a
+             WHERE url IS NOT NULL
+               AND url NOT IN ('',
+                               '-')
+             GROUP BY url,
+                      devid
+          
+             UNION ALL 
+            
+             SELECT url,
+                    manage AS devid,
+                    sum(log_num) AS url_num
+             FROM sodl.network_security_log
+             WHERE url IS NOT NULL
+               AND url NOT IN ('',
+                               '-')
+               AND day = ${day}
+               AND hour = ${hour}
+             GROUP BY url,
+                      manage
+          
+             UNION ALL 
+             
+             SELECT ioc AS url,
+                    manage AS devid,
+                    sum(record_count) AS url_num
+             FROM sodl.sip_iocstat_log
+             WHERE ioc_type = 'url'
+               AND ioc IS NOT NULL
+               AND ioc NOT IN ('',
+                               '-')
+               AND day = ${day}
+               AND hour = ${hour}
+             GROUP BY ioc,
+                      manage ) t
+          GROUP BY url,
+                   devid
+          ORDER BY url_num DESC
+          LIMIT 100000",/,,,,,,,,,
+,保留,王绪寒,,black_domain_stat,热门威胁生产,,热门威胁-热度统计,高,tez,etl,,24,,/,/,/,92080199,25577.833055555555,22344,"3mins, 48sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/topthreat_hot_stat/code/black_domain_stat.yaml,"          SELECT domain,  sum(domain_num) AS domain_num,
+                 count(DISTINCT devid) AS device_num
+          FROM
+            (SELECT domain,
+                    devid,
+                    count(1) AS domain_num
+             FROM
+               (SELECT lower(get_json_object(str10_tmp, ""$.domain"")) AS domain,
+                       str2 AS devid
+                FROM default.log_audit_source LATERAL VIEW explode(default.format_json_list(regexp_replace(str10, '[\\\\]+""', '""'))) str10_tbl AS str10_tmp
+                WHERE log_app_id IN ('domain-proxy-svc' ,
+                                     'cloudcheck')
+                  AND module_id IN ('domain-proxy-svc' ,
+                                    'CloudCheck')
+                  AND str1 IN ('VNGAF' ,
+                               'NGAF' ,
+                               'EDR' ,
+                               'EDR_BOTNET' ,
+                               'SIP' ,
+                               'SIP_SMTP' ,
+                               'SIP_SMB' ,
+                               'AC' ,
+                               'VAC' ,
+                               'CWPP' ,
+                               'SASE' ,
+                               'EDR_WEBSITE' ,
+                               'EDR_NPE' ,
+                               'EDR_CLOUD_IDENTIFY' ,
+                               'EDR_PK')
+                  AND long1 = 0
+                  AND get_json_object(str10_tmp, ""$.info.attr"")='0'
+                  AND day = ${day}
+                  AND hour = ${hour} ) a
+             WHERE domain IS NOT NULL
+               AND domain NOT IN ('',
+                                  '-')
+             GROUP BY domain,
+                      devid
+
+             UNION ALL
+
+              SELECT domain,
+                     devid,
+                     sum(log_num) AS domain_num
+              FROM
+                (SELECT split(split(url, '//')[size(split(url, '//')) -1], '/')[0] AS domain,
+                        MANAGE AS devid,
+                        log_num
+                 FROM sodl.network_security_log
+                 WHERE url IS NOT NULL
+                   AND url NOT IN ('',
+                                   '-')
+                   AND day = ${day}
+                   AND hour = ${hour})t
+              WHERE domain IS NOT NULL
+                AND domain != ''
+              GROUP BY domain,
+                       devid
+
+             UNION ALL
+
+             SELECT ioc AS domain,
+                    manage AS devid,
+                    sum(record_count) AS domain_num
+             FROM sodl.sip_iocstat_log
+             WHERE ioc_type = 'domain'
+               AND ioc IS NOT NULL
+               AND ioc NOT IN ('',
+                               '-')
+               AND day = ${day}
+               AND hour = ${hour}
+             GROUP BY ioc,
+                      manage ) t
+          GROUP BY domain,
+                   devid
+          ORDER BY domain_num DESC
+          LIMIT 100000",/,,,,,,,,,
+sodl_dwb_info,保留,刘树文,中间表,dwb_sodl_domain_info,基础设施,,,,tez,etl,30 02 * * *,1,,/,/,/,2514341407,698428.1686111111,611102," 1hrs, 20mins, 52sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/sodl_dwb_info/code/dwb/dwb_sodl_domain_info.sql,"WITH black_dns AS   (SELECT t2.family AS family,
+          tags2.ch_name AS category,
+          t2.row_key AS row_key,
+          length(t2.row_key) AS row_key_len,
+          cast(t2.add_time as string) as add_time
+   FROM
+     (SELECT max(tags1.en_name) AS family,
+             t1.category,
+             t1.row_key,
+             max(t1.add_time) AS add_time
+      FROM
+        (SELECT domain AS row_key,
+                regexp_extract(labels, ""family=(.*?)[,}]"", 1) AS family,
+                regexp_extract(labels, ""category=(.*?)[,}]"", 1) AS category,
+                deleted_time,
+                add_time
+         FROM csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync
+      where deleted_time=0 and reputation='0')t1
+      JOIN sri.ods_sri_ti_tags tags1 ON t1.family=tags1.row_key
+      WHERE tags1.is_deleted='0'
+      GROUP BY t1.row_key,
+               t1.family,
+               t1.category) t2
+   JOIN sri.ods_sri_ti_tags tags2 ON t2.category=tags2.row_key
+   WHERE tags2.is_deleted='0' )
+
+INSERT overwrite directory ""/hive/dwb/sodl/domain_info/${mday}"" ROW format delimited fields terminated BY '\t' stored AS parquet
+SELECT threatclass,
+       threattype,
+       threatsubtype,
+       producttype,
+       manage,
+       productver,
+       domain,
+       engine,
+       titype,
+       srcip,
+       dstip,
+       reqRuleId,
+       row_key,
+       family,
+       category,
+       add_time,
+       log_num,
+       attack_count,
+       src_log,
+       regexp_extract(r5.customer_info, ""city=(.*?)[,}]"", 1) AS city,
+       regexp_extract(r5.customer_info, ""province=(.*?)[,}]"", 1) AS province,
+       regexp_extract(r5.customer_info, ""country=(.*?)[,}]"", 1) AS country,
+       regexp_extract(r5.customer_info, ""industry=(.*?)[,}]"", 1) AS industry,
+       regexp_extract(r5.customer_info, ""sub_industry=(.*?)[,}]"", 1) AS sub_industry,
+       action
+FROM
+  (SELECT threatclass,
+          threattype,
+          threatsubtype,
+          producttype,
+          manage,
+          productver,
+          domain,
+          engine,
+          titype,
+          srcip,
+          dstip,
+          action,
+          reqRuleId,
+          sub_domain,
+          log_num,
+          attack_count,
+          src_log,
+          r3.row_key AS row_key,
+          r3.family AS family,
+          r3.category AS category,
+          r3.add_time AS add_time,
+          row_number() over(partition BY domain, manage, productver, dstip, srcip
+                            ORDER BY r3.row_key_len DESC) AS rank
+   FROM
+     (SELECT threatclass,
+             threattype,
+             threatsubtype,
+             producttype,
+             manage,
+             productver,
+             domain,
+             engine,
+             titype,
+             sub_domain,
+             srcip,
+             dstip,
+             action,
+             reqRuleId,
+             log_num,
+             attack_count,
+             src_log
+      FROM
+        (SELECT threatclass,
+                threattype,
+                threatsubtype,
+                producttype,
+                manage,
+                productver,
+                domain,
+                engine,
+                titype,
+                srcip,
+                dstip,
+                action,
+                reqRuleId,
+                sum(log_num) AS log_num,
+                sum(log_num) AS attack_count,
+                'network_security_log' AS src_log
+         FROM
+           (SELECT threatclass,
+                   threattype,
+                   threatsubtype,
+                   producttype,
+                   manage,
+                   productver,
+                   split(split(url, '//')[size(split(url, '//')) - 1], '/')[0] AS domain,
+                   engine,
+                   titype,
+                   srcip,
+                   dstip,
+                   action,
+                   reqRuleId,
+                   log_num
+            FROM sodl.network_security_log
+            WHERE DAY = ${mday} ) t1
+         WHERE domain IS NOT NULL
+           AND domain != ''
+         GROUP BY threatclass,
+                  threattype,
+                  threatsubtype,
+                  producttype,
+                  manage,
+                  productver,
+                  domain,
+                  engine,
+                  titype,
+                  srcip,
+                  dstip,
+                  action,
+                  reqRuleId
+         UNION ALL SELECT 0 AS threatclass,
+                          0 AS threattype,
+                          0 AS threatsubtype,
+                          producttype,
+                          manage,
+                          productver,
+                          queries AS domain,
+                          '-' as engine,
+                          0 as titype,
+                          srcip,
+                          dstip,
+                          NULL as action,
+                          '-' as reqRuleId,
+                          sum(log_num) AS log_num,
+                          sum(log_num) AS attack_count,
+                          'dns_log' AS src_log
+         FROM sodl.dns_log
+         WHERE DAY = ${mday}
+           AND queries IS NOT NULL
+           AND queries != ''
+         GROUP BY producttype,
+                  manage,
+                  productver,
+                  queries,
+                  srcip,
+                  dstip
+         UNION ALL SELECT 0 AS threatclass,
+                          0 AS threattype,
+                          0 AS threatsubtype,
+                          producttype,
+                          manage,
+                          productver,
+                          ioc AS domain,
+                          '-' as engine,
+                           0 as titype,
+                          '-' as srcip,
+                          '-' AS dstip,
+                          NULL as action,
+                          '-' as reqRuleId,
+                          sum(log_num) AS log_num,
+                          sum(record_count) AS attack_count,
+                          'sip_iocstat_log' AS src_log
+         FROM sodl.sip_iocstat_log
+         WHERE DAY = ${mday}
+           AND ioc_type = 'domain'
+           AND ioc IS NOT NULL
+           AND ioc != ''
+         GROUP BY producttype,
+                  manage,
+                  productver,
+                  ioc
+         UNION ALL SELECT 0 AS threatclass,
+                          0 AS threattype,
+                          0 AS threatsubtype,
+                          producttype,
+                          manage,
+                          productver,
+                          domain,
+                          '-' as engine,
+                           0 as titype,
+                          '-' as srcip,
+                          manageip AS dstip,
+                          NULL as action,
+                          '-' as reqRuleId,
+                          sum(log_num) AS log_num,
+                          sum(log_num) AS attack_count,
+                          'endpoint_security_log' AS src_log
+         FROM sodl.endpoint_security_log
+         WHERE DAY = ${mday}
+           AND domain IS NOT NULL
+           AND domain != ''
+         GROUP BY producttype,
+                  manage,
+                  productver,
+                  domain,
+                  manageip
+         UNION ALL SELECT 0 AS threatclass,
+                          0 AS threattype,
+                          0 AS threatsubtype,
+                          producttype,
+                          manage,
+                          productver,
+                          host AS domain,
+                          '-' as engine,
+                          0 as titype,
+                          sip as srcip,
+                          dip AS dstip,
+                          NULL as action,
+                          '-' as reqRuleId,
+                          sum(log_num) AS log_num,
+                          sum(log_num) AS attack_count,
+                          'url_log' AS src_log
+         FROM sodl.url_log
+         WHERE DAY = ${mday}
+           AND host IS NOT NULL
+           AND host != ''
+         GROUP BY producttype,
+                  manage,
+                  productver,
+                  host,
+                  sip,
+                  dip) r1 LATERAL VIEW default.sub_parent_domain(domain) domain_info AS sub_domain) r2
+   LEFT JOIN black_dns r3 ON r2.sub_domain=r3.row_key
+   WHERE r3.row_key IS NOT NULL
+     OR r2.domain=r2.sub_domain ) r4
+LEFT JOIN default.ods_devicemanager_deviceinfo r5 ON r4.manage = r5.dev_id
+WHERE r4.rank=1;
+",/,,,,,,,,,
+,保留,刘树文,,dwb_sodl_ip_info,基础设施,,,,tez,etl,,1,,/,/,/,1064487355,295690.9319444444,257073,"39mins, 3sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/sodl_dwb_info/code/dwb/dwb_sodl_ip_info.sql,"WITH black_ip AS   (SELECT fam_tags.en_name AS family,
+       cat_tags.ch_name AS category,
+       base.row_key,
+       CAST(base.add_time AS STRING) AS add_time
+FROM
+  (SELECT ip AS row_key,
+          add_time,
+          REGEXP_EXTRACT(REGEXP_EXTRACT(labels, '\\[(.+?)\\]', 1), 'family=(.*?)[,}]', 1) AS family_key,
+          REGEXP_EXTRACT(REGEXP_EXTRACT(labels, '\\[(.+?)\\]', 1), 'category=(.*?)[,}]', 1) AS category_key
+   FROM csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync
+   WHERE deleted_time = 0
+     AND reputation = '0'
+     AND direction = '2'
+     AND port = 0 ) base
+JOIN sri.ods_sri_ti_tags fam_tags ON base.family_key = fam_tags.row_key
+AND fam_tags.is_deleted = '0'
+JOIN sri.ods_sri_ti_tags cat_tags ON base.category_key = cat_tags.row_key
+AND cat_tags.is_deleted = '0')
+
+INSERT overwrite directory ""/hive/dwb/sodl/ip_info/${mday}"" ROW format delimited fields terminated BY '\t' stored AS parquet
+SELECT threatclass,
+       threattype,
+       threatsubtype,
+       producttype,
+       manage,
+       productver,
+       srcip,
+       dstip,
+       engine,
+       titype,
+       reqRuleId,
+       log_num,
+       attack_count,
+       src_log,
+       regexp_extract(r2.customer_info, 'city=(.*?)[,}]', 1) AS city,
+       regexp_extract(r2.customer_info, 'province=(.*?)[,}]', 1) AS province,
+       regexp_extract(r2.customer_info, 'country=(.*?)[,}]', 1) AS country,
+       regexp_extract(r2.customer_info, 'industry=(.*?)[,}]', 1) AS industry,
+       regexp_extract(r2.customer_info, 'sub_industry=(.*?)[,}]', 1) AS sub_industry,
+       action,
+       family,
+       category,
+       add_time
+FROM
+  (-- network_security_log
+ SELECT threatclass,
+        threattype,
+        threatsubtype,
+        producttype,
+        manage,
+        productver,
+        srcip,
+        dstip,
+        engine,
+        titype,
+        reqRuleId,
+        action,
+        sum(log_num) AS log_num,
+        sum(log_num) AS attack_count,
+        'network_security_log' AS src_log
+   FROM sodl.network_security_log
+   WHERE DAY = ${mday}
+   GROUP BY threatclass,
+            threattype,
+            threatsubtype,
+            producttype,
+            manage,
+            productver,
+            srcip,
+            dstip,
+            engine,
+            titype,
+            reqRuleId,
+            action
+   UNION ALL -- dns_log
+ SELECT 0 AS threatclass,
+        0 AS threattype,
+        0 AS threatsubtype,
+        producttype,
+        manage,
+        productver,
+        srcip,
+        dstip,
+        '-' as engine,
+        0 as titype,
+        '-' as reqRuleId,
+        NULL as action,
+        sum(log_num) AS log_num,
+        sum(log_num) AS attack_count,
+        'dns_log' AS src_log
+   FROM sodl.dns_log
+   WHERE DAY = ${mday}
+   GROUP BY producttype,
+            manage,
+            productver,
+            srcip,
+            dstip
+   UNION ALL -- url_log
+ SELECT 0 AS threatclass,
+        0 AS threattype,
+        0 AS threatsubtype,
+        producttype,
+        manage,
+        productver,
+        sip as srcip,
+        dip as dstip,
+        '-' as engine,
+        0 as titype,
+        '-' as reqRuleId,
+        NULL as action,
+        sum(log_num) AS log_num,
+        sum(log_num) AS attack_count,
+        'url_log' AS src_log
+   FROM sodl.url_log
+   WHERE DAY = ${mday}
+   GROUP BY producttype,
+            manage,
+            productver,
+            sip,
+            dip
+   UNION ALL -- sodl.http_log
+ SELECT 0 AS threatclass,
+        0 AS threattype,
+        0 AS threatsubtype,
+        producttype,
+        manage,
+        productver,
+        srcip,
+        dstip,
+        '-' as engine,
+        0 as titype,
+        '-' as reqRuleId,
+        NULL as action,
+        sum(log_num) AS log_num,
+        sum(log_num) AS attack_count,
+        'http_log' AS src_log
+   FROM sodl.http_log
+   WHERE DAY = ${mday}
+   GROUP BY producttype,
+            manage,
+            productver,
+            srcip,
+            dstip
+   UNION ALL -- sip_iocstat_log
+ SELECT 0 AS threatclass,
+        0 AS threattype,
+        0 AS threatsubtype,
+        producttype,
+        manage,
+        productver,
+        '-' AS srcip,
+        regexp_extract(ioc, '(.+)(:.+)?', 1) AS dstip,
+        '-' as engine,
+        0 as titype,
+        '-' as reqRuleId,
+        NULL as action,
+        sum(log_num) AS log_num,
+        sum(record_count) AS attack_count,
+        'sip_iocstat_log' AS src_log
+   FROM sodl.sip_iocstat_log
+   WHERE DAY = ${mday}
+     AND ioc_type = 'ip'
+   GROUP BY producttype,
+            manage,
+            productver,
+            ioc) r1
+LEFT JOIN black_ip r3 ON r1.dstip=r3.row_key
+LEFT JOIN default.ods_devicemanager_deviceinfo r2 ON r1.manage=r2.dev_id;
+",/,,,,,,,,,
+,保留,刘树文,,dwb_sodl_md5_info,基础设施,,,,tez,etl,,1,,/,/,/,703289437,195358.17694444445,170431,"2hrs, 49mins, 15sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/sodl_dwb_info/code/dwb/dwb_sodl_md5_info.sql,"SELECT r1.threatclass,  r1.threattype,
+       r1.threatsubtype,
+       r1.producttype,
+       r1.manage,
+       r1.productver,
+       r1.filehash,
+       r1.dstip,
+       r1.reqRuleId,
+       r1.engine,
+       r2.oid,
+       r2.file_attr,
+       r2.file_type,
+       r2.source_type,
+       r2.type,
+       r2.family,
+       r2.platform,
+       r2.upload_source,
+       r2.virus_name AS virus_name_hash,
+       r1.log_num,
+       r1.attack_count,
+       r1.src_log,
+       regexp_extract(r3.customer_info, ""city=(.*?)[,}]"", 1) AS city,
+       regexp_extract(r3.customer_info, ""province=(.*?)[,}]"", 1) AS province,
+       regexp_extract(r3.customer_info, ""country=(.*?)[,}]"", 1) AS country,
+       regexp_extract(r3.customer_info, ""industry=(.*?)[,}]"", 1) AS industry,
+       regexp_extract(r3.customer_info, ""sub_industry=(.*?)[,}]"", 1) AS sub_industry
+FROM
+  (SELECT threatclass,
+          threattype,
+          threatsubtype,
+          producttype,
+          manage,
+          productver,
+          lower(filehash) AS filehash,
+          dstip,
+          reqRuleId,
+          engine,
+          sum(log_num) AS log_num,
+          sum(log_num) AS attack_count,
+          'network_security_log' AS src_log
+   FROM sodl.network_security_log
+   WHERE DAY = ${mday}
+     AND filehash != ''
+     AND filehash IS NOT NULL
+   GROUP BY threatclass,
+            threattype,
+            threatsubtype,
+            producttype,
+            manage,
+            productver,
+            filehash,
+            dstip,
+            reqRuleId,
+            engine
+
+   UNION ALL SELECT threatclass,
+                    threattype,
+                    threatsubtype,
+                    producttype,
+                    manage,
+                    productver,
+                    lower(filemd5),
+                    manageip,
+                    '-' as reqRuleId,
+                    engine,
+                    sum(log_num) AS log_num,
+                    sum(log_num) AS attack_count,
+                    'endpoint_security_log' AS src_log
+   FROM sodl.endpoint_security_log
+   WHERE DAY = ${mday}
+     AND filemd5 != ''
+     AND filemd5 IS NOT NULL
+   GROUP BY threatclass,
+            threattype,
+            threatsubtype,
+            producttype,
+            manage,
+            productver,
+            filemd5,
+            manageip,
+            engine
+   UNION ALL SELECT 0 AS threatclass,
+                    0 AS threattype,
+                    0 AS threatsubtype,
+                    producttype,
+                    manage,
+                    productver,
+                    lower(ioc),
+                    '-' AS dip,
+                    '-' as reqRuleId,
+                    '-' AS engine,
+                    sum(log_num) AS log_num,
+                    sum(record_count) AS attack_count,
+                    'sip_iocstat_log' AS src_log
+   FROM sodl.sip_iocstat_log
+   WHERE DAY = ${mday}
+     AND ioc_type = 'file'
+     AND ioc != ''
+     AND ioc IS NOT NULL
+   GROUP BY producttype,
+            manage,
+            productver,
+            ioc) r1
+LEFT JOIN sri.ods_sri_hashinfo r2 ON lower(r1.filehash) = lower(r2.file_md5)
+LEFT JOIN default.ods_devicemanager_deviceinfo r3 ON r1.manage = r3.dev_id
+WHERE length(r1.filehash)=32;
+",/,,,,,,,,,
+,保留,刘树文,,dwb_sodl_url_info,基础设施,,,,tez,etl,,1,,/,/,/,1312090837,364469.6769444444,318381,"1hrs, 26mins, 36sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/sodl_dwb_info/code/dwb/dwb_sodl_url_info.sql,"WITH report_cloud_lib_url AS   (SELECT mask,
+          cast(add_time as string) as add_time,
+          category,
+          CASE
+              WHEN indexA=0
+                   AND indexP=0 THEN NULL
+              WHEN indexA=0
+                   AND indexP>0 THEN regexp_extract(labels, ""(B002_P....)"", 1)
+              WHEN indexA>0
+                   AND indexP=0 THEN regexp_extract(labels, ""(B002_A.....)"", 1)
+              WHEN indexA<indexP THEN regexp_extract(labels, ""(B002_A.....)"", 1)
+              ELSE regexp_extract(labels, ""(B002_P....)"", 1)
+          END AS family
+   FROM
+     (SELECT mask,
+             add_time,
+             labels,
+             regexp_extract(labels, ""(B002_C....)"", 1) AS category,
+             instr(labels, 'A') AS indexA,
+             instr(labels, 'P') AS indexP
+      FROM csc.ods_csc_db_url_intelligence_tb_url_reputation_sync
+      WHERE instr(labels, 'B002')>0
+        AND deleted_time=0 )t)
+
+INSERT overwrite directory ""/hive/dwb/sodl/url_info/${mday}"" ROW format delimited fields terminated BY '\t' stored AS parquet
+SELECT threatclass,
+       threattype,
+       threatsubtype,
+       producttype,
+       manage,
+       productver,
+       url,
+       raw_url,
+       engine,
+       titype,
+       srcip,
+       dstip,
+       reqRuleId,
+       r2.category,
+       r2.family,
+       r2.add_time,
+       log_num,
+       attack_count,
+       src_log,
+       regexp_extract(r3.customer_info, ""city=(.*?)[,}]"", 1) AS city,
+       regexp_extract(r3.customer_info, ""province=(.*?)[,}]"", 1) AS province,
+       regexp_extract(r3.customer_info, ""country=(.*?)[,}]"", 1) AS country,
+       regexp_extract(r3.customer_info, ""industry=(.*?)[,}]"", 1) AS industry,
+       regexp_extract(r3.customer_info, ""sub_industry=(.*?)[,}]"", 1) AS sub_industry
+FROM
+  (SELECT threatclass,
+          threattype,
+          threatsubtype,
+          producttype,
+          manage,
+          productver,
+          url,
+          raw_url,
+          engine,
+          titype,
+          srcip,
+          dstip,
+          reqRuleId,
+          sum(log_num) AS log_num,
+          sum(log_num) AS attack_count,
+          'network_security_log' AS src_log
+   FROM
+     (SELECT threatclass,
+             threattype,
+             threatsubtype,
+             producttype,
+             manage,
+             productver,
+             default.calc_url_mask(url) AS url,
+             url AS raw_url,
+             engine,
+             titype,
+             srcip,
+             dstip,
+             reqRuleId,
+             log_num
+      FROM sodl.network_security_log
+      WHERE DAY = ${mday}
+        AND url IS NOT NULL
+        AND url != '') t1
+   GROUP BY threatclass,
+            threattype,
+            threatsubtype,
+            producttype,
+            manage,
+            productver,
+            url,
+            raw_url,
+            engine,
+            titype,
+            srcip,
+            dstip,
+            reqRuleId
+   UNION ALL SELECT 0 AS threatclass,
+                    0 AS threattype,
+                    0 AS threatsubtype,
+                    producttype,
+                    manage,
+                    productver,
+                    url,
+                    raw_url,
+                    '-' as engine,
+                    0 as titype,
+                    srcip,
+                    dstip,
+                    '-' as reqRuleId,
+                    sum(log_num) AS log_num,
+                    sum(log_num) AS attack_count,
+                    'url_log' AS src_log
+   FROM
+     (SELECT producttype,
+             manage,
+             productver,
+             default.calc_url_mask(host || uri) AS url,
+             host || uri AS raw_url,
+             sip AS srcip,
+             dip AS dstip,
+             log_num
+      FROM sodl.url_log
+      WHERE DAY = ${mday}
+        AND host IS NOT NULL
+        AND host != '' ) t1
+   GROUP BY producttype,
+            manage,
+            productver,
+            url,
+            raw_url,
+            srcip,
+            dstip
+   UNION ALL SELECT 0 AS threatclass,
+                    0 AS threattype,
+                    0 AS threatsubtype,
+                    producttype,
+                    manage,
+                    productver,
+                    url,
+                    raw_url,
+                    '-' as engine,
+                    0 as titype,
+                    '-' AS srcip,
+                    '-' AS dstip,
+                    '-' as reqRuleId,
+                    sum(log_num) AS log_num,
+                    sum(record_count) AS attack_count,
+                    'sip_iocstat_log' AS src_log
+   FROM
+     (SELECT producttype,
+             manage,
+             productver,
+             default.calc_url_mask(ioc) AS url,
+             ioc AS raw_url,
+             log_num,
+             record_count
+      FROM sodl.sip_iocstat_log
+      WHERE DAY = ${mday}
+        AND ioc_type='url'
+        AND ioc IS NOT NULL
+        AND ioc != '') t1
+   GROUP BY producttype,
+            manage,
+            productver,
+            url,
+            raw_url
+   UNION ALL SELECT 0 AS threatclass,
+                    0 AS threattype,
+                    0 AS threatsubtype,
+                    producttype,
+                    manage,
+                    productver,
+                    url,
+                    raw_url,
+                    '-' as engine,
+                    0 as titype,
+                    '-' AS srcip,
+                    '-' AS dstip,
+                    '-' as reqRuleId,
+                    sum(log_num) AS log_num,
+                    sum(log_num) AS attack_count,
+                    'http_log' AS src_log
+   FROM
+     (SELECT producttype,
+             manage,
+             productver,
+             default.calc_url_mask(url) AS url,
+             url AS raw_url,
+             log_num
+      FROM sodl.http_log
+      WHERE DAY = ${mday} ) t1
+   GROUP BY producttype,
+            manage,
+            productver,
+            url,
+            raw_url)r1
+LEFT JOIN report_cloud_lib_url r2 ON md5(r1.url)=r2.mask
+LEFT JOIN default.ods_devicemanager_deviceinfo r3 ON r1.manage=r3.dev_id;
+",/,,,,,,,,,
+log_compress,保留,刘树文,日志压缩,insert_audit,基础设施,,,,tez,etl,30 00 * * *,1,,/,/,/,2334537677,648482.6880555556,569741,"1hrs, 4mins, 46sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/log_compress/code/insert_audit.sql,"INSERT OVERWRITE TABLE csc.ods_csc_log_audit PARTITION (app_id, year, month, day)
+SELECT log_time,
+log_app_id,
+module_id,
+log_type,
+host_name,
+long1,
+long2,
+long3,
+long4,
+long5,
+str1,
+str2,
+str3,
+str4,
+str5,
+str6,
+str7,
+str8,
+str9,
+str10,
+hour,
+repository_name,
+cluster_name,
+log_app_id AS app_id,
+year AS year,
+month AS month,
+day AS day
+FROM default.log_audit_source WHERE day=""20251101""",/,,,,,,,,,
+,保留,刘树文,,insert_stats,基础设施,,,,tez,etl,,1,,/,/,/,2426935470,674148.7416666667,590174,"3hrs, 26mins, 19sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/log_compress/code/insert_stats.sql,"INSERT OVERWRITE TABLE csc.ods_csc_log_stats PARTITION (app_id, year, month, day)
+SELECT log_time,
+log_app_id,
+module_id,
+log_type,
+host_name,
+double1,
+double2,
+double3,
+long1,
+long2,
+long3,
+long4,
+long5,
+str1,
+str2,
+str3,
+str4,
+str5,
+hour,
+repository_name,
+cluster_name,
+log_app_id AS app_id,
+year AS year,
+month AS month,
+day AS day
+FROM default.log_stats_source
+WHERE day=""20251101""
+AND length(log_app_id)<128",/,,,,,,,,,
+,保留,刘树文,, dw_domain_info_audit.sql,基础设施,,,,tez,etl,,1,,/,/,/,136315528,,33174,"24mins, 47sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/log_compress/code/dw_audit/dw_domain_info_audit.sql,"WITH black_dns AS
+  (SELECT t2.family AS family,
+          tags2.ch_name AS category,
+          t2.row_key AS row_key,
+          length(t2.row_key) AS row_key_len,
+          t2.add_time
+   FROM
+     (SELECT max(tags1.en_name) AS family,
+             t1.category,
+             t1.row_key,
+             max(t1.add_time) AS add_time
+      FROM
+        (SELECT domain AS row_key,
+                regexp_extract(labels, ""family=(.*?)[,}]"", 1) AS family,
+                regexp_extract(labels, ""category=(.*?)[,}]"", 1) AS category,
+                deleted_time,
+                add_time
+         FROM csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync
+	  where deleted_time=0 and reputation='0')t1
+      JOIN sri.ods_sri_ti_tags tags1 ON t1.family=tags1.row_key
+      WHERE tags1.is_deleted='0'
+      GROUP BY t1.row_key,
+               t1.family,
+               t1.category) t2
+   JOIN sri.ods_sri_ti_tags tags2 ON t2.category=tags2.row_key
+   WHERE tags2.is_deleted='0')
+   
+INSERT overwrite directory ""/hive/dwb/default/domain_info_audit/${mday}"" ROW format delimited fields terminated BY '\t' stored AS parquet
+
+SELECT r4.DOMAIN, r4.devid, r4.dev_version, r4.dip, r4.prod, r4.src_log, r4.log_num, r4.attack_count, r4.extends,
+       r4.row_key, r4.family, r4.category, r4.add_time,
+       regexp_extract(r5.customer_info, ""city=(.*?)[,}]"", 1) AS city,
+       regexp_extract(r5.customer_info, ""province=(.*?)[,}]"", 1) AS province,
+       regexp_extract(r5.customer_info, ""country=(.*?)[,}]"", 1) AS country,
+       regexp_extract(r5.customer_info, ""industry=(.*?)[,}]"", 1) AS industry,
+       regexp_extract(r5.customer_info, ""sub_industry=(.*?)[,}]"", 1) AS sub_industry,
+       r4.source,
+       r4.attr
+FROM
+(SELECT r2.DOMAIN, r2.devid, r2.dev_version, r2.dip, r2.prod, r2.src_log, r2.log_num, r2.attack_count, r2.extends,
+       r3.row_key AS row_key, r3.family AS family, r3.category AS category, r3.add_time AS add_time, r2.source, r2.attr,
+       row_number() over(partition by r2.DOMAIN, r2.devid, r2.dev_version, r2.dip order by row_key_len desc) AS rank
+FROM
+(SELECT r1.DOMAIN, r1.devid, r1.dev_version, r1.dip, r1.prod, r1.src_log, r1.log_num, r1.attack_count, r1.extends,
+        r1.source, r1.attr,
+       substring_index(r1.DOMAIN, '.', cast(sp_len AS int)-size(split(r1.DOMAIN, '\\.'))-1) AS sub_domain
+FROM
+    (
+    --log_audit (cloudcheck)
+    SELECT DOMAIN,
+           devid,
+           dev_version,
+           ""-"" AS dip,
+           prod,
+           ""log_audit"" AS src_log,
+           ""cloudcheck"" AS source,
+           attr,
+           sum(log_num) AS log_num,
+           sum(log_num) AS attack_count,
+           collect_list(concat(""-@"",log_num,""@"", log_num)) AS extends
+    FROM
+      (SELECT DOMAIN,
+              prod,
+              devid,
+              dev_version,
+              attr,
+              count(1) AS log_num
+       FROM
+         (SELECT get_json_object(str10_tmp, ""$.domain"") AS DOMAIN,
+                 (CASE
+                      WHEN str1 IN ('VNGAF',
+                                    'NGAF') THEN 'AF'
+                      WHEN str1 IN ('AC',
+                                    'VAC') THEN 'AC'
+                      WHEN str1 IN ('EDR',
+                                    'EDR_BOTNET') THEN 'EDR'
+                      WHEN str1 IN ('SIP',
+                                    'SIP_SMTP',
+                                    'SIP_SMB') THEN 'SIP'
+                      WHEN str1 IN ('SDW-R') THEN 'SDW'
+                  END) AS prod,
+                 str2 AS devid,
+                 str3 AS dev_version,
+                 get_json_object(str10_tmp, ""$.info.attr"") AS attr
+          FROM csc.ods_csc_log_audit
+          LATERAL VIEW explode(default.format_json_list(regexp_replace(str10, '[\\\\]+""', '""'))) str10_tbl AS str10_tmp
+          WHERE app_id = 'cloudcheck'
+            AND module_id = 'CloudCheck'
+            AND str5='domains'
+            AND str1 IN ('VNGAF',
+                         'NGAF',
+                         'EDR',
+                         'EDR_BOTNET',
+                         'SIP',
+                         'SIP_SMTP",/,,,,,,,,,
+,保留,刘树文,,dw_md5_info_audit.sql ,基础设施,,,,tez,etl,,1,,/,/,/,1675057608,,408693,"49mins, 30sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/log_compress/code/dw_audit/dw_md5_info_audit.sql,"INSERT overwrite directory ""/hive/dwb/default/md5_info_audit/${mday}"" ROW format delimited fields terminated BY '\t' stored AS parquet
+SELECT  r1.md5, r1.devid, r1.dev_version, r1.dip, r1.prod, r1.src_log, r1.log_num, r1.attack_count, r1.extends,
+       r2.oid, r2.file_attr, r2.file_type, r2.source_type, r2.type, r2.family, r2.platform, r2.upload_source, r2.virus_name AS virus_name_hash,
+       regexp_extract(r3.customer_info, ""city=(.*?)[,}]"", 1) AS city,
+       regexp_extract(r3.customer_info, ""province=(.*?)[,}]"", 1) AS province,
+       regexp_extract(r3.customer_info, ""country=(.*?)[,}]"", 1) AS country,
+       regexp_extract(r3.customer_info, ""industry=(.*?)[,}]"", 1) AS industry,
+       regexp_extract(r3.customer_info, ""sub_industry=(.*?)[,}]"", 1) AS sub_industry,
+       r1.source, r1.attr
+FROM
+    --log_audit
+    (SELECT md5,
+           devid,
+           dev_version,
+           ""-"" AS dip,
+           prod,
+           ""log_audit"" AS src_log,
+           source,
+           attr,
+           sum(log_num) AS log_num,
+           sum(log_num) AS attack_count,
+           collect_list(concat(""-@"",log_num,""@"", log_num)) AS extends
+    FROM
+      (SELECT md5,
+              prod,
+              devid,
+              dev_version,
+              source,
+              attr,
+              count(1) AS log_num
+       FROM
+         (SELECT lower(get_json_object(str10_tmp, ""$.filemd5"")) AS md5,
+                 (CASE
+                      WHEN str1 IN ('VNGAF',
+                                    'NGAF') THEN 'AF'
+                      WHEN str1 IN ('AC',
+                                    'VAC') THEN 'AC'
+                      WHEN str1 IN ('SIP',
+                                    'SIP_SMTP',
+                                    'SIP_SMB') THEN 'SIP'
+                      WHEN str1 IN ('CWPP') THEN 'CWPP'
+                      WHEN str1 IN ('SASE') THEN 'SASE'
+					  WHEN instr(str1, 'EDR')>0 then 'EDR'
+                  END) AS prod,
+                 str2 AS devid,
+                 str3 AS dev_version,
+                 module_id AS source,
+                 get_json_object(str10_tmp, ""$.info.attr"") as attr
+          FROM csc.ods_csc_log_audit LATERAL VIEW explode(default.format_json_list(regexp_replace(str10, '[\\\\]+""', '""'))) str10_tbl AS str10_tmp
+          WHERE app_id = 'analysis-proxy-api'
+            AND module_id IN ('file_hash',
+                              'file_scan')
+            AND long1 = 0
+            AND DAY = ${mday})a
+       WHERE md5 IS NOT NULL AND md5 NOT IN ('', '-')
+       GROUP BY md5,
+                devid,
+                dev_version,
+                prod,
+                source,
+                attr)b
+    GROUP BY md5,
+             devid,
+             dev_version,
+             prod,
+             source,
+             attr)r1
+LEFT JOIN sri.ods_sri_hashinfo r2
+ON lower(r1.md5) = lower(r2.file_md5)
+LEFT JOIN default.ods_devicemanager_deviceinfo r3
+ON r1.devid = r3.dev_id
+WHERE length(r1.md5)=32;
+",/,,,,,,,,,
+,保留,刘树文,,dw_url_info_audit.sql,基础设施,,,,tez,etl,,1,,/,/,/,156739907,,38194,"1hrs, 10mins, 53sec",http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/log_compress/code/dw_audit/dw_url_info_audit.sql,"WITH report_cloud_lib_url AS
+  (SELECT mask,
+          cast(add_time as string) as add_time,
+          category,
+          CASE
+              WHEN indexA=0
+                   AND indexP=0 THEN NULL
+              WHEN indexA=0
+                   AND indexP>0 THEN regexp_extract(labels, ""(B002_P....)"", 1)
+              WHEN indexA>0
+                   AND indexP=0 THEN regexp_extract(labels, ""(B002_A.....)"", 1)
+              WHEN indexA<indexP THEN regexp_extract(labels, ""(B002_A.....)"", 1)
+              ELSE regexp_extract(labels, ""(B002_P....)"", 1)
+          END AS family
+   FROM
+     (SELECT mask,
+             add_time,
+             labels,
+             regexp_extract(labels, ""(B002_C....)"", 1) AS category,
+             instr(labels, 'A') AS indexA,
+             instr(labels, 'P') AS indexP
+      FROM csc.ods_csc_db_url_intelligence_tb_url_reputation_sync
+      WHERE instr(labels, 'B002')>0
+        AND deleted_time=0 )t)
+INSERT overwrite directory ""/hive/dwb/default/url_info_audit/${mday}"" ROW format delimited fields terminated BY '\t' stored AS parquet
+SELECT r1.url,
+       r1.devid,
+       r1.dev_version,
+       r1.dip,
+       r1.prod,
+       r1.src_log,
+       r1.log_num,
+       r1.attack_count,
+       r1.extends,
+       r2.category,
+       r2.family,
+       r2.add_time,
+       regexp_extract(r3.customer_info, ""city=(.*?)[,}]"", 1) AS city,
+       regexp_extract(r3.customer_info, ""province=(.*?)[,}]"", 1) AS province,
+       regexp_extract(r3.customer_info, ""country=(.*?)[,}]"", 1) AS country,
+       regexp_extract(r3.customer_info, ""industry=(.*?)[,}]"", 1) AS industry,
+       regexp_extract(r3.customer_info, ""sub_industry=(.*?)[,}]"", 1) AS sub_industry,
+       r1.source,
+       r1.attr,
+       r1.raw_url
+FROM
+  (--log_audit (cloudcheck)
+ SELECT url,
+        '-' AS raw_url,
+        devid,
+        dev_version,
+        ""-"" AS dip,
+        prod,
+        ""log_audit"" AS src_log,
+        ""cloudcheck"" AS SOURCE,
+        attr,
+        log_num,
+        log_num AS attack_count,
+        array(concat(""-@"",log_num,""@"", log_num)) AS extends
+   FROM
+     (SELECT url,
+             prod,
+             devid,
+             dev_version,
+             attr,
+             count(1) AS log_num
+      FROM
+        (SELECT default.calc_url_mask(get_json_object(str10_tmp, ""$.url"")) AS url,
+                (CASE
+                     WHEN str1 IN ('VNGAF',
+                                   'NGAF') THEN 'AF'
+                     WHEN str1 IN ('AC',
+                                   'VAC') THEN 'AC'
+                     WHEN str1 IN ('EDR',
+                                   'EDR_BOTNET') THEN 'EDR'
+                     WHEN str1 IN ('SIP',
+                                   'SIP_SMTP',
+                                   'SIP_SMB') THEN 'SIP'
+                     WHEN str1 IN ('SDW-R') THEN 'SDW'
+                 END) AS prod,
+                str2 AS devid,
+                str3 AS dev_version,
+                get_json_object(str10_tmp, ""$.info.attr"") AS attr
+         FROM csc.ods_csc_log_audit LATERAL VIEW explode(default.format_json_list(regexp_replace(str10, '[\\\\]+""', '""'))) str10_tbl AS str10_tmp
+         WHERE app_id = 'cloudcheck'
+           AND module_id='CloudCheck'
+           AND str5='urls'
+           AND str1 IN ('VNGAF',
+                        'NGAF',
+                        'EDR',
+                        'EDR_BOTNET',
+                        'SIP',
+                        'SIP_SMTP',
+                        'SIP_SMB',
+                        'AC',
+                        'VAC',
+                        'SDW-R')
+           AND long1=0
+           AND DAY = ${mday})a
+      WHERE url IS NOT NULL
+        AND url NOT IN ('',
+                        '-')
+      GROUP BY url,
+               devid,
+               dev_version,
+               prod,
+               attr)b
+   UNION ALL --log_audit (cloud-check-handler)
+ SELECT url,
+        raw_url,
+        devid,
+        dev_version,
+        ""-"" AS dip,
+        prod,
+        ""log_audit"" AS src_log,
+        ""cloud-check-handler"" AS SOURCE,
+        attr,
+        log_num,
+        log_num AS attack_count,attr,
+        log_num,
+        log_num AS attack_count,
+        array(concat(""-@"",log_num,""@"", log_num)) AS extends
+   FROM
+     (SELECT url,
+             raw_url,
+             prod,
+             devid,
+             dev_version,
+             attr,
+             count(1) AS log_num
+      FROM
+        (SELECT default.calc_url_mask(str4) AS url,
+                str4 AS raw_url,
+                (CASE
+                     WHEN str1 IN ('VNGAF',
+                                   'NGAF') THEN 'AF'
+                     WHEN str1 IN ('AC',
+                                   'VAC') THEN 'AC'
+                     WHEN str1 IN ('EDR',
+                                   'EDR_BOTNET') THEN 'EDR'
+                     WHEN str1 IN ('SIP',
+                                   'SIP_SMTP',
+                                   'SIP_SMB') THEN 'SIP'
+                     WHEN str1 IN ('SDW-R') THEN 'SDW'
+                 END) AS prod,
+                str2 AS devid,
+                str3 AS dev_version,
+                cast(long1 AS STRING) AS attr
+         FROM csc.ods_csc_log_audit
+         WHERE app_id = 'cloud-check-handler'
+           AND module_id='cloud-check-handler'
+           AND str5='url'
+           AND str1 IN ('VNGAF',
+                        'NGAF',
+                        'EDR',
+                        'EDR_BOTNET',
+                        'SIP',
+                        'SIP_SMTP',
+                        'SIP_SMB',
+                        'AC',
+                        'VAC',
+                        'SDW-R')
+           AND DAY = ${mday})a
+      WHERE url IS NOT NULL
+        AND url NOT IN ('',
+                        '-')
+      GROUP BY url,
+               raw_url,
+               devid,
+               dev_version,
+               prod,
+               attr)b)r1
+LEFT JOIN report_cloud_lib_url r2 ON md5(r1.url)=r2.mask
+LEFT JOIN default.ods_devicemanager_deviceinfo r3 ON r1.devid = r3.dev_id;
+ ",/,,,,,,,,,
+"thug-task-monitor-prc
+容器:thug-task-monitor-hive-source-prc",已下线,彭宜,thug任务队列监控,/,监控,"分区一直是20240401，且一天执行大约1500次；
+下线的是thug-task-monitor-hive-source-prc这个容器",,,tez,operation,一天约1500次,1500,,/,/,/,235409,65.39138888888888,60,1mins,http://code.sangfor.org/SRI/SCIA/TIBFE/thug-task-monitor-prc/blob/master/hive_source/hive_feed.py,"SELECT DISTINCT domain
+FROM
+(SELECT DISTINCT domain
+FROM default.dwb_domain_info
+WHERE DAY='20240401'
+AND src_log='log_audit'
+UNION ALL SELECT DISTINCT domain
+FROM sodl.dwb_sodl_domain_info
+WHERE DAY='20240401' ) t
+WHERE (
+domain regexp '(95598|hdcvi|nevint|oneplus|oppomobile|1hai|fawjiefang|cmburl|cmbur1|roewe|shcmct|zpmc|snerdi|dgspda|ihr\.dfl|ccccyhj|shecltd|cccclc|cnnc|sinointl|yituogroup|ippr|sinochem|cwcec|ccccitg|picc|cict|norinco|china|comac|ccecc|cntcc|cscec|flight|cma\.cn|cnooc|cfbpc|ynyc|crmsc|cetc13|cee.{0,1}group|dzp\.tv|scyt|cqyta|cpplb|shenhua|jspdi|acae|cggcintl|cggc|aiapi|rai[l1]way|crsc|cnechc|ccfcc|caiga|myvessel|crsg|cr11gbim|cec\-cn|crreg|crmrc|gzdex|tobacco|jhscm|doduotrip|sundray|fsyz|huaqin|xsyxapp|mengniu|tiantanbio|bmncc|beiben|mixcweb|crland|ts\.gd\.cn|superknow|xyfybjy|lndtc|bojx|gynybx|sdic|spicsx|spic|ceic|e\-chn|600795|sdic|cydl|sgydifc|wmmotors|wm\-oa\.|cambricon|15331|pamarkets|acura|zygs|95522|energy|hbny|midea|tpri|epcc|cydl|ycpc|ynjt|wbmining|citic|idcpc|cfhi|caict|csgc|openaboc|chng|mail\.csg|cicc|caep|cnbm|ccss|pric|cneic|cmbc|iwhr|celap|ceiec|cssn|avic|cnaf|csoa|ccs\.org|csscgc|cosco|cmc\.com|psbcoa|yhzqjj|cgwic|locpg|cetc|catic|zhongyugas|csic|ebscn|idcpc|srrc|snpsc|cnipa|taiji|bank|sio\.org|qxslab).+'
+OR domain regexp '(mail|mai1|rnail).*(airforce|auth|account|check|core|count|cout|document|edu|gov|login|logon|info|online|server|sevr|site|software|support|upgrad|update|valid|verif)'
+OR domain regexp '(mai1|mail|rnail|count).*(126|163).*(com\.|serve|system|member|download|login|logon|website|solution|core|support|quest)'
+OR domain regexp '^(www\.){0,1}[a-zA-Z]*(126|163|l63|l26|sina)\-*[a-zA-Z]*\.[a-z]{3,10}$'
+OR domain regexp '(gov\.cn|edu\.cn|gov\-cn|edu\-cn|educn|govcn|checkmail|checkurl|coremail|cstnet|jspsession|mai1\.|maill\.|rnail|smail|e\-mail|mailbox|mail\-box).+'
+OR domain regexp '(account|auth|check|info|login|logon|mail|upgrad|update|verif).*(airforce|auth|account|check|core|count|cout|document|edu|gov|login|logon|info|mail|online|server|sevr|site|software|support|upgrad|update|valid|verif)'
+OR domain regexp '(mail|mai1|rnail|gov|edu|account|auth|check|login|logon|support|upgrad|update|verif|neteas|bit|buaa|buct|caac|cae|cags|cap|cass|caic|cati|ccpi|ccs|cdi|cdu|ceie|ciae|cidca|citi|cmc|cmec|cmu|cnbm|cnsa|cos|cohc|cpmiec|cqu|csoc|cssc|cstnet|csu|cxxc|czec|dlmu|ecut|fmmu|fudan|fzu|gdei|huawei|hit|hwacreate|hydro|jari|jlu|jspi|lswz|maii|maric|miit|mil|mfa|most|muc|ndrc|maric|mod|mof|mohurd|most|mot|msa|nanhai|ncu|nea|nepa|nepu|nju|nudt|nsfc|nuaa|nudt|nwpu|paec|pak|piesat|pku|pof|poly|power|rcu|ruc|sass|sasac|sco|scu|sdu|shu|szu|shisu|sino|sina|sjtu|slaf|smg|snepc|snerdi|sohu|south|spacestar|suparco|swip|tianjiao|tongji|tsinghua|wbminig|xhtc|xisu|xjtu|xmu|xpsrchvw|yicai|10086|gov\.cn|edu\.cn|gov\-cn|edu\-cn|govcn|educn).+netlify.app'
+OR domain regexp '(mail|mai1|rnail|account|auth|check|info|login|logon|upgrad|update|verif).*(bit|buaa|buct|caac|cae|cags|cap|cass|caic|cati|ccpi|ccs|cdi|cdu|ceie|ciae|cidca|citi|cmc|cmec|cmu|cnbm|cnsa|cos|cohc|cpmiec|cqu|csoc|cssc|cstnet|csu|cxxc|czec|dlmu|ecut|fmmu|fudan|fzu|gdei|huawei|hit|hwacreate|hydro|jari|jlu|jspi|lswz|maii|maric|miit|mil|mfa|most|muc|ndrc|maric|mod|mof|mohurd|most|mot|msa|nanhai|ncu|nea|nepa|nepu|nju|nudt|nsfc|nuaa|nudt|nwpu|paec|pak|piesat|pku|pof|poly|power|rcu|ruc|sass|sasac|sco|scu|sdu|shu|szu|shisu|sino|sina|sjtu|slaf|smg|snepc|snerdi|sohu|south|spacestar|suparco|swip|tianjiao|tongji|tsinghua|wbminig|xhtc|xisu|xjtu|xmu|xpsrchvw|yicai|10086).+'
+OR domain regexp '(bit|buaa|buct|caac|cae|cags|cap|cass|caic|cati|ccpi|ccs|cdi|cdu|ceie|ciae|cidca|citi|cmc|cmec|cmu|cnbm|cnsa|cos|cohc|cpmiec|cqu|csoc|cssc|cstnet|csu|cxxc|czec|dlmu|ecut|fmmu|fudan|fzu|gdei|huawei|hit|hwacreate|hydro|jari|jlu|jspi|lswz|maii|maric|miit|mil|mfa|most|muc|ndrc|maric|mod|mof|mohurd|most|mot|msa|nanhai|ncu|nea|nepa|nepu|nju|nudt|nsfc|nuaa|nudt|nwpu|paec|pak|piesat|pku|pof|poly|power|rcu|ruc|sass|sasac|sco|scu|sdu|shu|szu|shisu|sino|sina|sjtu|slaf|smg|snepc|snerdi|sohu|south|spacestar|suparco|swip|tianjiao|tongji|tsinghua|wbminig|xhtc|xisu|xjtu|xmu|xpsrchvw|yicai|10086).*(mail|mai1|rnail|account|auth|check|info|login|logon|upgrad|update|verif).+'
+)
+AND NOT (
+domain regexp '.+(localdomain|addr-in|host|local|dhcp|internal|novalocal|lan|yumfastupdate\.com|v6lvs\.com|gov\.cn|edu\.cn|e5\.sk
+et\.cn|cn\.cn|getcacheddhcpresultsforcurrentconfig|home|googlesyndication\.com|googlebot\.com|googlevideo\.com|googleapis\.com|steelyard\.ca|e5\.sk|edu.hk|baiduyuncdn\.net|baiduyuncdn\.com|baidu\.com\.hk|xn\-\-fiqs8s|chinayuanwang\.com|fudan\.edu\.cn.{3,7}|xtepchina\.com\.cn|chinabulker\.com|heisino\.com|china\-tg\.com|navchina\.com|btrchina\.com|.chinabed\.com|jcdecaux\.org|ewpower\.com|sinomab\.com|mercadopago\.com\.pe|glpoly\.net|ccpit\.org|powerleader\.yongda|chinatat\.org|cansinotech\.com|brightmail\.com|armchina\.com|dnssina\.com|china\-goldcard\.com|sinopharm\-xs\.com|huawei\-3com\.com|amazonaws\.com|citicicc\.com|chinatat\.net|china\-atep\.org|qq\.com|chinacamel\.net|chinaunionpay\.net|rendachina\.com|smnchina\.com|kingsoonchina\.com|shenmapower\.com|vxichina\.com|chinapayhongkong\.com|com\.workgroup|avicbj\.ad|hansong\-china\.com|citicdameng\.com|tendawifi\.com|brain\-power\.net|steamgamepowered\.com|sohu\.com|huawei\-cacahe\.me|chinatelecom\-h\.com|huawei\.com|youthscape\.info|sinobo\.com|chinamobile\.com|sinopec\.ad|com\.airdream|snptc\-snerdi\.com|icloud\.com|greatpower\.com|cdeledu\.net|cloudfront\.net|testingbigaccountcooldomainname\.info|cdeledu\.cc|myqcloud\.com|chinatelecomglobal\.com|itatedu\.org|shxd\-power\.com|powersite\-group\.com|mediatonic\.games|daguo\.art|chinahaoke\.cn|china\-ncdn\-nrds\.com|sinaapp\.com|citicso\.com|websitemachines\.com|tdnsv6\.com|vsassets\.io|cmbchina\.com|ippr\.net|dhcp01\.com|dnsv1\.com|huaweicloudwaf\.com|china\-putian\.com|9sys\.com|chinawayltd\.com|8y4\.nl|awesomeads\.tech|aig\-china\.com|idazoo\.com|xolift\.com|cn\.workgroup|sfdomain\.com|intranet\.sinotrans|com\.tgs\-wlan\-user|whecloud\.com|aigcardchina\.com|xn\-\-mkr821lya63v\.xn\-\-io0a7i|kayo\-poweroak\.com|nongxinyin\.xn\-\-ses554g|sohuplus\.cn|aigchinaonline\.com|ylaee\.net|techpower\.com|sau6\.com|xn\-\-vuqy5bh45fvycbsa125h\.net|dcloudstc\.com|sec\.com|tonic\-u\.com|aigchinaservices\.com|xn\-\-bnqzyq5bz03bqtz6bel30c\.xn\-\-io0a7i|co\.uk|china\-cdn\-net\.com|avicil\.com|aigchina\.com|enseval\.com|gov\.my|admin\.totolink|tbtx\-inc\.net|corpnet\.asus|airguilingroup\.net|myhuaweicloud\.com|estudychinese\.net|miiee\.net|onewocloud\.cn|empower6\.com|cndevmode\.action|xn\-\-vuqy5b6z6k\.net|10086\.cn|cdel\.net|thusem\.org|xinhuahos\.com|com\.dxhzx|watts\.corp|sina\.cn|com\.blinkap|estudychinese\.org|glbus\.net|com\.router|wjgslb\.com|chinaman\.cc|sagames\.com|fornitebattleroyale\.com|sinaimg\.cn|jxt\-china\.com|aigchinasupport\.com|tdd\.la|highpower\.com|com\.cflogin|com\.tw|baidu360qqo\.com|paddypower\.it|toufu321\.com|ght\.com|casinoservices\.io|www\.hngoldenspring|comfavicon\.ico|qiniudns\.com|homearch\.store|sinaedge\.com|1baidu\.com|cnedu\.net|chinaccs\.com|aljchina\.com|smgtech\.net|bbwdjw\.cn|pkucc\.cf|xn\-\-ruqr73cqme32ql0hovx\.net|datorama\.io|jjy\.com|rtyu66\.cn|battle\-cars\.com|yunduncdn\.com|decentraland\.org|uestc\.cn|transmedchina\.com|shuzidao\.net|czptzy\.top|empower3\.com|septwolves\.com|gdsn\.com|chinayasha\.com|avic\.com|gz\-spi\.com|china\.xtep|testingbigaccountcooldomainname5\.info|arrival\.co|chinabihai\.com|abchinalife\.com|napoleoncasino\.be|com\.wifi|braintree\.tools|ftabchina\.com|pricelessspecials\.nl|erty35\.cn|polygon\.technology|iat\-guest\.com|meralcopowergen\.com|aigcredit\-china\.com|south\.am|ikarem\.io|xxit\.asia|xn\-\-fiq1px5rlkpgnktzt\.xn\-\-55qx5d|youxunpan\.net|com\.ralinkap|qf2002\.net|qywt\.net|iyu\-china\.com|xn\-\-vuqy5b910av5l2r3c\.xn\-\-ses554g|aigcreditchina\.com|xn\-\-tnqy50b\.net|cscecpower\.com|jufel\.net|homearch\.vip|homearch\.shop|com\.tendaap|com\.gaokeap|coolshow\.net|liyupower\.com|teamviewer\.com)$'
+OR domain regexp 'recommend_list\.baidu\.com|accounts\.google\.com\.|ada\.baidu\.com\.|adservice\.google\.com\.|afd\.baidu\.com\.|afdconf\.baidu\.com\.|ajax-googleapis\.|als\.baidu\.com\.|\.aspmx\.l\.google\.com\.|-safebrowsing\.google\.com\.|android\.clients\.google\.com\.|android-safebrowsing\.google\.com\.|\.map\.baidu\.com\.|\.tuisong\.baidu\.com|appc\.baidu\.com\.|appnavi\.baidu\.com\.|aspmx2\.googlemail\.com|aspmx3\.googlemail\.com|aspmx4\.googlemail\.com|aspmx5\.googlemail\.com|audiolc\.baidu\.com\.|bdbus-turbonet\.baidu\.com\.|browserkernel\.baidu\.com\.|bwww1\.baidu\.com\.|bwww2\.baidu\.com\.|bwww3\.baidu\.com\.|bwww4\.baidu\.com\.|bwww5\.baidu\.com\.|clients1\.google\.com\.|clients2\.google\.com\.|clients3\.google\.com\.|clients4\.google\.com\.|clients5\.google\.com\.|clients6\.google\.com\.|collector\.dcdn\.baidu\.com\.|lcs\.baidu\.com\.|dns\.google\.com\.|f7\.baidu\.com\.|gimg1\.baidu\.com\.|gimg2\.baidu\.com\.|gimg3\.baidu\.com\.|gimg4\.baidu\.com\.|gimg5\.baidu\.com\.|h2mbd\.baidu\.com\.|hm\.baidu\.com\.|hmma\.baidu\.com\.|hy\.baidu\.com\.|mb\.baidu\.com\.|mdb\.baidu\.com\.|mime\.baidu\.com\.|sg\.baidu\.com\.|ttl\.baidu\.com\.|zc\.baidu\.com\.|hector\.baidu\.com\.|hectorstatic\.baidu\.com\.|hijack\.baidu\.com\.|minipro\.baidu\.com\.|yuedu\.baidu\.com\.|mobads\.baidu\.com\.|mobsec-sec\.baidu\.com\.|mtalk\.google\.com\.|\.ubs\.baidu\.com\.|nsclick\.baidu\.com\.|\.googledomains\.com|openapi\.baidu\.com\.|openrcv\.baidu\.com\.|ossapi\.baidu\.com\.|p\.gdown\.baidu\.com\.|paimgcdn-feed\.baidu\.|pics0\.baidu\.com\.|pics1\.baidu\.com\.|pics2\.baidu\.com\.|pics3\.baidu\.com\.|pics4\.baidu\.com\.|pics5\.baidu\.com\.|pics6\.baidu\.com\.|pics7\.baidu\.com\.|pim\.baidu\.com\.|pimlog\.baidu\.com\.|pn\.baidu\.com\.|pos\.baidu\.com\.|publish-pic-cpu\.baidu\.com\.|pushbos\.baidu\.com\.|sofire\.baidu\.com\.|sptbjct\.baidu\.com\.|spthzct\.baidu\.com\.|sptnj\.baidu\.com\.|sptnjct\.baidu\.com\.|srfsug\.baidu\.com\.|stat\.client\.baidu\.com\.|suggestqueries\.google\.com\.|supl\.google\.com\.|tcbox\.baidu\.com\.|techain\.baidu\.com\.|tiebapic\.baidu\.com\.|tracker\.dcdn\.baidu\.com\.|udpolimenew\.baidu\.com\.|udpolimeok\.baidu\.com\.|update\.client\.baidu\.com\.|update\.pan\.baidu\.com\.|userident\.baidu\.com\.|vivosec\.baidu\.com\.|wangpan\.lcs\.baidu\.com\.|wenda5242\.baidu\.com\.|zhitong-castor-dev\.baidu\.com\.|www\.baidu\.com\.|www\.google\.com\.'
+)",/,application_1751683746773_96535,,,,,,,,
+ati-pdns-cache-job,保留,肖扬,数据接入过滤模块。负责从Hive数据源提取PDNS（被动DNS）数据，经过过滤去重后存储到MongoDB缓存中，用于后续安全分析,/,生产,,图数据库-dns信息更新,高,tez,operation,6 1 * * *,1,,/,/,/,37662952,10461.931111111111,9169,"1hrs, 12mins, 11sec",http://code.sangfor.org/SRI/SCIA/FRAME/assembly-workshop/blob/master/default/ati-pdns-cache-job/app-cfg/ShenZhen-default/config.json,"SELECT key AS domain FROM csc.ods_csc_ioc_vertex WHERE graph_type='Domain' AND day in {days} AND data_source NOT IN ('pdns','ngaf_dns','sip_dns') GROUP BY key",/,application_1751683746773_96661,,,,,,,,
+*attack-ip-analysis-cronjob,保留,王绪寒,通过多维度安全日志分析，自动识别并生产攻击者IP情报，为安全防护提供实时威胁情报数据。系统从WAF、IPS、SIP等安全设备的日志中，运用规则引擎、知识库关联、天眼情报匹配等多种分析方法，将鉴定结果写入IP信誉库，实现攻击者IP的自动化生产, attack_ip_wiki_related_analysis,ip生产,,攻击者IP情报生产,高,tez,operation,30 3 * * *,1,,/,/,/,165305676,45918.24333333333,40232,"13mins, 58sec",http://code.sangfor.org/SRI/SCIA/TIBAE/attack-ip-analysis-cronjob/blob/master/app-sdk/soapa-sangfor-lib/python/attack_ip_wiki_related_analysis/filter_log/constant.py,"SELECT 
+    ""{log_name}"" as table_name,
+    concat_ws('-',cast(threatclass as String),
+            cast(threattype as String),
+            cast(threatsubtype as String)) AS attack_type,
+    log_num as attack_count,
+    manage as device_id,
+    reqruleid as sid,
+    srcip,
+    requesthead,
+    requestbody,
+    day
+FROM sodl.network_security_log
+WHERE day={day_date}
+AND (length(requesthead) + length(requestbody)) > {result_min_len}
+AND regexp_extract(srcip, ""{ip_re}"", 1) = """"
+AND (requesthead != """" OR requestbody != """")
+AND (regexp_extract(requesthead, ""[^a-zA-Z]({filter_word})[^a-zA-Z0-9)_;,|]"") != """"
+    OR
+    regexp_extract(requestbody, ""[^a-zA-Z]({filter_word})[^a-zA-Z0-9)_;,|]"") != """")
+",/,,,,,,,,,
+,保留,王绪寒,,,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,,,,,,,/,,"""SELECT ""{log_name}"" as table_name,{log_attr},day
+FROM {log_table_name}
+WHERE day={day_date}
+AND length(urls) > {result_min_len}
+AND regexp_extract(attacker_ip, ""{ip_re}"", 1)
+",/,,,,,,,,,
+,保留,王绪寒,, attack_ip_af_rule_analysis,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,/,/,/,300904427,83584.56305555555,73148,"2mins,8sec",http://code.sangfor.org/SRI/SCIA/TIBAE/attack-ip-analysis-cronjob/blob/master/app-sdk/soapa-sangfor-lib/python/attack_ip_af_rule_analysis/filter_log/constant.py,"SELECT *
+FROM
+  (SELECT concat(split(ip, '\\\\.')[0] , '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2]) AS ips,
+          count(1) AS num
+   FROM csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync
+   WHERE deleted_time=0
+     AND direction='1'
+     AND expire_time>={run_time}
+   GROUP BY concat(split(ip, '\\\\.')[0] , '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2])) black_ip
+WHERE num>={segment_num}
+  AND ips NOT IN
+    (SELECT str1
+     FROM default.ods_custom_upload_data
+     WHERE part1='attack_ip_analysis'
+       AND part2='attack_ip_filter' )
+",/,,,,,,,,,
+,保留,王绪寒,,,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,,,,,,,"39mins, 23sec",,"SELECT *
+FROM
+  (SELECT concat(split(ip, '\\\\.')[0] , '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2]) AS ips,
+          count(1) AS num
+   FROM csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync
+   WHERE deleted_time=0
+     AND direction='1'
+     AND expire_time<{run_time}
+   GROUP BY concat(split(ip, '\\\\.')[0] , '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2])) black_ip
+WHERE num>={segment_num}
+  AND ips NOT IN
+    (SELECT str1
+     FROM default.ods_custom_upload_data
+     WHERE part1='attack_ip_analysis'
+       AND part2='attack_ip_filter' )
+",/,,,,,,,,,
+,保留,王绪寒,,,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,,,,,,,3mins，42sec,,"WITH {log_type} AS
+  (SELECT srcip,
+          log_num,
+          concat_ws('-',cast(threatclass as String), 
+            cast(threattype as String), 
+            cast(threatsubtype as String)) AS attack_type,
+          manage,
+          reqruleid,
+          regexp_extract(rulename,'((cve-\\\\d+-\\\\d+)|(CVE-\\\\d+-\\\\d+)|(cnnvd-\\\\d+-\\\\d+)|(CNNVD-\\\\d+-\\\\d+))') AS bug_id,
+          producttype,
+          severity
+   FROM sodl.network_security_log
+   WHERE DAY={day}
+     AND concat_ws('-',cast(threatclass as String), 
+            cast(threattype as String), 
+            cast(threatsubtype as String)) NOT IN ({exclude_type_list})
+     AND manage NOT IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_test_device_id' 
+        AND part2='attack_ip_analysis')
+     AND regexp_extract(srcip,'{private_network_pattren}') = ''
+     AND regexp_extract(srcip,'{ipv4_pattren}') != ''
+     {low_trusted_filter}),
+     trusted_sid_stat AS
+  (SELECT srcip,
+          count(distinct(reqruleid)) AS trusted_rule_count
+   FROM {log_type}
+   WHERE reqruleid IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_rule_id' 
+          AND (part2='high_trusted_ips_id' OR part2='high_trusted_waf_id'))
+   GROUP BY srcip),
+   {tag_stats},
+     log_stat AS
+  (SELECT s.*,
+        coalesce(trusted_sid_stat.trusted_rule_count, 0) AS trusted_rule_count,
+        std.attack_std,
+        bug_id_stat.bug_sum AS bug_sum,
+        attack_type_stat.attack_type_sum AS attack_type_sum
+   FROM (SELECT srcip,
+              count(distinct(reqruleid)) AS rule_count,
+              sum(if(log_num=0, 1, log_num)) AS attack_count,
+              count(distinct(manage)) AS devid_count,
+              collect_set(reqruleid) AS rule_id_list,
+              collect_set(producttype) AS source_list,
+              avg(severity) as avg_severity
+        FROM {log_type}
+        GROUP BY srcip) s
+   LEFT JOIN trusted_sid_stat ON s.srcip = trusted_sid_stat.srcip
+   LEFT JOIN attack_type_stat ON s.srcip = attack_type_stat.srcip
+   LEFT JOIN bug_id_stat ON s.srcip = bug_id_stat.srcip
+   LEFT JOIN
+      (SELECT srcip,
+              collect_list(reqruleid || '@' || attack_std) AS attack_std
+       FROM
+         (SELECT srcip,
+                 reqruleid,
+                 cast(stddev_pop(attack_count) AS string) AS attack_std
+          FROM
+            (SELECT srcip,
+                    reqruleid,
+                    manage,
+                    sum(if(log_num=0, 1, log_num)) AS attack_count
+             FROM {log_type}
+             GROUP BY srcip,
+                      reqruleid,
+                      manage) a
+          GROUP BY srcip,
+                   reqruleid) b
+       GROUP BY srcip)std ON s.srcip = std.srcip)
+SELECT '{log_type}' AS table_name,
+        srcip,
+        trusted_rule_count,
+        rule_count,
+        attack_count,
+        devid_count,
+        rule_id_list,
+        attack_std,
+        bug_sum,
+        attack_type_sum,
+        source_list,
+        avg_severity
+FROM log_stat
+",/,,,,,,,,,
+,保留,王绪寒,,,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,,,,,,,2mins，19sec,,"WITH black_ips AS
+  (SELECT concat(split(ip, '\\\\.')[0] , '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2]) AS ips,
+          count(1) AS num
+   FROM csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync
+   WHERE deleted_time=0
+     AND direction='1'
+     AND expire_time>={run_time}
+   GROUP BY concat(split(ip, '\\\\.')[0] , '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2]))
+SELECT ip
+FROM csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync
+WHERE deleted_time=0
+  AND direction='1'
+  AND expire_time<{run_time}
+  AND concat(split(ip, '\\\\.')[0] , '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2]) IN
+    (SELECT ips
+     FROM black_ips
+     WHERE num>={segment_num})
+  AND concat(split(ip, '\\\\.')[0] , '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2]) NOT IN
+    (SELECT str1
+     FROM default.ods_custom_upload_data
+     WHERE part1='attack_ip_analysis'
+       AND part2='attack_ip_filter')
+",/,,,,,,,,,
+,保留,王绪寒,,attack_ip_af_skyeye_analysis,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,/,/,/,328272464,91186.79555555555,79869,"7mins, 22sec",http://code.sangfor.org/SRI/SCIA/TIBAE/attack-ip-analysis-cronjob/blob/master/app-sdk/soapa-sangfor-lib/python/attack_ip_af_skyeye_analysis/filter_log/constant.py,"WITH {log_type} AS
+  (SELECT srcip,
+          log_num,
+          concat_ws('-',cast(threatclass as String), 
+            cast(threattype as String), 
+            cast(threatsubtype as String)) AS attack_type,
+          manage,
+          reqruleid,
+          regexp_extract(rulename,'((cve-\\\\d+-\\\\d+)|(CVE-\\\\d+-\\\\d+)|(cnnvd-\\\\d+-\\\\d+)|(CNNVD-\\\\d+-\\\\d+))') AS bug_id
+   FROM sodl.network_security_log
+   WHERE DAY={day}
+     AND concat_ws('-',cast(threatclass as String), 
+            cast(threattype as String), 
+            cast(threatsubtype as String)) NOT IN ({exclude_type_list})
+     AND manage NOT IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_test_device_id'
+          AND part2='attack_ip_analysis')
+     AND regexp_extract(srcip,'{ip_re}') = ''
+     AND regexp_extract(srcip,'{ipv4_re}') != ''
+     AND cast(reqruleid AS string) NOT IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_rule_id' 
+          AND (part2='low_trusted_ips_id' OR part2='low_trusted_waf_id'))),
+     skyeye_ip AS
+  (SELECT ips,
+          count(1) AS num
+   FROM
+     (SELECT ip,
+             concat(split(ip, '\\\\.')[0] , '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2]) AS ips
+      FROM csc.ods_csc_tim_db_unknown_intelligence_tb_skyeye_ip_info_sync
+      WHERE update_time>={skyeye_update_time}
+      GROUP BY ip) t
+   WHERE ips NOT IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='attack_ip_analysis'
+          AND part2='attack_ip_filter')
+   GROUP BY ips),
+     trusted_sid_stat AS
+  (SELECT srcip,
+          count(distinct(reqruleid)) AS trusted_rule_count
+   FROM {log_type}
+   WHERE reqruleid IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_rule_id' 
+          AND (part2='high_trusted_ips_id' OR part2='high_trusted_waf_id'))
+   GROUP BY srcip),
+    {tag_stats},
+     log_stat AS
+  (SELECT s.*,
+          coalesce(trusted_sid_stat.trusted_rule_count, 0) AS trusted_rule_count,
+          bug_id_stat.bug_sum AS bug_sum,
+          attack_type_stat.attack_type_sum AS attack_type_sum
+   FROM
+     (SELECT srcip,
+             count(distinct(reqruleid)) AS rule_count,
+             sum(if(log_num=0, 1, log_num)) AS attack_count,
+             count(distinct(manage)) AS devid_count,
+             collect_set(distinct(reqruleid)) AS rule_id_list
+      FROM {log_type}
+      GROUP BY srcip) s
+   LEFT JOIN trusted_sid_stat ON s.srcip = trusted_sid_stat.srcip
+   LEFT JOIN attack_type_stat ON s.srcip = attack_type_stat.srcip
+   LEFT JOIN bug_id_stat ON s.srcip = bug_id_stat.srcip)
+SELECT *
+FROM log_stat
+WHERE concat(split(srcip, '\\\\.')[0] , '.', split(srcip, '\\\\.')[1], '.', split(srcip, '\\\\.')[2]) IN
+    (SELECT ips
+     FROM skyeye_ip
+     WHERE num>={skyeye_high_num})
+  OR (concat(split(srcip, '\\\\.')[0] , '.', split(srcip, '\\\\.')[1], '.', split(srcip, '\\\\.')[2]) IN
+        (SELECT ips
+         FROM skyeye_ip
+         WHERE num>={skyeye_num})
+      AND trusted_rule_count > 0)
+  OR (srcip IN
+        (SELECT ip
+         FROM csc.ods_csc_tim_db_unknown_intelligence_tb_skyeye_ip_info_sync
+         WHERE update_time>={skyeye_update_time})
+      AND trusted_rule_count > 0)
+",/,,,,,,,,,
+,保留,王绪寒,,attack_ip_seclog_analysis,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,/,/,/,481096743,133637.98416666666,117189,/,http://code.sangfor.org/SRI/SCIA/TIBAE/attack-ip-analysis-cronjob/blob/master/app-sdk/soapa-sangfor-lib/python/attack_ip_seclog_analysis/filter_log/constant.py,"WITH {log_type} AS
+  (SELECT srcip,
+          log_num,
+          concat_ws('-',cast(threatclass as String),
+            cast(threattype as String),
+            cast(threatsubtype as String)) AS attack_type,
+          manage,
+          reqruleid,
+          regexp_extract(rulename,
+          '((cve-\\\\d+-\\\\d+)|(CVE-\\\\d+-\\\\d+)|(cnnvd-\\\\d+-\\\\d+)|(CNNVD-\\\\d+-\\\\d+))') AS bug_id,
+          producttype
+   FROM sodl.network_security_log
+   WHERE DAY={day}
+     AND manage NOT IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_test_device_id'
+        AND part2='attack_ip_analysis')
+        ),
+   {tag_stats},
+
+   keyword_stat AS (
+      SELECT srcip, collect_set(keyword) AS hit_keywords
+    FROM (
+      SELECT srcip, keyword
+      FROM (
+        SELECT srcip, regexp_extract(requesthead, '{rce_keyword_match_sql}', 0) AS keyword
+        FROM sodl.network_security_log
+        where day={day}
+        UNION
+        SELECT srcip, regexp_extract(url, '{rce_keyword_match_sql}', 0) AS keyword
+        FROM sodl.network_security_log
+        where day={day}
+      ) t
+      WHERE keyword != ''
+    ) t2
+    GROUP BY srcip
+   ),
+     rce_stat AS
+  (
+     select keyword_stat.srcip, keyword_stat.hit_keywords, bug_id_stat.bug_sum, rule_id_stat.reqruleid_sum,
+     attack_type_stat.attack_type_sum from keyword_stat
+     left join bug_id_stat on keyword_stat.srcip = bug_id_stat.srcip
+     left join rule_id_stat on keyword_stat.srcip = rule_id_stat.srcip
+     left join attack_type_stat on keyword_stat.srcip = attack_type_stat.srcip
+    )
+SELECT '{log_type}' AS table_name,
+        srcip,
+        hit_keywords,
+        bug_sum,
+        reqruleid_sum,
+        attack_type_sum
+FROM rce_stat
+where regexp_extract(srcip,'{private_network_pattren}') = ''
+     AND regexp_extract(srcip,'{ipv4_pattren}') !=
+",/,,,,,,,,,
+,保留,王绪寒,,,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,,,,,,,/,,"WITH {log_type} AS
+  (SELECT srcip,
+          log_num,
+          concat_ws('-',cast(threatclass as String),
+            cast(threattype as String),
+            cast(threatsubtype as String)) AS attack_type,
+          manage,
+          reqruleid,
+          regexp_extract(rulename,
+          '((cve-\\\\d+-\\\\d+)|(CVE-\\\\d+-\\\\d+)|(cnnvd-\\\\d+-\\\\d+)|(CNNVD-\\\\d+-\\\\d+))') AS bug_id,
+          regexp_extract(lower(requesthead), '(?<=user-agent: ).*?(?=\r\n)', 0) as user_agent
+   FROM sodl.network_security_log
+   WHERE DAY={day}
+    and requesthead != ''
+    and regexp_extract(srcip,'{private_network_pattren}') = ''
+     AND regexp_extract(srcip,'{ipv4_pattren}') != ''
+     AND manage NOT IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_test_device_id'
+        AND part2='attack_ip_analysis')
+        ),
+    {tag_stats},
+   
+   ua_hit_record as 
+   (
+    select srcip, collect_set(mal_ua) AS hit_mal_ua
+    from (
+     SELECT srcip, regexp_extract(user_agent, '{mal_ua_keyword_match_sql}', 0)
+     AS mal_ua   
+     FROM {log_type}
+     where user_agent != '') ua_agg
+     where mal_ua != ''
+     group by srcip
+   ),
+   
+   ua_stat as (
+     select ua_hit_record.srcip, ua_hit_record.hit_mal_ua, bug_id_stat.bug_sum, rule_id_stat.reqruleid_sum,
+     attack_type_stat.attack_type_sum from ua_hit_record
+     left join bug_id_stat on ua_hit_record.srcip = bug_id_stat.srcip
+     left join rule_id_stat on ua_hit_record.srcip = rule_id_stat.srcip
+     left join attack_type_stat on ua_hit_record.srcip = attack_type_stat.srcip
+   )
+     SELECT '{log_type}' AS table_name,
+            srcip,
+            hit_mal_ua,
+            bug_sum,
+            reqruleid_sum,
+            attack_type_sum
+  FROM ua_stat  
+",/,,,,,,,,,
+,保留,王绪寒,, attack_ip_low_trusted_analysis,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,/,/,/,298506999,82918.61083333334,72527,"19mins, 35sec",http://code.sangfor.org/SRI/SCIA/TIBAE/attack-ip-analysis-cronjob/blob/master/app-sdk/soapa-sangfor-lib/python/attack_ip_low_trusted_analysis/filter_log/constant.py,"WITH {log_type} AS
+  (SELECT srcip,
+          log_num,
+          concat_ws('-',cast(threatclass as String), 
+            cast(threattype as String), 
+            cast(threatsubtype as String)) AS attack_type,
+          manage,
+          reqruleid,
+          regexp_extract(rulename,'((cve-\\\\d+-\\\\d+)|(CVE-\\\\d+-\\\\d+)|(cnnvd-\\\\d+-\\\\d+)|(CNNVD-\\\\d+-\\\\d+))') AS bug_id,
+          producttype,
+          severity
+   FROM sodl.network_security_log
+   WHERE DAY={day}
+     AND concat_ws('-',cast(threatclass as String), 
+            cast(threattype as String), 
+            cast(threatsubtype as String)) NOT IN ({exclude_type_list})
+     AND manage NOT IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_test_device_id' 
+        AND part2='attack_ip_analysis')
+     AND regexp_extract(srcip,'{private_network_pattren}') = ''
+     AND regexp_extract(srcip,'{ipv4_pattren}') != ''
+     {low_trusted_filter}),
+     trusted_sid_stat AS
+  (SELECT srcip,
+          count(distinct(reqruleid)) AS trusted_rule_count
+   FROM {log_type}
+   WHERE reqruleid IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_rule_id' 
+          AND (part2='high_trusted_ips_id' OR part2='high_trusted_waf_id'))
+   GROUP BY srcip),
+   {tag_stats},
+     log_stat AS
+  (SELECT s.*,
+        coalesce(trusted_sid_stat.trusted_rule_count, 0) AS trusted_rule_count,
+        std.attack_std,
+        bug_id_stat.bug_sum AS bug_sum,
+        attack_type_stat.attack_type_sum AS attack_type_sum
+   FROM (SELECT srcip,
+              count(distinct(reqruleid)) AS rule_count,
+              sum(if(log_num=0, 1, log_num)) AS attack_count,
+              count(distinct(manage)) AS devid_count,
+              collect_set(reqruleid) AS rule_id_list,
+              collect_set(producttype) AS source_list,
+              avg(severity) as avg_severity
+        FROM {log_type}
+        GROUP BY srcip) s
+   LEFT JOIN trusted_sid_stat ON s.srcip = trusted_sid_stat.srcip
+   LEFT JOIN attack_type_stat ON s.srcip = attack_type_stat.srcip
+   LEFT JOIN bug_id_stat ON s.srcip = bug_id_stat.srcip
+   LEFT JOIN
+      (SELECT srcip,
+              collect_list(reqruleid || '@' || attack_std) AS attack_std
+       FROM
+         (SELECT srcip,
+                 reqruleid,
+                 cast(stddev_pop(attack_count) AS string) AS attack_std
+          FROM
+            (SELECT srcip,
+                    reqruleid,
+                    manage,
+                    sum(if(log_num=0, 1, log_num)) AS attack_count
+             FROM {log_type}
+             GROUP BY srcip,
+                      reqruleid,
+                      manage) a
+          GROUP BY srcip,
+                   reqruleid) b
+       GROUP BY srcip)std ON s.srcip = std.srcip)
+SELECT '{log_type}' AS table_name,
+        srcip,
+        trusted_rule_count,
+        rule_count,
+        attack_count,
+        devid_count,
+        rule_id_list,
+        attack_std,
+        bug_sum,
+        attack_type_sum,
+        source_list,
+        avg_severity
+FROM log_stat
+",/,,,,,,,,,
+,保留,王绪寒,,low_attack_type_ip_analysis,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,/,/,/,159671126,44353.09055555556,38680,"2mins, 55sec",http://code.sangfor.org/SRI/SCIA/TIBAE/attack-ip-analysis-cronjob/blob/master/app-sdk/soapa-sangfor-lib/python/low_attack_type_ip_analysis/filter_log/constant.py,"WITH {log_type} AS
+  (SELECT srcip,
+          log_num,
+          concat_ws('-',cast(threatclass as String), 
+            cast(threattype as String), 
+            cast(threatsubtype as String)) AS attack_type,
+          manage,
+          reqruleid,
+          regexp_extract(rulename,'((cve-\\\\d+-\\\\d+)|(CVE-\\\\d+-\\\\d+)|(cnnvd-\\\\d+-\\\\d+)|(CNNVD-\\\\d+-\\\\d+))') AS bug_id,
+          producttype,
+          severity,
+          action
+   FROM sodl.network_security_log
+   WHERE DAY={day}
+     AND concat_ws('-',cast(threatclass as String), 
+            cast(threattype as String), 
+            cast(threatsubtype as String)) IN ('90-5-1', '90-5-2')
+     AND manage NOT IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_test_device_id' 
+        AND part2='attack_ip_analysis')
+     AND regexp_extract(srcip,'{private_network_pattren}') = ''
+     AND regexp_extract(srcip,'{ipv4_pattren}') != ''
+     ),
+     trusted_sid_stat AS
+  (SELECT srcip,
+          count(distinct(reqruleid)) AS trusted_rule_count
+   FROM {log_type}
+   WHERE reqruleid IN
+       (SELECT str1
+        FROM default.ods_custom_upload_data
+        WHERE part1='af_rule_id' 
+          AND (part2='high_trusted_ips_id' OR part2='high_trusted_waf_id'))
+   GROUP BY srcip),
+   {tag_stats},
+     log_stat AS
+  (SELECT s.*,
+        coalesce(trusted_sid_stat.trusted_rule_count, 0) AS trusted_rule_count,
+        std.attack_std,
+        bug_id_stat.bug_sum AS bug_sum,
+        attack_type_stat.attack_type_sum AS attack_type_sum
+   FROM (SELECT srcip,
+              count(distinct(reqruleid)) AS rule_count,
+              sum(if(log_num=0, 1, log_num)) AS attack_count,
+              count(distinct(manage)) AS devid_count,
+              collect_set(reqruleid) AS rule_id_list,
+              collect_set(producttype) AS source_list,
+              avg(severity) as avg_severity,
+              collect_set(action) as action_list
+        FROM {log_type}
+        GROUP BY srcip) s
+   LEFT JOIN trusted_sid_stat ON s.srcip = trusted_sid_stat.srcip
+   LEFT JOIN attack_type_stat ON s.srcip = attack_type_stat.srcip
+   LEFT JOIN bug_id_stat ON s.srcip = bug_id_stat.srcip
+   LEFT JOIN
+      (SELECT srcip,
+              collect_list(reqruleid || '@' || attack_std) AS attack_std
+       FROM
+         (SELECT srcip,
+                 reqruleid,
+                 cast(stddev_pop(attack_count) AS string) AS attack_std
+          FROM
+            (SELECT srcip,
+                    reqruleid,
+                    manage,
+                    sum(if(log_num=0, 1, log_num)) AS attack_count
+             FROM {log_type}
+             GROUP BY srcip,
+                      reqruleid,
+                      manage) a
+          GROUP BY srcip,
+                   reqruleid) b
+       GROUP BY srcip)std ON s.srcip = std.srcip)
+SELECT '{log_type}' AS log_type,
+        srcip as ip,
+        trusted_rule_count,
+        rule_count,
+        attack_count,
+        devid_count,
+        rule_id_list,
+        attack_std,
+        bug_sum as bug_id_agg,
+        attack_type_sum as attack_type_agg,
+        source_list,
+        avg_severity,
+        action_list
+FROM log_stat
+",/,,,,,,,,,
+,保留,王绪寒,,,ip生产,,攻击者IP情报生产,高,tez,operation,,1,,,,,,,,"3mins,34sec",,"select 
+  '{log_type}' as log_type,
+  srcip as ip,
+  count(distinct pwd) as pwd_num,
+  collect_set(pwd) as pwd_list
+from
+(
+  SELECT 
+    srcip, 
+    regexp_extract(requesthead, '(pwd|password)=([^&; ]+)', 2) as pwd
+  FROM sodl.network_security_log
+  WHERE day={day}
+    AND regexp_extract(srcip,'{private_network_pattren}') = ''
+    AND regexp_extract(srcip,'{ipv4_pattren}') != ''
+    AND concat_ws('-',cast(threatclass as String),
+                        cast(threattype as String)) in ('94-4')
+    and regexp_extract(requesthead, '(pwd|password)=([^&; ]+)', 2) != '' 
+  union
+  SELECT 
+    srcip, 
+    regexp_extract(requestbody, '(pwd|password)=([^&; ]+)', 2)  as pwd
+  FROM sodl.network_security_log
+  WHERE day={day}
+    AND regexp_extract(srcip,'{private_network_pattren}') = ''
+    AND regexp_extract(srcip,'{ipv4_pattren}') != ''
+    AND concat_ws('-',cast(threatclass as String),
+                        cast(threattype as String)) in ('94-4')
+    and regexp_extract(requestbody, '(pwd|password)=([^&; ]+)', 2) != ''
+)a
+group by srcip
+",/,,,,,,,,,
+*top-visit-host-produce-job ,保留,王绪寒,访问TOP库建设(云情报网关过滤包),DNS_LOG_STAT_SQL,热度统计,,云情报网关-过滤包生产,高,tez,operation,5 3 * * *,1,,/,,,206765545,57434.873611111114,61338,"	1hrs, 24mins, 18sec",http://code.sangfor.org/SRI/SCIA/CIPD/BDPD/top-visit-host-produce-job/blob/master/app-sdk/soapa-sangfor-lib/python/data_etl/log_stat_sql.py,"SELECT queries as domain,
+       sum(log_num) AS num
+FROM sodl.dns_log
+WHERE day = :date 
+  AND producttype in ('AF', 'NGAF', 'VNGAF')
+  AND qr=0
+  AND length(queries) > 3
+  AND locate('.', queries) != 0
+GROUP BY queries
+",/,application_1751683746773_96893,,,,,,,,
+,保留,王绪寒,,DNS_LOG_STAT_SQL_BY_DEVICE,热度统计,,云情报网关-过滤包生产,高,tez,operation,,1,,/,,,,/,/,"50mins, 18sec",,"SELECT queries as domain,
+       sum(log_num) AS num
+FROM sodl.dns_log
+WHERE day = :date 
+  AND producttype in ('AF', 'NGAF', 'VNGAF')
+  AND qr=0
+  AND length(queries) > 3
+  AND locate('.', queries) != 0
+  AND manage in  %(devices)s
+GROUP BY queries",/,,,,,,,,,
+,保留,王绪寒,,IP_LOG_STAT_SQL,热度统计,,云情报网关-过滤包生产,高,tez,operation,,1,,/,/,/,509969502,,124186,"50mins, 18sec",,"with ip_stat as (
+SELECT concat(split(ip, '\\\\.')[0], '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2]) AS c_segment
+FROM
+    (SELECT get_json_object(replace(str4, '\\\\', ''), '$[*].ip') AS ip_list
+      FROM default.log_audit_source
+      WHERE day = :date
+        AND log_app_id='ip-proxy-svc'
+        AND module_id='ip-proxy-svc'
+        AND str1='NGAF'
+        AND str5='[cf]') s 
+   LATERAL VIEW explode(split(regexp_replace(ip_list, '\\\\[|\\\\]|\\""', ''), ',')) exploded_table AS ip
+   WHERE locate('.', ip) != 0 
+)
+SELECT c_segment as ip,
+       count(1) as num
+FROM ip_stat
+GROUP BY c_segment
+LIMIT 500000
+",/,,,,,,,,,
+,保留,王绪寒,,IP_LOG_STAT_SQL_BY_DEVICE,热度统计,,云情报网关-过滤包生产,高,tez,operation,,1,,/,/,/,/,/,/,/,,"SELECT c_segment as ip,
+       count(1) as num
+FROM
+  (SELECT concat(split(ip, '\\\\.')[0], '.', split(ip, '\\\\.')[1], '.', split(ip, '\\\\.')[2]) AS c_segment
+   FROM
+     (SELECT get_json_object(replace(str4, '\\\\', ''), '$[*].ip') AS ip_list
+      FROM default.log_audit_source
+      WHERE day = :date
+        AND log_app_id='ip-proxy-svc'
+        AND module_id='ip-proxy-svc'
+        AND str1='NGAF'
+        AND str5 = '[cf]'
+        AND str2 in %(devices)s ) s 
+   LATERAL VIEW explode(split(regexp_replace(ip_list, '\\\\[|\\\\]|\\""', ''), ',')) exploded_table AS ip
+   WHERE locate('.', ip) != 0 ) t
+GROUP BY c_segment
+LIMIT 500000
+",/,,,,,,,,,
+,保留,王绪寒,,URL_LOG_STAT_SQL,热度统计,,云情报网关-过滤包生产,高,tez,operation,,1,,/,/,/,59697052,,14526,"27mins, 24sec",,"SELECT host,
+       sum(log_num) AS num
+FROM sodl.url_log
+WHERE day = :date
+  AND host is not null
+  AND locate('.', host)  != 0
+  AND producttype in ('AF', 'NGAF', 'VNGAF')
+GROUP BY host
+",/,,,,,,,,,
+,保留,王绪寒,,URL_LOG_STAT_SQL_BY_DEVICE,热度统计,,云情报网关-过滤包生产,高,tez,operation,,1,,/,/,/,/,/,/,/,,"SELECT host,
+       sum(log_num) AS num
+FROM sodl.url_log
+WHERE day = :date
+  AND host is not null
+  AND locate('.', host)  != 0
+  AND manage in  %(devices)s
+  AND producttype in ('AF', 'NGAF', 'VNGAF')
+GROUP BY host
+",/,,,,,,,,,
+domain-hit-devnum-cronjob,保留,王绪寒, 域名命中设备数统计（降误报）,hive_sql,降误报,,域名情报生产-降误报,高,tez,operation,0 9 * * *,1,,/,/,/,285682979,79356.38305555556,69606,"59mins, 10sec",http://code.sangfor.org/SRI/SCIA/ATI/IOC-PRODUCT/domain-hit-devnum-cronjob/blob/master/unittest/data/app_cfg.json,"SELECT DOMAIN,devnum,total_times FROM (SELECT DOMAIN,COUNT(DISTINCT devid) AS devnum,COUNT(devid) as total_times FROM default.dwb_domain_info WHERE DAY>=20250728 and DAY<=20250827 AND devid NOT IN (SELECT str1 AS dev FROM ods_custom_upload_data WHERE part1='test_dev' AND part2='test_devid') GROUP BY DOMAIN) subquery WHERE devnum > 10 LIMIT 15000000",/,application_1751683746773_97462,,,,,,,,
+filter-layout-ip-seg-stat-prc,保留,王绪寒,ip C端统计降低IP过滤层的误报率，通过识别低检出率的IP C段,hive_sql,降误报,,云情报网关-C段过滤,高,tez,etl,/,1,,/,/,/,4174666032,1159629.4533333334,1019032,"2hrs, 19mins, 36sec",http://code.sangfor.org/SRI/SCIA/CIPD/IP/filter-layout-ip-seg-stat-prc,"WITH rpt AS (   SELECT DISTINCT regexp_extract(ip, '^(\\d+\\.\\d+\\.\\d+)\\.', 1) AS ip_seg
+      FROM csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync
+      WHERE direction='2' AND reputation='0'
+    ),
+    resp_data AS (
+      SELECT DAY AS date_day,
+             split(get_json_object(resp, '$.ip'), ':')[0] AS ip,
+             regexp_extract(split(get_json_object(resp, '$.ip'), ':')[0], '^(\\d+\\.\\d+\\.\\d+)\\.', 1) AS ip_c_seg
+      FROM csc.ods_csc_log_audit LATERAL VIEW explode(split(replace(regexp_replace(regexp_replace(regexp_replace(str10,'^\\[',''),'~\\]',''),'\\}\,\\{','\\}\;\\{'),'\\""','""'), ';')) exploded_table AS resp
+      WHERE app_id='ip-proxy-svc' AND DAY BETWEEN :day_min AND :day_max
+        AND module_id='ip-proxy-svc' AND str5 RLIKE 'cf'
+        AND get_json_object(resp, '$.threat.reputation')='2'
+        AND get_json_object(resp, '$.threat.direction')='2'
+    ),
+    agg_data AS (
+      SELECT ip_c_seg,
+             count(DISTINCT date_day) AS day_unique,
+             count(DISTINCT ip) AS ip_unique,
+             count(*)/(count(DISTINCT date_day)+1) AS total
+      FROM resp_data
+      GROUP BY ip_c_seg
+    )
+    SELECT ip_c_seg, day_unique, ip_unique, total
+    FROM agg_data
+    WHERE day_unique >= :day_unique
+      AND NOT EXISTS (SELECT 1 FROM rpt WHERE rpt.ip_seg = agg_data.ip_c_seg)
+",/,application_1751683746773_96909,,,,,,,,
+svd-activity-stat-job,可下线,王绪寒,通过设备上报日志统计漏洞及规则的活跃度。通过设备上报日志统计漏洞及规则的活跃度，根据活跃度判断漏洞是否为活跃漏洞，并为相应漏洞打上活跃外部标签,/,生产,,,,tez,default,14 2 * * *,1,,/,/,/,207579671,57661.01972222222,50485,"3mins, 48sec",http://code.sangfor.org/SRI/SCIA/vuln/svd-activity-stat-job/blob/master/app-sdk/soapa-sangfor-lib/python/rule_activity_statistics/config.py,"SELECT reqruleid AS hole_id,
+day,
+sum(log_num)
+FROM sodl.network_security_log
+WHERE day >= '20250826'
+AND day < '20250827'
+AND producttype IN ('NGAF',
+'AF')
+AND threatclass IN (30,
+90)
+AND reqruleid != '0'
+AND reqruleid IS NOT NULL
+AND reqruleid != """"
+GROUP BY reqruleid,
+day",/,application_1751683746773_96769,,,,,,,,
+black-file-clean-cronjob,待确认,王坤,黑文件去误报,/,降误报,,,,tez,default,1 3 * * *,1,,/,/,/,401873,111.63138888888889,97,29sec,http://code.sangfor.org/SRI/SCIA/FCC/black-file-clean-cronjob/blob/master/cron-job/black_file_clean/statistic.py,"SELECT DISTINCT lower(md5)
+FROM default.dwb_md5_info
+WHERE day=20250826
+AND src_log='log_audit'
+AND attr='0'
+AND length(md5)=32
+UNION
+SELECT DISTINCT lower(filehash)
+FROM sodl.dwb_sodl_md5_info
+WHERE day=20250826
+AND producttype='EDR'
+AND src_log='endpoint_security_log'
+AND threatclass=209
+AND threattype!=13 -- 13->botnet
+AND file_attr='0'
+AND length(filehash)=32",/,application_1751683746773_96884,,,,,,,,
+domain-security-log-etl-prc,保留,王绪寒,基于网络安全告警日志规则鉴定域名,DOMAIN_SECURITY_LOG_EXTRACT_SQL,生产,,域名情报生产-安全日志,高,tez,default,/,/,/,/,/,/,81530103,22647.25083333333,19696,"3mins, 47sec",http://code.sangfor.org/SRI/SCIA/CIPD/DOMAIN/PRE/domain-security-log-etl-prc/blob/master/app-sdk/soapa-sangfor-lib/python/configs/config.py,"SELECT DOMAIN,
+COLLECT_SET(producttype) AS producttype_list,
+COLLECT_SET(CONCAT(CAST(threatclass AS STRING), '-', CAST(threattype AS STRING),
+'-', CAST(threatsubtype AS STRING))) AS type_list,
+SORT_ARRAY(COLLECT_SET(engine)) AS engine_list,
+COUNT(DISTINCT engine) AS engine_num
+FROM
+(SELECT REGEXP_EXTRACT(url, '^(?:https?://)?(?:www\.)?([^/]+)', 1) AS DOMAIN,
+*
+FROM sodl.network_security_log
+WHERE DAY=20250826
+AND engine NOT IN ('premise_ioc', 'cloud_ioc', 'sase_ioc')
+AND severity > 50
+AND (threatclass IN (209, 208, 216, 214, 203, 40)
+OR CONCAT(CAST(threatclass AS STRING), '-', CAST(threattype AS STRING), '-',
+CAST(threatsubtype AS STRING)) = '212-10-0')
+AND action = 2) s
+WHERE NOT (DOMAIN RLIKE '\d+\.\d+\.\d+\.\d+$' OR DOMAIN RLIKE ':')
+GROUP BY DOMAIN",/,application_1751683746773_97373,,,,,,,,
+,保留,王绪寒,,INFO_EXIST_CHECK_SQL,生产,,域名情报生产-安全日志,高,tez,,/,/,/,/,,,/,/,/,/,,SELECT 1 FROM sodl.network_security_log WHERE day=:mday LIMIT 1,,,,,,,,,,
+cipd-product-resource-monitor-prc,保留,王绪寒,云情报网关设备数量监控,STAT_LOG_CHECK,监控,,云情报网关监控-设备数量,中,tez,default,/,,,/,/,/,/,/,/,/,http://code.sangfor.org/SRI/SCIA/CIPD/COMMON/cipd-product-resource-monitor-prc/blob/master/app-sdk/soapa-sangfor-lib/python/configs/sql.py,"select 1 
+from csc.ods_csc_log_stats
+where day=:mday
+and app_id = 'ip-realtime-identify-etl-prc'
+limit 1",/,,,,,,,,,
+,保留,王绪寒,,DOMAIN_DEVICE_COUNT_STAT,,,云情报网关监控-设备数量,中,tez,default,,,,,,,2395562,2395562,577,"1mins, 1sec",,"select str4, sum(long1)
+from csc.ods_csc_log_stats
+where day=:mday
+and app_id = 'dns-intelligence-dispatch-prc'
+and str1 = 'cig_subscribe'
+and str2 = 'dl_dns_log'
+group by str4",/,,,,,,,,,
+,保留,王绪寒,,CLOUDGATEWAY_IP_DEVICE_COUNT_STAT,,,云情报网关监控-设备数量,中,tez,default,,,,,,,45012732,,10950,"8mins, 38sec",,"select str5, sum(long1)
+from csc.ods_csc_log_stats
+where day=:mday
+and app_id = 'ip-realtime-identify-etl-prc'
+and str1 = 'etl_size'
+and str2 = 'kafka_poll_size'
+and str3 = 'CLOUD_INTELLIGENCE_GATEWAY'
+group by str5",/,,,,,,,,,
+,保留,王绪寒,,CLOUDCHECK_IP_DEVICE_COUNT_STAT,,,云情报网关监控-设备数量,中,tez,default,,,,,,,23738200,23738200,5726,"4mins, 49sec",,"select str5, sum(long1)
+from csc.ods_csc_log_stats
+where day=:mday
+and app_id = 'ip-realtime-identify-etl-prc'
+and str1 = 'filter_size'
+and str2 = 'valid_devid'
+and str3 = 'CLOUDCHECK_C2IP_CF'
+group by str5",/,,,,,,,,,
+,保留,王绪寒,,DOMAIN_DEVICE_STAT,,,云情报网关监控-设备数量,中,tez,default,,,,,,,19114519,19114519,4623,"6mins, 17sec",,"select distinct str4
+from csc.ods_csc_log_stats
+where day>=:sday and day<=:eday
+and app_id = 'dns-intelligence-dispatch-prc'
+and str1 = 'cig_subscribe'
+and str2 = 'dl_dns_log'",/,,,,,,,,,
+,保留,王绪寒,,CLOUDGATEWAY_IP_DEVICE_STAT,,,云情报网关监控-设备数量,中,tez,default,,,,,,,67649715,,16433,"16mins, 56sec",,"select distinct str5
+from csc.ods_csc_log_stats
+where day>=:sday and day<=:eday
+and app_id = 'ip-realtime-identify-etl-prc'
+and str1 = 'etl_size'
+and str2 = 'kafka_poll_size'
+and str3 = 'CLOUD_INTELLIGENCE_GATEWAY'",/,,,,,,,,,
+,保留,王绪寒,,CLOUDCHECK_IP_DEVICE_STAT,,,云情报网关监控-设备数量,中,tez,default,,,,,,,200246025,,48766,"31mins, 24sec",,"select distinct str5
+from csc.ods_csc_log_stats
+where day>=:sday and day<=:eday
+and app_id = 'ip-realtime-identify-etl-prc'
+and str1 = 'filter_size'
+and str2 = 'valid_devid'
+and str3 = 'CLOUDCHECK_C2IP_CF'",/,,,,,,,,,
+phishing-url-operation-prc,可下线,彭宜,URL漏报自动化运营,SIP_EMAIL_INFO_SQL,运营,,,,tez,default,/,,,,,,31744441,,7691,"31mins, 33sec",http://code.sangfor.org/SRI/SCIA/CIPD/URL/phishing-url-operation-prc/blob/master/app-sdk/soapa-sangfor-lib/python/common/config.py,"SELECT distinct(url)
+FROM
+(SELECT get_json_object(st10, ""$.url"") AS url,
+get_json_object(st10, ""$.threat.reputation"") AS reputation
+FROM csc.ods_csc_log_audit LATERAL VIEW explode(default.format_json_list(replace(str10, ""\\"", """"))) t AS st10
+WHERE app_id='url-proxy-svc'
+AND str1='SIP'
+AND str5='[email]'
+AND DAY= '20251101' ) t
+WHERE reputation=2",/,,,,,,,,,
+,可下线,彭宜,,INFO_EXIST_CHECK_SQL,运营,,,,tez,,/,,,,,,/,/,/,/,,SELECT 1 FROM csc.ods_csc_log_audit WHERE day=:mday LIMIT 1,,,,,,,,,,
+ip-security-log-etl-prc,保留,王绪寒,基于安全告警日志规则鉴定C2 IP。该服务是一个定时ETL（Extract-Transform-Load）处理程序，负责从安全日志中提取可疑的C2（Command & Control）IP地址，经过数据清洗和过滤后，提交至IP鉴定任务队列进行进一步分析。,/,ip生产,,C2 IP情报生产-安全日志,高,tez,,/,,,,,,114652903,,27861,"1hrs, 12mins, 15sec",http://code.sangfor.org/SRI/SCIA/CIPD/IP/C2IP-TMP/ip-security-log-etl-prc/blob/master/app-sdk/soapa-sangfor-lib/python/config.py,"select
+distinct dstip
+from sodl.network_security_log
+where DAY=20251101
+AND regexp_extract(dstip,'^((0\\.0\\.0\\.0)|(127\\.0\\.0\\.1)|(localhost)|(10\\.)|(172\\.1[6-9]\\.)|(172\\.2[0-9]\\.)|(172\\.3[0-1]\\.)|(192\\.168\\.))') = ''
+AND regexp_extract(dstip,'^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})$') != ''
+AND engine not in ('premise_ioc', 'cloud_ioc', 'sase_ioc')
+AND severity > 50
+AND (threatclass in (209, 208, 216, 214,  203, 40)
+or concat_ws('-',cast(threatclass as String),
+cast(threattype as String),
+cast(threatsubtype as String)) = '212-10-0')
+limit 100000",/,,,,,,,,,
+domain-heat-stats-cron-job,保留,彭宜,域名热度库统计生产,cloud_domain.sql,热度统计,,GPT钓鱼联动封锁-降误报,高,tez,operation,5 1 * * *,,,,,,312122071,,75985,"1hrs, 18mins, 19sec",http://code.sangfor.org/SRI/SCIA/FRAME/assembly-workshop/blob/master/cipd/domain-heat-stats-cron-job/app-cfg/ShenZhen-product/cloud_domain.sql,"WITH t AS
+  (SELECT DOMAIN,
+           MANAGE,
+           sum(log_num) AS log_sum
+   FROM sodl.dwb_sodl_domain_info
+   WHERE DAY =:day_str
+   AND SUBSTRING_INDEX(DOMAIN,""."",-2) in (""amazonaws.com"",""myqcloud.com"",""aliyuncs.com"",""myhuaweicloud.com"",""vercel.app"",""netlify.app"",""glitch.me"",""edgeone.app"")
+   GROUP BY DOMAIN,
+            MANAGE)
+SELECT domain,
+        sum(log_sum) AS log_cnt,
+        count(DISTINCT MANAGE) AS dev_cnt
+FROM t
+GROUP BY domain",/,,,,,,,,,
+,保留,彭宜,,second_level_domain.sql,热度统计,,GPT钓鱼联动封锁-降误报,高,tez,operation,,,,,,,215927423,,52616,"	1hrs, 6mins, 12sec",http://code.sangfor.org/SRI/SCIA/FRAME/assembly-workshop/blob/master/cipd/domain-heat-stats-cron-job/app-cfg/ShenZhen-product/second_level_domain.sql,"WITH t AS
+  (SELECT DOMAIN,
+           MANAGE,
+           sum(log_num) AS log_num
+   FROM sodl.dwb_sodl_domain_info
+   WHERE DAY =:day_str
+     AND DOMAIN != ''
+     AND locate("":"",DOMAIN) == 0
+     AND locate(""_"",DOMAIN) == 0
+     AND locate(""*"",DOMAIN) == 0
+     AND DOMAIN NOT rlike ""[0-9]$""
+     AND DOMAIN NOT rlike "".arpa$"" 
+   GROUP BY DOMAIN,
+            MANAGE),
+     t2 AS
+  (SELECT SUBSTRING_INDEX(DOMAIN,""."",-2) AS sld,
+          sum(log_num) AS log_sum,
+          count(DISTINCT MANAGE) AS dev_cnt
+   FROM t
+   GROUP BY SUBSTRING_INDEX(DOMAIN,""."",-2))
+SELECT sld AS domain,
+       log_sum AS log_cnt,
+       dev_cnt
+FROM t2
+where log_sum >10",/,,,,,,,,,
+,保留,彭宜,,third_level_domain.sql,热度统计,,GPT钓鱼联动封锁-降误报,高,tez,operation,,,,,,,312122071,"1hrs, 18mins, 19sec",75985,"	1hrs, 18mins, 19sec",http://code.sangfor.org/SRI/SCIA/FRAME/assembly-workshop/blob/master/cipd/domain-heat-stats-cron-job/app-cfg/ShenZhen-product/second_level_domain.sql,"WITH t AS
+  (SELECT DOMAIN,
+           MANAGE,
+           sum(log_num) AS log_num
+   FROM sodl.dwb_sodl_domain_info
+   WHERE DAY =:day_str
+   AND SUBSTRING_INDEX(DOMAIN,""."",-2) in (""com.cn"",""org.cn"")
+   GROUP BY DOMAIN,
+            MANAGE),
+     t2 AS
+  (SELECT SUBSTRING_INDEX(DOMAIN,""."",-3) AS parent_domain,
+          sum(log_num) AS log_sum,
+          count(DISTINCT MANAGE) AS dev_cnt
+   FROM t
+   GROUP BY SUBSTRING_INDEX(DOMAIN,""."",-3))
+SELECT parent_domain AS domain,
+       log_sum AS log_cnt,
+       dev_cnt
+FROM t2
+where log_sum >10
+",/,,,,,,,,,
+apt-hunting-monitor-process-job,可下线,段宁强,持续监控定时任务,RETRO_IP_SQL,,,,,tez,business,7 5 * * *,,,,,,184091126,,44793,"11mins, 40sec",http://code.sangfor.org/SRI/SCIA/apt-hunting/apt-hunting-monitor-process-job/blob/master/cron-job/monitor_process/sql.py,"WITH apt_tbl AS
+  (SELECT get_json_object(DATA, ""$.source"") AS SOURCE,
+          get_json_object(DATA, ""$.raw_ioc_type"") AS raw_ioc_type,
+          get_json_object(DATA, ""$.related_ioc_type"") AS related_ioc_type,
+          get_json_object(DATA, ""$.related_path"") AS related_path,
+          get_json_object(DATA, ""$.organization_label"") AS organization_label,
+          get_json_object(DATA, ""$.related_ioc"") AS related_ioc,
+          get_json_object(DATA, ""$.ti_type"") AS ti_type,
+          get_json_object(DATA, ""$.related_rule_name"") AS related_rule_name,
+          get_json_object(DATA, ""$.raw_ioc"") AS raw_ioc,
+          get_json_object(DATA, ""$.ioc_updater"") AS ioc_updater,
+          get_json_object(DATA, ""$.ioc_submitter"") AS ioc_submitter
+   FROM csc.ods_csc_apt_hunting
+   WHERE task_id=:task_id
+     AND ioc_type=:ioc_type ),
+     tag_device AS
+  (SELECT str1 AS devid,
+          str2 AS customer_type
+   FROM default.ods_custom_upload_data
+   WHERE part1=""apt_hunting""
+     AND part2=""tag_device"" ),
+     test_device AS
+  (SELECT str1 AS devid
+   FROM default.ods_custom_upload_data
+   WHERE part1=""apt_hunting""
+     AND part2=""test_device"" ),
+     log_tbl AS
+  (SELECT ioc,
+          devid,
+          log_day,
+          collect_set(src_log) AS src_logs,
+          sum(log_num) AS log_num
+   FROM
+     (SELECT dip AS ioc,
+             devid AS devid,
+             DAY AS log_day,
+             src_log,
+             log_num
+      FROM default.dwb_ip_info LEFT SEMI
+      JOIN apt_tbl ON apt_tbl.related_ioc=dwb_ip_info.dip
+      WHERE DAY>=:start_day
+        AND DAY<=:end_day
+        AND extends IS NOT NULL
+        AND src_log='log_audit'
+        AND devid NOT IN
+          (SELECT devid
+           FROM test_device)
+      UNION ALL SELECT dstip AS ioc,
+                       MANAGE AS devid,
+                       DAY AS log_day,
+                       src_log,
+                       log_num
+      FROM sodl.dwb_sodl_ip_info LEFT SEMI
+      JOIN apt_tbl ON apt_tbl.related_ioc=dwb_sodl_ip_info.dstip
+      WHERE DAY>=:start_day
+        AND DAY<=:end_day
+        AND MANAGE NOT IN
+          (SELECT devid
+           FROM test_device) ) w1
+   GROUP BY ioc,
+            devid,
+            log_day)
+SELECT t2.raw_ioc,
+       t2.raw_ioc_type,
+       t2.related_ioc,
+       t2.related_ioc_type,
+       t2.related_rule_name,
+       t2.related_path,
+       t2.ti_type,
+       t2.organization_label,
+       t2.source,
+       t2.ioc_updater,
+       t2.ioc_submitter,
+       t2.log_day,
+       t2.devid,
+       t2.src_logs,
+       t2.log_num,
+       t2.devids,
+       regexp_extract(customer_info,'customer_name=(.+?)[,}]', 1) AS customer_name,
+       regexp_extract(customer_info,'country=(.+?)[,}]', 1) AS country,
+       regexp_extract(customer_info,'province=(.+?)[,}]', 1) AS province,
+       regexp_extract(customer_info,'city=(.+?)[,}]', 1) AS city,
+       regexp_extract(customer_info,'customer_industry=(.+?)[,}]', 1) AS customer_industry,
+       if(tag_device.customer_type is null, 999, tag_device.customer_type) AS customer_type
+FROM
+  (SELECT devid,
+          src_logs,
+          log_num,
+          log_day,
+          SOURCE,
+          raw_ioc_type,
+          related_ioc_type,
+          related_path,
+          organization_label,
+          related_ioc,
+          ioc_updater,
+          ioc_submitter,
+          ti_type,
+          related_rule_name,
+          raw_ioc,
+          devids
+   FROM
+     (SELECT log_tbl.devid,
+             src_logs,
+             log_num,
+             log_day,
+             SOURCE,
+             raw_ioc_type,
+             related_ioc_type,
+             related_path,
+             organization_label,
+             related_ioc,
+             ioc_updater,
+             ioc_submitter,
+             ti_type,
+             related_rule_name,
+             raw_ioc
+      FROM log_tbl
+      JOIN apt_tbl ON log_tbl.ioc=apt_tbl.related_ioc) t
+   JOIN
+     (SELECT ioc,
+             count(DISTINCT devid) AS devid_num,
+             collect_set(devid) AS devids
+      FROM log_tbl
+      GROUP BY ioc) t1 ON t.related_ioc=t1.ioc
+   WHERE devid_num<=:max_dev_num
+ ",/,,,,,,,,,
+,可下线,段宁强,,RETRO_DOMAIN_SQL,,,,,tez,business,,,,,,,162587076,,39442,"10mins, 50sec",,"WITH apt_tbl AS
+  (SELECT get_json_object(DATA, ""$.source"") AS SOURCE,
+          get_json_object(DATA, ""$.raw_ioc_type"") AS raw_ioc_type,
+          get_json_object(DATA, ""$.related_ioc_type"") AS related_ioc_type,
+          get_json_object(DATA, ""$.related_path"") AS related_path,
+          get_json_object(DATA, ""$.organization_label"") AS organization_label,
+          get_json_object(DATA, ""$.related_ioc"") AS related_ioc,
+          get_json_object(DATA, ""$.ti_type"") AS ti_type,
+          get_json_object(DATA, ""$.related_rule_name"") AS related_rule_name,
+          get_json_object(DATA, ""$.raw_ioc"") AS raw_ioc,
+          get_json_object(DATA, ""$.ioc_updater"") AS ioc_updater,
+          get_json_object(DATA, ""$.ioc_submitter"") AS ioc_submitter
+   FROM csc.ods_csc_apt_hunting
+   WHERE task_id=:task_id
+     AND ioc_type=:ioc_type ),
+     tag_device AS
+  (SELECT str1 AS devid,
+          str2 AS customer_type
+   FROM default.ods_custom_upload_data
+   WHERE part1=""apt_hunting""
+     AND part2=""tag_device"" ),
+     test_device AS
+  (SELECT str1 AS devid
+   FROM default.ods_custom_upload_data
+   WHERE part1=""apt_hunting""
+     AND part2=""test_device"" ),
+     log_tbl AS
+  (SELECT ioc,
+          devid,
+          log_day,
+          collect_set(src_log) AS src_logs,
+          sum(log_num) AS log_num
+   FROM
+     (SELECT DOMAIN AS ioc,
+             devid AS devid,
+             DAY AS log_day,
+             src_log,
+             log_num
+      FROM default.dwb_domain_info LEFT SEMI
+      JOIN apt_tbl ON apt_tbl.related_ioc=dwb_domain_info.domain
+      WHERE DAY>=:start_day
+        AND DAY<=:end_day
+        AND extends IS NOT NULL
+        AND src_log='log_audit'
+        AND devid NOT IN
+          (SELECT devid
+           FROM test_device)
+      UNION ALL SELECT DOMAIN AS ioc,
+                       MANAGE AS devid,
+                       DAY AS log_day,
+                       src_log,
+                       log_num
+      FROM sodl.dwb_sodl_domain_info LEFT SEMI
+      JOIN apt_tbl ON apt_tbl.related_ioc=dwb_sodl_domain_info.domain
+      WHERE DAY>=:start_day
+        AND DAY<=:end_day
+        AND MANAGE NOT IN
+          (SELECT devid
+           FROM test_device) ) w1
+   GROUP BY ioc,
+            devid,
+            log_day)
+SELECT t2.raw_ioc,
+       t2.raw_ioc_type,
+       t2.related_ioc,
+       t2.related_ioc_type,
+       t2.related_rule_name,
+       t2.related_path,
+       t2.ti_type,
+       t2.organization_label,
+       t2.source,
+       t2.ioc_updater,
+       t2.ioc_submitter,
+       t2.log_day,
+       t2.devid,
+       t2.src_logs,
+       t2.log_num,
+       t2.devids,
+       regexp_extract(customer_info,'customer_name=(.+?)[,}]', 1) AS customer_name,
+       regexp_extract(customer_info,'country=(.+?)[,}]', 1) AS country,
+       regexp_extract(customer_info,'province=(.+?)[,}]', 1) AS province,
+       regexp_extract(customer_info,'city=(.+?)[,}]', 1) AS city,
+       regexp_extract(customer_info,'customer_industry=(.+?)[,}]', 1) AS customer_industry,
+       if(tag_device.customer_type is null, 999, tag_device.customer_type) AS customer_type
+FROM
+  (SELECT devid,
+          src_logs,
+          log_num,
+          log_day,
+          SOURCE,
+          raw_ioc_type,
+          related_ioc_type,
+          related_path,
+          organization_label,
+          related_ioc,
+          ioc_updater,
+          ioc_submitter,
+          ti_type,
+          related_rule_name,
+          raw_ioc,
+          devids
+   FROM
+     (SELECT log_tbl.devid,
+             src_logs,
+             log_num,
+             log_day,
+             SOURCE,
+             raw_ioc_type,
+             related_ioc_type,
+             related_path,
+             organization_label,
+             related_ioc,
+             ioc_updater,
+             ioc_submitter,
+             ti_type,
+             related_rule_name,
+             raw_ioc
+      FROM log_tbl
+      JOIN apt_tbl ON log_tbl.ioc=apt_tbl.related_ioc) t
+   JOIN
+(SELECT ioc,
+             count(DISTINCT devid) AS devid_num,
+             collect_set(devid) AS devids
+      FROM log_tbl
+      GROUP BY ioc) t1 ON t.related_ioc=t1.ioc
+   WHERE devid_num<=:max_dev_num
+     OR (devid_num<=:origin_max_dev_num
+         AND related_rule_name=""origin"") ) t2
+JOIN default.ods_devicemanager_deviceinfo ON ods_devicemanager_deviceinfo.dev_id=t2.devid
+LEFT JOIN tag_device ON t2.devid=tag_device.devid
+WHERE ods_devicemanager_deviceinfo.dev_id!=""""",/,,,,,,,,,
+,可下线,段宁强,,RETRO_MD5_SQL,,,,,tez,business,,,,,,,42242024,,10158,"12mins, 9sec",,"WITH apt_tbl AS
+  (SELECT get_json_object(DATA, ""$.source"") AS SOURCE,
+          get_json_object(DATA, ""$.raw_ioc_type"") AS raw_ioc_type,
+          get_json_object(DATA, ""$.related_ioc_type"") AS related_ioc_type,
+          get_json_object(DATA, ""$.related_path"") AS related_path,
+          get_json_object(DATA, ""$.organization_label"") AS organization_label,
+          get_json_object(DATA, ""$.related_ioc"") AS related_ioc,
+          get_json_object(DATA, ""$.ti_type"") AS ti_type,
+          get_json_object(DATA, ""$.related_rule_name"") AS related_rule_name,
+          get_json_object(DATA, ""$.raw_ioc"") AS raw_ioc,
+          get_json_object(DATA, ""$.ioc_updater"") AS ioc_updater,
+          get_json_object(DATA, ""$.ioc_submitter"") AS ioc_submitter
+   FROM csc.ods_csc_apt_hunting
+   WHERE task_id=:task_id
+     AND ioc_type=:ioc_type ),
+     tag_device AS
+  (SELECT str1 AS devid,
+          str2 AS customer_type
+   FROM default.ods_custom_upload_data
+   WHERE part1=""apt_hunting""
+     AND part2=""tag_device"" ),
+     test_device AS
+  (SELECT str1 AS devid
+   FROM default.ods_custom_upload_data
+   WHERE part1=""apt_hunting""
+     AND part2=""test_device"" ),
+     log_tbl AS
+  (SELECT ioc,
+          devid,
+          log_day,
+          collect_set(src_log) AS src_logs,
+          sum(log_num) AS log_num
+   FROM
+     (SELECT md5 AS ioc,
+             devid AS devid,
+             DAY AS log_day,
+             src_log,
+             log_num
+      FROM default.dwb_md5_info LEFT SEMI
+      JOIN apt_tbl ON apt_tbl.related_ioc=dwb_md5_info.md5
+      WHERE DAY>=:start_day
+        AND DAY<=:end_day
+        AND extends IS NOT NULL
+        AND src_log='log_audit'
+        AND devid NOT IN
+          (SELECT devid
+           FROM test_device)
+      UNION ALL SELECT filehash AS ioc,
+                       MANAGE AS devid,
+                       DAY AS log_day,
+                       src_log,
+                       log_num
+      FROM sodl.dwb_sodl_md5_info LEFT SEMI
+      JOIN apt_tbl ON apt_tbl.related_ioc=dwb_sodl_md5_info.filehash
+      WHERE DAY>=:start_day
+        AND DAY<=:end_day
+        AND MANAGE NOT IN
+          (SELECT devid
+           FROM test_device) ) w1
+   GROUP BY ioc,
+            devid,
+            log_day)
+SELECT t2.raw_ioc,
+       t2.raw_ioc_type,
+       t2.related_ioc,
+       t2.related_ioc_type,
+       t2.related_rule_name,
+       t2.related_path,
+       t2.ti_type,
+       t2.organization_label,
+       t2.source,
+       t2.ioc_updater,
+       t2.ioc_submitter,
+       t2.log_day,
+       t2.devid,
+       t2.src_logs,
+       t2.log_num,
+       t2.devids,
+       regexp_extract(customer_info,'customer_name=(.+?)[,}]', 1) AS customer_name,
+       regexp_extract(customer_info,'country=(.+?)[,}]', 1) AS country,
+       regexp_extract(customer_info,'province=(.+?)[,}]', 1) AS province,
+       regexp_extract(customer_info,'city=(.+?)[,}]', 1) AS city,
+       regexp_extract(customer_info,'customer_industry=(.+?)[,}]', 1) AS customer_industry,
+       if(tag_device.customer_type is null, 999, tag_device.customer_type) AS customer_type
+FROM
+  (SELECT devid,
+          src_logs,
+          log_num,
+          log_day,
+          SOURCE,
+          raw_ioc_type,
+          related_ioc_type,
+          related_path,
+          organization_label,
+          related_ioc,
+          ioc_updater,
+          ioc_submitter,
+          ti_type,
+          related_rule_name,
+          raw_ioc,
+          devids
+   FROM
+     (SELECT log_tbl.devid,
+             src_logs,
+             log_num,
+             log_day,
+             SOURCE,
+             raw_ioc_type,
+             related_ioc_type,
+             related_path,
+             organization_label,
+             related_ioc,
+             ioc_updater,
+             ioc_submitter,
+             ti_type,
+             related_rule_name,
+             raw_ioc
+      FROM log_tbl
+      JOIN apt_tbl ON log_tbl.ioc=apt_tbl.related_ioc) t
+   JOIN
+  (SELECT ioc,
+             count(DISTINCT devid) AS devid_num,
+             collect_set(devid) AS devids
+      FROM log_tbl
+      GROUP BY ioc) t1 ON t.related_ioc=t1.ioc
+   WHERE devid_num<=:max_dev_num
+     OR (devid_num<=:origin_max_dev_num
+         AND related_rule_name=""origin"") ) t2
+JOIN default.ods_devicemanager_deviceinfo ON ods_devicemanager_deviceinfo.dev_id=t2.devid
+LEFT JOIN tag_device ON t2.devid=tag_device.devid
+WHERE ods_devicemanager_deviceinfo.dev_id!=""""",/,,,,,,,,,
+,可下线,段宁强,,RETRO_URL_SQL,,,,,tez,business,,,,,,,391801488,,95537,"11mins, 17sec",,"WITH apt_tbl AS
+  (SELECT get_json_object(DATA, ""$.source"") AS SOURCE,
+          get_json_object(DATA, ""$.raw_ioc_type"") AS raw_ioc_type,
+          get_json_object(DATA, ""$.related_ioc_type"") AS related_ioc_type,
+          get_json_object(DATA, ""$.related_path"") AS related_path,
+          get_json_object(DATA, ""$.organization_label"") AS organization_label,
+          get_json_object(DATA, ""$.related_ioc"") AS related_ioc,
+          split(get_json_object(DATA, ""$.related_ioc""), ""[?]"")[0] AS related_ioc_deal,
+          get_json_object(DATA, ""$.ti_type"") AS ti_type,
+          get_json_object(DATA, ""$.related_rule_name"") AS related_rule_name,
+          get_json_object(DATA, ""$.raw_ioc"") AS raw_ioc,
+          get_json_object(DATA, ""$.ioc_updater"") AS ioc_updater,
+          get_json_object(DATA, ""$.ioc_submitter"") AS ioc_submitter
+   FROM csc.ods_csc_apt_hunting
+   WHERE task_id=:task_id
+     AND ioc_type=:ioc_type ),
+     tag_device AS
+  (SELECT str1 AS devid,
+          str2 AS customer_type
+   FROM default.ods_custom_upload_data
+   WHERE part1=""apt_hunting""
+     AND part2=""tag_device"" ),
+     test_device AS
+  (SELECT str1 AS devid
+   FROM default.ods_custom_upload_data
+   WHERE part1=""apt_hunting""
+     AND part2=""test_device"" ),
+     log_tbl AS
+  (SELECT ioc,
+          devid,
+          log_day,
+          collect_set(src_log) AS src_logs,
+          sum(log_num) AS log_num
+   FROM
+     (SELECT url AS ioc,
+             devid AS devid,
+             DAY AS log_day,
+             src_log,
+             log_num
+      FROM default.dwb_url_info LEFT SEMI
+      JOIN apt_tbl ON apt_tbl.related_ioc=dwb_url_info.url
+      WHERE DAY>=:start_day
+        AND DAY<=:end_day
+        AND extends IS NOT NULL
+        AND src_log='log_audit'
+        AND devid NOT IN
+          (SELECT devid
+           FROM test_device)
+      UNION ALL SELECT url AS ioc,
+                       MANAGE AS devid,
+                       DAY AS log_day,
+                       src_log,
+                       log_num
+      FROM sodl.dwb_sodl_url_info LEFT SEMI
+      JOIN apt_tbl ON apt_tbl.related_ioc=dwb_sodl_url_info.url
+      WHERE DAY>=:start_day
+        AND DAY<=:end_day
+        AND MANAGE NOT IN
+          (SELECT devid
+           FROM test_device) ) w1
+   GROUP BY ioc,
+            devid,
+            log_day)
+SELECT t2.raw_ioc,
+       t2.raw_ioc_type,
+       t2.related_ioc,
+       t2.related_ioc_type,
+       t2.related_rule_name,
+       t2.related_path,
+       t2.ti_type,
+       t2.organization_label,
+       t2.source,
+       t2.ioc_updater,
+       t2.ioc_submitter,
+       t2.log_day,
+       t2.devid,
+       t2.src_logs,
+       t2.log_num,
+       t2.devids,
+       regexp_extract(customer_info,'customer_name=(.+?)[,}]', 1) AS customer_name,
+       regexp_extract(customer_info,'country=(.+?)[,}]', 1) AS country,
+       regexp_extract(customer_info,'province=(.+?)[,}]', 1) AS province,
+       regexp_extract(customer_info,'city=(.+?)[,}]', 1) AS city,
+       regexp_extract(customer_info,'customer_industry=(.+?)[,}]', 1) AS customer_industry,
+       if(tag_device.customer_type is null, 999, tag_device.customer_type) AS customer_type
+FROM
+  (SELECT devid,
+          src_logs,
+          log_num,
+          log_day,
+          SOURCE,
+          raw_ioc_type,
+          related_ioc_type,
+          related_path,
+          organization_label,
+          related_ioc,
+          ioc_updater,
+          ioc_submitter,
+          ti_type,
+          related_rule_name,
+          raw_ioc,
+          devids
+   FROM
+     (SELECT log_tbl.devid,
+             src_logs,
+             log_num,
+             log_day,
+             SOURCE,
+             raw_ioc_type,
+             related_ioc_type,
+             related_path,
+             organization_label,
+             related_ioc,
+             related_ioc_deal,
+             ioc_updater,
+             ioc_submitter,
+             ti_type,
+             related_rule_name,
+             raw_ioc
+      FROM log_tbl
+      JOIN apt_tbl ON log_tbl.ioc=apt_tbl.related_ioc_deal) t
+   JOIN
+     (SELECT ioc,
+             count(DISTINCT devid) AS devid_num,
+             collec",/,,,,,,,,,
+datax-server,可下线,王绪寒,mongodb表同步hive,/,基础设施,非yarn任务。mongo同步服务，预计迁移后可下线,情报信誉mongodb同步hive,高,/,default,/,,,,,,,,,,http://code.sangfor.org/SRI/SCIA/sync/datax-server/,,/,,,,,,,,,
+cert-app-samplesync-country-job,保留,肖扬,蓝军 cert数据上报。CERT APP样本报送国家自动化同步FTP定时任务，用于将Android恶意样本数据自动同步至国家CERT中心FTP服务器,/,其它部门,,,,tez,,0 4 * * 1,,,,,,128941948,,31329,"10mins, 48sec",http://code.sangfor.org/SRI/SCIA/datareport/cert-app-samplesync-country-job/blob/master/cron-job/sync_cert_app_country_sample_data/hive_manager.py,"SELECT virus_name, file_md5 FROM sri.ods_sri_hashinfo\n                        WHERE virus_name regexp '^Ransom|^Hacktool|^Trojan|^Bootkit|^CoinMiner|^Riskware|^Rogue|^Suspicious|^Worm|^Spyware|^Infostealer|^Backdoor|^Virus|^Rootkit|^Exploit|^Adware|^PUP'\n                        AND oid > '681594de0000000000000000'\n                        AND file_attr in (0, 2)\n                        AND platform IN ('Android', 'AndroidOS')\n                        AND fdfs_path != """"\n                        AND file_size != ""0"" AND CAST (file_size AS INT) < 1048576\n                        AND file_md5 NOT IN (SELECT str1 FROM csc.ods_csc_business_data)\n                        ORDER BY file_attr ASC, oid DESC\n                        LIMIT 2000",/,,,,,,,,,
+cert-app-samplesync-job,待确认,肖扬,蓝军 cert数据上报,/,其它部门,,,,tez,,0 0 3 * *,,,,,,,,,,http://code.sangfor.org/SRI/SCIA/datareport/cert-app-samplesync-job/blob/master/cron-job/sync_cert_app_sample_data/hive_manager.py,"SELECT virus_name, file_md5 FROM sri.ods_sri_hashinfo\n                        WHERE virus_name regexp '^Ransom|^Hacktool|^Trojan|^Bootkit|^CoinMiner|^Riskware|^Rogue|^Suspicious|^Worm|^Spyware|^Infostealer|^Backdoor|^Virus|^Rootkit|^Exploit|^Adware|^PUP'\n                        AND oid > '68155ca30000000000000000'\n                        AND file_attr in (0, 2)\n                        AND platform IN ('Android', 'AndroidOS')\n                        AND fdfs_path != """"\n                        AND file_size != ""0"" AND CAST (file_size AS INT) < 1048576\n                        AND file_md5 NOT IN (SELECT str1 FROM csc.ods_csc_business_data)\n                        ORDER BY file_attr ASC, oid DESC\n                        LIMIT 4100",/,,,,,,,,,
+ti-ip-detection-send-prc,待确认,肖扬,从数据湖获取aES上报IP,SQL,ip生产,,aes检测,高,ck,,1 * * * *,,,,,,,,,,http://code.sangfor.org/SRI/SCIA/CIPD/IP/ti-ip-detection-send-prc/blob/master/src/soapa-app/pkg/ti-ip-detection-send-prc/core/ip_extractor.go,"SELECT DISTINCT
+      splitByChar(':', JSONExtractString(element, 'ip'))[1] AS ip_address,
+      splitByChar(':', JSONExtractString(element, 'ip'))[2] AS port
+  FROM 
+      sodl.operation_rdp_event_log
+  ARRAY JOIN JSONExtractArrayRaw(businessContent) AS element
+  WHERE 
+      businessType = '21' 
+      AND formatDateTime(toDateTime(insertTimestamp), '%%Y%%m%%d%%H') >= '%s' AND formatDateTime(toDateTime(insertTimestamp), '%%Y%%m%%d%%H') < '%s' limit %d;",/,,,,,,,,,
+ti-hot-data-detection-fusing-prc,待确认,肖扬,从数据湖获取aES上报MD5,SQL,生产,,aes检测,高,ck,,5 * * * *,,,,,,,,,,http://code.sangfor.org/SRI/SCIA/FCC/ti-hot-data-detection-fusing-prc/blob/master/app-sdk/soapa-sangfor-lib/python/ti_hot_data_detection_fusing/core/core.py,"SELECT fileMd5, deviceId, virusName FROM sodl.handle_info_log WHERE formatDateTime(toDateTime(insertTimestamp), '%Y%m%d%H') >= '{}' AND formatDateTime(toDateTime(insertTimestamp), '%Y%m%d%H') < '{}' AND engineInfo LIKE '%IsHotspot%' AND detectEngine = '4'",/,,,,,,,,,
+ctig-report-data-analysis-prc,保留,王绪寒,云情报网关报告分析,STAT_SQL,运营报告,,云情报网关-报告分析,高,tez,cipd,/,,,,,,,,,,,"WITH black_reputation_domain as(
+	SELECT 
+        domain, 
+        concat_ws(
+            '|',
+            regexp_extract(labels, 'category=([^,}}]+)', 1),
+            regexp_extract(labels, 'family=([^,}}]+)', 1)
+        )as label,
+        threat_level,
+        add_time,
+		update_time
+    FROM csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync
+    WHERE reputation = '0'
+	  AND deleted_time = 0
+),
+black_reputation_ip as(
+	SELECT 
+        ip, 
+        concat_ws(
+            '|',
+            regexp_extract(labels, 'category=([^,}}]+)', 1),
+            regexp_extract(labels, 'family=([^,}}]+)', 1)
+        )as label,
+        threat_level,
+        add_time,
+		update_time
+    FROM csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync
+    WHERE reputation = '0'
+		  AND direction='2'
+          AND port=0 
+		  AND deleted_time=0
+),
+tenant_info as(
+    SELECT DISTINCT
+        t.tenant_id,
+        t.device_id,
+        d.device_id_encryption            
+    FROM csc.ods_csc_tb_tenant_subscribe_info t
+    LATERAL VIEW OUTER explode(split(t.device_id_encryption, ',')) d AS device_id_encryption
+    where tenant_id in ({tenant_ids})
+),
+domain_filtered_log as(
+    select 
+        tenant_info.tenant_id,
+        tenant_info.device_id,
+        log_info.day,
+        log_info.srcip,
+        log_info.domain as ioc,
+        sum(log_info.log_num) as log_num,
+		black_reputation_domain.add_time,
+        black_reputation_domain.label,
+        black_reputation_domain.threat_level
+    from
+	(
+	SELECT
+		day,
+		srcip, 
+		manage as device_id, 
+		domain,
+		log_num,
+		row_key
+	FROM sodl.dwb_sodl_domain_info
+	WHERE day BETWEEN {start_time} and {end_time}
+		and row_key != ''
+		-- 云情报网关日志
+		and producttype = 'AF' 
+		and src_log = 'network_security_log'
+		and reqruleid BETWEEN '140000000' AND '149999999'
+	) log_info 
+	JOIN tenant_info ON log_info.device_id = tenant_info.device_id_encryption
+	JOIN black_reputation_domain ON black_reputation_domain.domain = log_info.row_key
+	group by 
+	    tenant_info.tenant_id,
+        tenant_info.device_id,
+        log_info.day,   
+        log_info.srcip,
+        log_info.domain,
+		black_reputation_domain.add_time,
+        black_reputation_domain.label,
+        black_reputation_domain.threat_level
+),
+ip_filtered_log as(
+    select 
+        tenant_info.tenant_id,
+        tenant_info.device_id,
+        log_info.day,
+        log_info.srcip,
+        log_info.dstip as ioc,
+        sum(log_info.log_num) as log_num,
+		black_reputation_ip.add_time,
+        black_reputation_ip.label,
+        black_reputation_ip.threat_level
+    from
+	(
+	SELECT
+		day,
+		srcip, 
+		manage as device_id, 
+		dstip,
+		log_num
+	FROM sodl.dwb_sodl_ip_info
+	WHERE day BETWEEN {start_time} and {end_time}
+		-- 云情报网关日志
+		and producttype = 'AF' 
+		and src_log = 'network_security_log'
+		and reqruleid BETWEEN '140000000' AND '149999999'
+		-- 排除非法IP
+		and dstip !=''
+		and dstip not in ('8.8.8.8', '8.8.4.4','114.114.114.114', '114.114.115.115', '119.29.29.29', '223.5.5.5', '223.6.6.6', '1.1.1.1', '1.0.0.1')
+		and dstip RLIKE '^([0-9]{{1,3}}\\\.){{3}}[0-9]{{1,3}}$'
+		and dstip NOT RLIKE '^(0\\\.|127\\\.|10\\\.|172\\\.(1[6-9]|2[0-9]|3[01])\\\.|192\\\.168\\\.)'
+	) log_info 
+	JOIN tenant_info ON log_info.device_id = tenant_info.device_id_encryption
+	JOIN black_reputation_ip ON black_reputation_ip.ip = log_info.dstip
+	group by 
+	    tenant_info.tenant_id,
+        tenant_info.device_id,
+        log_info.day,   
+        log_info.srcip,
+        log_info.dstip,
+		black_reputation_ip.add_time,
+        black_reputation_ip.label,
+        black_reputation_ip.threat_level
+),
+data_stat AS(
+  SELECT *
+  FROM  domain_filtered_log
+  union all
+  SELECT *
+  FROM  ip_filtered_log
+),
+ip_rpt_update_stat as(
+	SELECT 
+		count(1) as rpt_update_num
+	FROM black_reputation_ip
+	WHERE update_time > CAST(unix_timestamp('{start_time}', 'yyyyMMdd') * 1000 AS BIGINT)
+),
+domain_rpt_update_stat as(
+	SELECT 
+		count(1) as rpt_update_num
+	FROM black_reputation_domain
+	WHERE update_time > CAST(unix_timestamp('{start_time}', 'yyyyMMdd') * 1000 AS BIGINT)
+),
+url_rpt_update_stat as(
+	SELECT 
+		count(1) as rpt_update_num
+	FROM csc.ods_csc_db_url_intelligence_tb_url_reputation_sync
+    WHERE update_time > CAST(unix_timestamp('{start_time}', 'yyyyMMdd') * 1000 AS BIGINT)
+      and deleted_time=0  and scene='malice'
+),
+file_rpt_update_stat as(
+	SELECT 
+		count(1) as rpt_update_num
+	FROM sri.ods_sri_hashinfo
+    WHERE 
+        CAST(regexp_extract(update_time, '\\\:\\\s*([0-9]+)', 1) AS BIGINT) > CAST(unix_timestamp('{start_time}', 'yyyyMMdd') * 1000 AS BIGINT)
+),
+day_stat as(
+	select
+	    tenant_id,
+		day,
+		sum(log_num) as log_num
+	from data_stat
+	group by tenant_id, day
+),
+log_stat as(
+	select
+	    tenant_id,
+		srcip, 
+		device_id, 
+		ioc, 
+		sum(log_num) as log_num, 
+		add_time, 
+		label, 
+		threat_level
+	from data_stat
+	group by tenant_id, srcip, device_id, ioc, add_time, label, threat_level
+)
+
+
+select
+	t1.tenant_id,
+	t3.rpt_update_num,
+	t2.log_stat_arr,
+	t1.day_stat_arr
+from
+(
+	select 
+		tenant_id,
+		collect_list(concat_ws(',', cast(day as string), cast(log_num as string))) AS day_stat_arr
+	from day_stat
+	group by tenant_id
+) t1
+join 
+(
+	select 
+		tenant_id,
+		collect_list(
+			concat_ws(',',srcip,device_id, ioc,cast(log_num as string),cast(add_time as string),label,threat_level)
+		)as log_stat_arr
+	from log_stat
+	group by tenant_id
+
+)t2 on t1.tenant_id = t2.tenant_id
+cross join
+(
+	select (ip_rpt_update_stat.rpt_update_num + domain_rpt_update_stat.rpt_update_num + url_rpt_update_stat.rpt_update_num + file_rpt_update_stat.rpt_update_num) as rpt_update_num
+	from ip_rpt_update_stat, domain_rpt_update_stat, url_rpt_update_stat, file_rpt_update_stat
+	limit 1
+) t3",/,,,,,,,,,
+active-domain-elt-job,保留,王绪寒,活跃域名回扫,INFO_EXIST_CHECK_SQL,降误报,,域名情报生产-主动降误报,高,tez,default,0 1 * * *,,,,,,89125447,,21572,"2mins, 51sec",http://code.sangfor.org/SRI/SCIA/CIPD/DOMAIN/PRE/active-domain-elt-job/blob/master/app-sdk/soapa-sangfor-lib/python/configs/sql.py,"WITH black_dns AS (
+SELECT domain,
+       regexp_extract(labels, 'category=([^,]+)', 1) AS category,
+       regexp_extract(labels, 'family=([^,]+)', 1) AS family,
+       regexp_extract(label_details, 'source=([^,]+)', 1) AS source,
+       regexp_extract(label_details, 'rule=([^,]+)', 1) AS rule,
+       add_time AS addtime
+FROM csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync
+WHERE deleted_time=0
+  AND reputation='0'),
+     test_dev AS (
+SELECT str1 AS dev1
+FROM default.ods_custom_upload_data
+WHERE part1='test_dev'
+  AND part2='test_devid')
+
+SELECT blackdns,
+       addtime,
+       category,
+       family,
+       source,
+       rule,
+       count(DISTINCT dev) AS devcn
+FROM
+  (SELECT a.row_key AS blackdns,
+          b.addtime,
+          b.category,
+          b.family,
+          b.source,
+          b.rule,
+          a.manage AS dev
+   FROM sodl.dwb_sodl_domain_info a
+   JOIN black_dns b ON (a.row_key=b.domain)
+   WHERE a.day=:start_day
+     AND a.row_key IS NOT NULL
+     AND a.manage NOT IN
+       (SELECT *
+        FROM test_dev)
+  
+   UNION ALL 
+   
+   SELECT a.row_key AS blackdns,
+          b.addtime,
+          b.category,
+          b.family,
+          b.source,
+          b.rule,
+          a.devid AS dev
+   FROM default.dwb_domain_info a
+   JOIN black_dns b ON (a.row_key=b.domain)
+   WHERE a.day=:start_day
+     AND a.row_key IS NOT NULL
+     AND a.devid NOT IN
+       (SELECT *
+        FROM test_dev) )t
+GROUP BY blackdns,
+         addtime,
+         category,
+         family,
+         source,
+         rule
+",/,,,,,,,,,
+,保留,王绪寒,,ACTIVE_DOMAIN_SQL,降误报,,域名情报生产-主动降误报,高,tez,,/,,,,,,/,/,/,/,," ""dwb_domain_info"":
+        """"""SELECT 1 FROM default.dwb_domain_info WHERE day=:mday LIMIT 1"""""",
+    ""dwb_sodl_domain_info"":
+        """"""SELECT 1 FROM sodl.dwb_sodl_domain_info WHERE day=:mday LIMIT 1""""""
+",/,,,,,,,,,
+black-ti-context-produce-prc,保留,王绪寒,恶意IOC活跃次数统计,C2_IP_ACTIVE_STAT_SQL,上下文生产,,情报上下文-攻击次数统计,高,tez,default,,,,,,,22758744,,5390,"5mins, 27sec",http://code.sangfor.org/SRI/SCIA/TIBAE/black-ti-context-produce-prc/blob/master/app-sdk/soapa-sangfor-lib/python/active_info_update/config/active_stat_sql.py,"WITH reputation_ip_stat AS
+  (SELECT 
+      ip,
+      port,
+      direction,
+      expire_time,
+      deleted_time,
+      attack_count,
+      devid,
+      ""其他"" as industry,
+      ""其他"" as country,
+      ""其他"" as province,
+      src_log
+   FROM
+   (
+    SELECT 
+        ip, 
+        port,
+        direction,
+        expire_time,
+        deleted_time
+    FROM csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync
+    WHERE direction=""2""
+        AND port=0 
+    ) black_reputation_ip
+   JOIN
+     (SELECT sum(attack_count) as attack_count,
+             MANAGE AS devid,
+             COALESCE(CAST(threatclass AS STRING), '0') AS src_log,
+             dstip AS dip
+      FROM sodl.dwb_sodl_ip_info
+      WHERE DAY=:mday
+        and src_log in ('sip_iocstat_log', 'network_security_log')
+        and dstip !=''
+        and dstip not in ('8.8.8.8', '8.8.4.4','114.114.114.114', '114.114.115.115', '119.29.29.29', '223.5.5.5', '223.6.6.6', '1.1.1.1', '1.0.0.1')
+        and regexp_extract(dstip,'^(\\\d{1,3}\\\.\\\d{1,3}\\\.\\\d{1,3}\\\.\\\d{1,3})$') != ''
+        and regexp_extract(dstip, '^(0\\\.|127\\\.|10\\\.|172\\\.1[6-9]\\\.|172\\\.2[0-9]\\\.|172\\\.3[01]\\\.|192\\\.168\\\.|169\\\.254\\\.|192\\\.0\\\.0\\\.|192\\\.88\\\.99\\\.|198\\\.18\\\.|198\\\.19\\\.|198\\\.51\\\.100\\\.|203\\\.0\\\.113\\\.|224\\\.|240\\\.|255\\\.)') = ''
+      group by dstip, MANAGE, threatclass
+        ) b ON black_reputation_ip.ip=b.dip
+),
+industry_stats AS (
+  SELECT ip, industry, SUM(attack_count) AS industry_attack_count
+  FROM reputation_ip_stat GROUP BY ip, industry
+),
+region_stats AS (
+  SELECT ip, country, province, SUM(attack_count) AS region_attack_count
+  FROM reputation_ip_stat GROUP BY ip, country, province
+),
+log_stats AS (
+  SELECT ip, src_log, SUM(attack_count) AS log_attack_count
+  FROM reputation_ip_stat GROUP BY ip, src_log
+)      
+
+SELECT 
+    ris.ip, 
+    ris.port,
+    ris.direction,
+    ris.expire_time,
+    ris.deleted_time,
+    SUM(ris.attack_count) AS attack_count,
+    COLLECT_set(CONCAT(ris.devid)) AS devids,
+    COLLECT_set(CONCAT(ris.industry, '@', ins.industry_attack_count)) AS industry_count,
+    COLLECT_set(CONCAT(ris.country, '@', ris.province, '@', rs.region_attack_count)) AS region_count,
+    COLLECT_set(CONCAT(ris.src_log, '@', ls.log_attack_count)) AS src_log_count
+FROM 
+    reputation_ip_stat ris
+JOIN industry_stats ins ON ris.ip=ins.ip AND ris.industry=ins.industry
+JOIN region_stats rs ON ris.ip=rs.ip AND ris.country=rs.country AND ris.province=rs.province
+JOIN log_stats ls ON ris.ip=ls.ip AND ris.src_log=ls.src_log
+GROUP BY ris.ip, 
+         ris.port,
+         ris.direction,
+         ris.expire_time,
+         ris.deleted_time
+",/,,,,,,,,,
+,保留,王绪寒,,ATTACK_IP_ACTIVE_STAT_SQL,上下文生产,,情报上下文-攻击次数统计,高,tez,,,,,,,,,,,,,"WITH black_reputation_ip AS (
+    SELECT 
+        ip, 
+        port,
+        direction,
+        expire_time,
+        deleted_time
+    FROM csc.ods_csc_tim_db_intelligence_tb_ip_reputation_sync
+    WHERE direction=""1""
+        AND port=0 
+),
+reputation_ip_stat AS
+  (SELECT ip,
+          port,
+          direction,
+          expire_time,
+          deleted_time,
+          attack_count,
+          devid,
+          industry,
+          country,
+          province,
+          src_log
+   FROM
+     black_reputation_ip
+   JOIN
+     (SELECT attack_count,
+             MANAGE AS devid,
+             CASE
+                 WHEN industry IS NULL
+                      OR length(industry) = 0 THEN ""其他""
+                 ELSE industry
+             END AS industry,
+             CASE
+                 WHEN country IS NULL
+                      OR length(country) = 0 THEN ""其他""
+                 ELSE country
+             END AS country,
+             CASE
+                 WHEN province IS NULL
+                      OR length(province) = 0 THEN ""其他""
+                 ELSE province
+             END AS province,
+             COALESCE(CAST(threatclass AS STRING), '0') AS src_log,
+             srcip AS sip
+      FROM sodl.dwb_sodl_ip_info
+      WHERE DAY=:mday
+        ) b ON black_reputation_ip.ip=b.sip
+   )
+SELECT ip,
+       port,
+       direction,
+       expire_time,
+       deleted_time,
+       attack_count,
+       devids,
+       industry_count,
+       region_count,
+       src_log_count
+FROM 
+    (SELECT ip,
+            port,
+            direction,
+            expire_time,
+            deleted_time,
+            SUM(attack_count) AS attack_count,
+            COLLECT_set(CONCAT(devid)) AS devids,
+            COLLECT_set(CONCAT(industry, '@', industry_attack_count)) AS industry_count,
+            COLLECT_set(CONCAT(country, '@', province, '@', region_attack_count)) AS region_count,
+            COLLECT_set(CONCAT(src_log, '@', log_attack_count)) AS src_log_count
+     FROM
+       (SELECT ip,
+               port,
+               direction,
+               expire_time,
+               deleted_time,
+               attack_count,
+               devid,
+               industry,
+               country,
+               province,
+               src_log,
+               SUM(attack_count) OVER (PARTITION BY ip, industry) AS industry_attack_count,
+               SUM(attack_count) OVER (PARTITION BY ip, country, province) AS region_attack_count,
+               SUM(attack_count) OVER (PARTITION BY ip, src_log) AS log_attack_count
+        FROM reputation_ip_stat) t
+     GROUP BY ip, 
+              port,
+              direction,
+              expire_time,
+              deleted_time) b",/,,,,,,,,,
+,保留,王绪寒,,DOMAIN_ACTIVE_STAT_SQL,上下文生产,,情报上下文-攻击次数统计,高,tez,,,,,,,,171744573,,38742,"12mins, 12sec",,"WITH domain_stat AS
+(SELECT black_reputation_domain.domain,
+      black_reputation_domain.deleted_time,
+      attack_count,
+      devid,
+      ""其他"" as industry,
+      ""其他"" as country,
+      ""其他"" as province,
+      src_log
+FROM
+ ( 
+    SELECT domain, deleted_time
+      FROM csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync
+      where reputation = '0'
+ ) black_reputation_domain
+JOIN
+ (SELECT sum(attack_count) as attack_count,
+         MANAGE AS devid,
+         COALESCE(CAST(threatclass AS STRING), '0') AS src_log,
+         domain
+  FROM sodl.dwb_sodl_domain_info
+      WHERE DAY=:mday
+      and row_key!=''
+  group by domain, MANAGE, threatclass
+      ) b ON black_reputation_domain.domain=b.domain 
+),
+industry_stats AS (
+  SELECT domain, industry, SUM(attack_count) AS industry_attack_count
+  FROM domain_stat GROUP BY domain, industry
+),
+region_stats AS (
+  SELECT domain, country, province, SUM(attack_count) AS region_attack_count
+  FROM domain_stat GROUP BY domain, country, province
+),
+log_stats AS (
+  SELECT domain, src_log, SUM(attack_count) AS log_attack_count
+  FROM domain_stat GROUP BY domain, src_log
+)      
+
+SELECT ds.domain,
+       ds.deleted_time,
+       SUM(ds.attack_count) AS attack_count,
+       COLLECT_set(CONCAT(ds.devid)) AS devids,
+       COLLECT_set(CONCAT(ds.industry, '@', ins.industry_attack_count)) AS industry_count,
+       COLLECT_set(CONCAT(ds.country, '@', ds.province, '@', rs.region_attack_count)) AS region_count,
+       COLLECT_set(CONCAT(ds.src_log, '@', ls.log_attack_count)) AS src_log_count
+FROM 
+    domain_stat ds
+JOIN industry_stats ins ON ds.domain=ins.domain AND ds.industry=ins.industry
+JOIN region_stats rs ON ds.domain=rs.domain AND ds.country=rs.country AND ds.province=rs.province
+JOIN log_stats ls ON ds.domain=ls.domain AND ds.src_log=ls.src_log
+GROUP BY ds.domain, ds.deleted_time
+",/,,,,,,,,,
+,保留,王绪寒,,MD5_ACTIVE_STAT_SQL,上下文生产,,情报上下文-攻击次数统计,高,tez,,,,,,,,23548996,,5617,"27mins, 26sec",,"WITH md5_stat AS
+  (SELECT filehash AS md5,
+          manage AS devid,
+                    attack_count,
+                    industry,
+                    country,
+                    province
+   FROM sodl.dwb_sodl_md5_info
+   WHERE src_log='endpoint_security_log'
+     AND file_attr='0'
+     AND DAY=:mday
+   UNION ALL SELECT md5,
+                    devid,
+                    attack_count,
+                    industry,
+                    country,
+                    province
+   FROM default.dwb_md5_info
+   WHERE src_log='log_audit'
+     AND SOURCE='file_hash'
+     AND attr='0'
+     AND DAY=:mday)
+SELECT base_stat.md5,
+       base_stat.attack_count,
+       base_stat.devids,
+       industry_count,
+       region_count
+FROM
+  (SELECT md5,
+          sum(attack_count) AS attack_count,
+          collect_list(concat(devid)) AS devids
+   FROM md5_stat
+   GROUP BY md5) base_stat
+JOIN
+  (SELECT md5,
+          collect_list(concat(industry, '@', attack_count)) AS industry_count
+   FROM
+     (SELECT md5,
+             CASE
+                 WHEN industry IS NULL
+                      OR length(industry) = 0 THEN ""其他""
+                 ELSE industry
+             END AS industry,
+             sum(attack_count) AS attack_count
+      FROM md5_stat
+      GROUP BY md5,
+               industry) industry_temp
+   GROUP BY md5) industry_stat ON base_stat.md5 = industry_stat.md5
+JOIN
+  (SELECT md5,
+          collect_list(concat(country, '@', province, '@', attack_count)) AS region_count
+   FROM
+     (SELECT md5,
+             CASE
+                 WHEN country IS NULL
+                      OR length(country) = 0 THEN ""其他""
+                 ELSE country
+             END AS country,
+             CASE
+                 WHEN province IS NULL
+                      OR length(province) = 0 THEN ""其他""
+                 ELSE province
+             END AS province,
+             sum(attack_count) AS attack_count
+      FROM md5_stat
+      GROUP BY md5,
+               country,
+               province) region_temp
+   GROUP BY md5) region_stat ON base_stat.md5 = region_stat.md5
+",/,,,,,,,,,
+,保留,王绪寒,,INFO_EXIST_CHECK_SQL,上下文生产,,情报上下文-攻击次数统计,高,tez,,,,,,,,/,/,/,/,,"SELECT 1 FROM sodl.dwb_sodl_domain_info WHERE day=:mday LIMIT 1        SELECT 1 FROM sodl.dwb_sodl_ip_info WHERE day=:mday LIMIT 1            SELECT count(1) FROM (SELECT 1 FROM sodl.dwb_sodl_md5_info 
+        WHERE src_log='endpoint_security_log' AND file_attr='0' AND DAY=:mday LIMIT 1) t LIMIT 1             SELECT count(1) FROM (SELECT 1 FROM default.dwb_md5_info 
+        WHERE src_log='log_audit' AND SOURCE='file_hash' AND attr='0' AND DAY=:mday LIMIT 1) t LIMIT 1",/,,,,,,,,,
+ip-intelligence-dispatch-prc,保留,王绪寒,数据湖未知上报c2 ip分发,"ti-unknown-ipdata-consume
+scia/default/collect-ngaf-ipdata-log",基础设施,,云情报网关-数据分发,高,pulsar,,/,,,,,,/,/,/,/,http://code.sangfor.org/SRI/SCIA/CIPD/IP/ip-intelligence-dispatch-prc,,/,,,,,,,,,
+dns-intelligence-dispatch-prc,保留,王绪寒,数据湖未知上报dns分发,"ti-unknown-dns-consume
+scia/default/dns_log",基础设施,,云情报网关-数据分发,高,pulsar,,/,,,,,,/,/,/,/,http://code.sangfor.org/SRI/SCIA/CIPD/IP/dns-intelligence-dispatch-prc,,/,,,,,,,,,
+url-intelligence-dispatch-prc,保留,王绪寒,数据湖未知上报url分发,"ti-unknown-url-consume
+scia/default/collect-ngaf-url-log",基础设施,,云情报网关-数据分发,高,pulsar,,/,,,,,,/,/,/,/,http://code.sangfor.org/SRI/SCIA/CIPD/IP/url-intelligence-dispatch-prc,,/,,,,,,,,,
+sodl_ods_info,保留,王绪寒,数据同步（拉取数据湖数据）,dns_log.sql,基础设施,,数据湖数据同步,,,,,,,,,,,,,,http://code.sangfor.org/SRI/SCIA/oozie/oozie-sz/blob/master/oozie_projects/jobs/ShenZhen/sodl_ods_info/config.xml,"select productType,
+       manage,
+       productVer,
+       srcIp,
+       dstIp,
+       qr,
+       qTypes,
+       queries,
+       aTypes,
+       answers,
+       count(1) as log_num
+from sodl.dns_log
+where insertTimestamp >= toUnixTimestamp('{start_time}', 'Asia/Shanghai')
+  and insertTimestamp < toUnixTimestamp('{end_time}', 'Asia/Shanghai')
+group by productType,
+         manage,
+         productVer,
+         srcIp,
+         dstIp,
+         qr,
+         qTypes,
+         queries,
+         aTypes,
+         answers
+FORMAT Parquet
+settings max_memory_usage=21474836480",/,,,,,,,,,
+,保留,王绪寒,,endpoint_security_log.sql,基础设施,,数据湖数据同步,,,,,,,,,,,,,,,"select threatClass,
+       threatType,
+       threatSubType,
+       productType,
+       manage,
+       manageIp,
+       productVer,
+       engine,
+       fileMd5,
+       domain,
+       count(1) as log_num
+from sodl.endpoint_security_log
+where insertTimestamp >= toUnixTimestamp('{start_time}', 'Asia/Shanghai')
+  and insertTimestamp < toUnixTimestamp('{end_time}', 'Asia/Shanghai')
+group by threatClass,
+         threatType,
+         threatSubType,
+         productType,
+         manage,
+         manageIp,
+         productVer,
+         engine,
+         fileMd5,
+         domain
+FORMAT Parquet
+settings max_memory_usage=21474836480",/,,,,,,,,,
+,保留,王绪寒,,http_log.sql,基础设施,,数据湖数据同步,,,,,,,,,,,,,,,"SELECT productType,
+      manage,
+      productVer,
+      srcIp,
+      dstIp,
+      url,
+      count(1) AS log_num
+FROM sodl.http_log
+WHERE insertTimestamp >= toUnixTimestamp('{start_time}', 'Asia/Shanghai')
+ AND insertTimestamp < toUnixTimestamp('{end_time}', 'Asia/Shanghai')
+ AND productType IN ('NGAF', 'AF', 'VNGAF')
+GROUP BY productType,
+        manage,
+        productVer,
+        srcIp,
+        dstIp,
+        url
+FORMAT Parquet
+settings max_memory_usage = 21474836480
+",/,,,,,,,,,
+,保留,王绪寒,,network_security_log.sql,基础设施,,数据湖数据同步,,,,,,,,,,,,,,,"select threatClass,
+       threatType,
+       threatSubType,
+       productType,
+       manage,
+       productVer,
+       srcIp,
+       dstIp,
+       reqRuleId, -- sid
+       fileHash,
+       action,    -- waf, ips -> net_atcion
+       tiType,
+       riskLevel, -- sip_filethreat_result -> threat
+       severity,  -- waf, ips -> level
+       engine,
+       url,
+       result,
+       count(1) as log_num,
+       ruleName,
+       requestHead,
+       requestBody
+from sodl.network_security_log
+where insertTimestamp >= toUnixTimestamp('{start_time}', 'Asia/Shanghai')
+  and insertTimestamp < toUnixTimestamp('{end_time}', 'Asia/Shanghai')
+  group by threatClass,
+       threatType,
+       threatSubType,
+       productType,
+       manage,
+       productVer,
+       srcIp,
+       dstIp,
+       reqRuleId, -- sid
+       fileHash,
+       action,    -- waf, ips -> net_atcion
+       tiType,
+       riskLevel, -- sip_filethreat_result -> threat
+       severity,  -- waf, ips -> level
+       engine,
+       url,
+       result,
+       ruleName,
+       requestHead,
+       requestBody
+FORMAT Parquet
+settings max_memory_usage=21474836480",/,,,,,,,,,
+,保留,王绪寒,,sip_iocstat_log.sql,基础设施,,数据湖数据同步,,,,,,,,,,,,,,,"select productType,
+       deviceId as manage,
+       productVer,
+       ioc_type,
+       ioc,
+       sum(record_count) as record_count,
+       count(1) as log_num
+from sodl.sip_iocstat_log
+where insertTimestamp >= toUnixTimestamp('{start_time}', 'Asia/Shanghai')
+  and insertTimestamp < toUnixTimestamp('{end_time}', 'Asia/Shanghai')
+group by productType,
+         deviceId,
+         productVer,
+         ioc_type,
+         ioc
+FORMAT Parquet
+settings max_memory_usage = 21474836480",/,,,,,,,,,
+,保留,王绪寒,,url_log.sql,基础设施,,数据湖数据同步,,,,,,,,,,,,,,,"select productType,
+       deviceId as manage,
+       productVer,
+       sip,
+       dip,
+       host,
+       uri,
+       urls, 
+       count(1) as log_num
+from sodl.url_log
+where insertTimestamp >= toUnixTimestamp('{start_time}', 'Asia/Shanghai')
+  and insertTimestamp < toUnixTimestamp('{end_time}', 'Asia/Shanghai')
+group by productType,
+         deviceId,
+         productVer,
+         sip,
+         dip,
+         host,
+         uri,
+         urls
+FORMAT Parquet
+settings max_memory_usage = 21474836480",/,,,,,,,,,
+汇总,,,,,,,,,,,,,,,,,,9241047.914166665,,,,,/,,,,,,,,,
+yara-sample-query-job,可下线,刘俊,样本查询,/,其它部门,编译即结束，没向tez提交任务。疑似可下线,,,tez,,3 * * * *,24,,,,,,,,,http://code.sangfor.org/SRI/SCIA/YaraHunting/yara-sample-query-job/blob/master/cron-job/yara_sample_query/config.py,"SELECT file_md5
+FROM default.dwb_md5_record
+JOIN sri.ods_sri_hashinfo ON md5=file_md5
+WHERE DAY='20251024'
+AND hour='22'
+AND fdfs_path IS NOT NULL
+AND fdfs_path != """"
+AND attr_info=0
+GROUP BY file_md5",/,,,,,,,,,
+sp-old-update-report-cron-job,可下线,,sp数据采集升级反馈上报中台,/,其它部门,疑似可下线，最后一次提交5年前,,,tez,,/,,,,,,/,/,/,/,http://code.sangfor.org/SRI/SCIA/sp/sp-old-update-report-cron-job/blob/master/cron-job/sp_update_report/config.py,"select source, dev_id, version, sp_name, mtime, err_info, product, upgrade_success, hour_time, sub_type, data from ods_sp_old_dev_update where day=20251102",/,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,/,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,/,,292801774,,,,,,,,,,,,,/,/,,,,,,,,,,,,
+,,,,/,,/,,,,,,,,,,,,,/,/,,,,,,,,,,,,
