@@ -56,13 +56,13 @@
 
 **推断：** `from_unixtime(inserttimestamp)` 按秒级 Unix 时间解释。依据是 `all.sql` L274 对 `sodl.handle_info_log` 使用 `toDateTime(insertTimestamp)`，以及本机实验列 `inserttimestamp:BIGINT`（`lab/build_bulk_data.py` 对 `handle_info_log`、`operation_rdp_event_log`）。用户没有给出 `sodl.network_security_log`、`sodl.sip_iocstat_log` 上 `inserttimestamp` 的类型。若实际是毫秒或字符串，这个小时表达式要改。`from_unixtime` 使用 StarRocks 会话时区，旧 `hour` 的时区材料没有写明。按 DEC-009，这里不另加 `CAST`。
 
-## sodl.network_security_log 的 log_num
+## sodl 表的 log_num
 
-确认日期：2026-10-16。决策：DEC-019。来源：用户在当前 StarRocks 执行黑域名语句，报错 `Column 'log_num' cannot be resolved`。
+确认日期：2026-10-16。决策：DEC-019、DEC-020。来源：用户说明「这个要改为count(1)，sodl现在没有这个字段log_num」。此前黑域名语句已报 `Column 'log_num' cannot be resolved`。
 
-`sodl.network_security_log` 的语句不再写 `log_num`。原来的 `sum(log_num)` 改为 `count(1)`。
+`sodl.*` 的语句不再写 `log_num`。原来的 `sum(log_num)` 改为 `count(1)`。
 
-**推断：** 旧字段清单里这张表有 `log_num`，见 `outputs/01a0f033-77ef-7e82-ab87-1ada9098deb2/build_sodl_fields.mjs`。用户当前表解析不到该列，也没有给出替代计数字段，因此一行计 1。`sodl.sip_iocstat_log` 的 `record_count` 不在这次报错里，继续保留。
+旧字段清单里 `sodl.network_security_log` 仍有 `log_num`，见 `outputs/01a0f033-77ef-7e82-ab87-1ada9098deb2/build_sodl_fields.mjs`。当前 StarRocks 以用户说明为准，不用那份旧清单。`sodl.sip_iocstat_log` 的 `record_count` 不是 `log_num`，继续保留。
 
 ## 不在本文件中的对象
 
