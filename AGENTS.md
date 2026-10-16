@@ -12,21 +12,48 @@
 - 对表/任务下线、换源等决定，核对现有材料中的受影响服务，区分SQL明确引用、仅手工来源标注和缺少证据。记录决策不等于获得额外生产操作授权。
 - 完成后简要告知追加的编号和要点，并提供追踪文件链接。
 
+## 旧平台 SQL 转换为 StarRocks
+
+用户给出旧平台查询语句时，转换成新平台 StarRocks（SR）语句。旧平台用 Hive 或 Trino 查询，语句一般是 Spark SQL 或 Trino SQL。新平台用 StarRocks 查询。
+
+新平台的库、表和路径与旧平台不同。转换时只使用用户当次给出的新平台名称，替换语句中的旧库、旧表和旧路径。用户当次没有给出对应新名称的对象，保留原名并标明「缺少新平台表名」，不自行补表名，也不按旧命名习惯推断新表名。
+
+输出包含三部分：
+
+- 替换并改写后的 StarRocks SQL
+- 当次实际使用的旧表到新表对照
+- 尚未替换的表，以及不能确认 StarRocks 是否支持的函数
+
+已确认的数据契约仍要遵守：`docs/迁移事项进度与决策追踪.md` 的 DEC-009 规定目标表字段按 `VARCHAR` 落地。数值比较、时间范围、排序、聚合和关联需要显式转换。当次没有给出字段实际编码时，标出这些位置，不把旧平台字段类型写成 StarRocks 物理类型。
+
+转换结果只是语句草稿。它不表示已经在生产 StarRocks 执行，也不表示可以切流。
+
 ## Cursor Cloud specific instructions
 
-本仓库是迁移文档和离线分析材料，没有需要常驻的 Web 服务。
+本仓库的可运行部分有两类：离线分析脚本，以及本机实验用的 StarRocks、Hive、Trino。后者只存在于 Cloud Agent 虚拟机，不改变公司测试环境或生产环境的事实。
 
-用户级 Python 依赖（与当前核对脚本使用的 sqlglot 版本一致）：
+实验环境由 `lab/install.sh` 安装、`lab/start.sh` 启动。查询页是 `http://127.0.0.1:8787`。三个引擎都已限制内存，并使用 8GB swap 文件 `/var/lib/lab/swapfile`。
 
-`python3 -m pip install --user 'sqlglot==30.18.0' 'pandas==3.0.6' 'openpyxl==3.1.5'`
+| 组件 | 版本 | 地址 |
+| --- | --- | --- |
+| StarRocks FE / BE | 3.5.21 | MySQL 协议 `127.0.0.1:9030`，用户 `root`，密码为空；BE `127.0.0.1:9050` |
+| Hive Metastore / HiveServer2 | Hive 4.0.1，Hadoop 3.4.1 | `127.0.0.1:9083` / `127.0.0.1:10000` |
+| Trino | 446 | `http://127.0.0.1:8080` |
+| 查询页 | `lab/query_platform.py` | `http://127.0.0.1:8787` |
 
-代表性检查：
+样例表是 `lab.ioc_hit`。Trino 用 `hive.lab.ioc_hit` 和 `starrocks.lab.ioc_hit` 读取同一张逻辑表。Trino 446 是当前 Java 21 能运行的版本；材料里生产查询入口记为 Trino 358，不能把本机函数行为当成生产结论。
+
+用户级 Python 依赖：
+
+`python3 -m pip install --user 'sqlglot==30.18.0' 'pandas==3.0.6' 'openpyxl==3.1.5' 'pymysql==1.1.1'`
+
+离线核对：
 
 `python3 outputs/sql-source-audit/analyze.py`
 
 该脚本读取仓库根目录的 `大数据平台YARN上的任务梳理-云脑大数据平台.csv` 与 `大数据平台YARN上的任务梳理-项目数据来源及输出.csv`，标准输出第一行包含 `jobs`、`manual`、`sql_units`。运行会重写 `outputs/sql-source-audit/parsed.json`。
 
-以下脚本依赖本仓库之外的路径或文件，云端虚拟机默认不具备：
+以下脚本依赖本仓库之外的路径或文件：
 
 - `scripts/extract_app_call_graph_context.py` 读取 `/Users/jun/project/sxf/2026/app-call-graph/results`
 - `scripts/hive_queryid_to_sql.sh` 默认扫描 `/matrix/data/logs/hive`
