@@ -33,6 +33,27 @@
 
 旧压缩 SQL 同时选出列 `log_app_id`，并把 `log_app_id AS app_id` 用作分区，见 `log/LOG_COMPRESS_AUDIT_DETAIL.md` L28–33 与 `docs/Hive到StarRocks任务分类与迁移边界.md` L124。这条规则按用户确认执行。截图没有字段清单，本表以外的列仍不能写成已经核对过的物理列。
 
+## sodl 表的日期和小时
+
+确认日期：2026-10-16。决策：DEC-016。来源：用户说明 `sodl` 后的表没有 `day` 和 `hour`，`day` 用 `insertdate = '2026-10-01'` 代替，`hour` 用 `inserttimestamp`。
+
+只改 `sodl.*`。`csc.ods_csc_log_audit` 不在这条里，它的 `day`、`hour` 仍按旧名保留，并标明「缺少新平台字段名」。
+
+| 旧写法 | 当前写法 | 说明 |
+| --- | --- | --- |
+| `day = 20261001` | `insertdate = '2026-10-01'` | 用户给出的具体替换。八位 `YYYYMMDD` 写成 `'YYYY-MM-DD'` |
+| `hour = 0` | `date_format(from_unixtime(inserttimestamp), '%H') = '00'` | 小时取 `inserttimestamp`。不用 `uploadtimestamp`，不用 `recordtimestamp` |
+
+用户给出的三个时间戳：
+
+| 字段 | 含义 | 是否用来代替 `hour` |
+| --- | --- | --- |
+| `uploadtimestamp` | 日志上传时间戳，设备发出的时间 | 不用。口径偏客户端上报 |
+| `inserttimestamp` | 日志入库时间戳，数据湖收到的时间 | 用这个 |
+| `recordtimestamp` | 日志记录时间戳，事件发生的时间 | 不用。口径偏事件实际发生 |
+
+**推断：** `from_unixtime(inserttimestamp)` 按秒级 Unix 时间解释。依据是 `all.sql` L274 对 `sodl.handle_info_log` 使用 `toDateTime(insertTimestamp)`，以及本机实验列 `inserttimestamp:BIGINT`（`lab/build_bulk_data.py` 对 `handle_info_log`、`operation_rdp_event_log`）。用户没有给出 `sodl.network_security_log`、`sodl.sip_iocstat_log` 上 `inserttimestamp` 的类型。若实际是毫秒或字符串，这个小时表达式要改。`from_unixtime` 使用 StarRocks 会话时区，旧 `hour` 的时区材料没有写明。按 DEC-009，这里不另加 `CAST`。
+
 ## 不在本文件中的对象
 
 以下名称在材料里出现过，当前没有用户确认的新名称，转换时保留原名并标明「缺少新平台表名」：
@@ -43,8 +64,10 @@
 - `csc.ods_csc_log_stats`
 - `business.*`
 
-`module_id`、`str1`–`str10`、`long1`、`hour`、`day` 只在旧压缩 SQL 的选择列表中出现。它们不在本文件的字段表里，语句中保留原名，并标明「缺少新平台字段名」。
+`module_id`、`str1`–`str10`、`long1` 只在旧压缩 SQL 的选择列表中出现。它们不在本文件的字段表里，语句中保留原名，并标明「缺少新平台字段名」。
+
+`day`、`hour` 在非 `sodl` 表上同样保留原名，并标明「缺少新平台字段名」。`sodl.*` 按上一节改成 `insertdate` 和 `inserttimestamp`。
 
 ## 本机实验草稿
 
-`outputs/all-starrocks.sql` 是本机实验库草稿。实验表的列名仍是 `log_app_id`。该文件不按本规则改名。交给用户的 StarRocks 语句按本文件替换。
+`outputs/all-starrocks.sql` 是本机实验库草稿。实验表的列名仍是 `log_app_id`、`day`、`hour`。该文件不按本规则改名。交给用户的 StarRocks 语句按本文件替换。
