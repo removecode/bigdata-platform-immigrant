@@ -1,0 +1,4 @@
+name	rows	sample
+domain	110	shop5.brand53.com domain_num=100
+file	0	query succeeded; lab file rows have long1=1 and the SQL keeps long1=0
+url	100	http://shop5.brand53.com/path/14 url_num=100

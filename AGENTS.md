@@ -32,7 +32,11 @@
 
 已确认的数据契约仍要遵守：`docs/迁移事项进度与决策追踪.md` 的 DEC-009 规定目标表字段按 `VARCHAR` 落地。数值比较、时间范围、排序、聚合和关联需要显式转换。当次没有给出字段实际编码时，标出这些位置，不把旧平台字段类型写成 StarRocks 物理类型。
 
-转换结果只是语句草稿。它不表示已经在生产 StarRocks 执行，也不表示可以切流。
+给出 StarRocks 语句之前，先在本机实验 StarRocks 执行通过。执行前让整段语句通过 Python 的空参数格式化（`sql % ()`），避免 MySQLdb 把 `%` 当成占位符。语句没有执行成功时，不交给用户。
+
+本机实验库的物理列仍是旧名。跑转换后的语句前，用 `lab/prepare_current_sr_names.py` 准备视图：`csc.ods_csc_log_audit` 把 `log_app_id` 映成 `app_id`；`sodl.network_security_log` 和 `sodl.sip_iocstat_log` 用 `day`、`hour` 生成 `insertdate`、`inserttimestamp`。这只适配本机实验库，不是用户当前 StarRocks 的物理表。执行后记下语句和行数。
+
+转换结果不是生产执行结果，也不表示可以切流。
 
 ## Cursor Cloud specific instructions
 
