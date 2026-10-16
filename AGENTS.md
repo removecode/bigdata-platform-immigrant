@@ -11,3 +11,24 @@
 - 区分用户已确认决策、执行者已授权实施决策和待确认建议。不得将建议、推测或未执行的操作记录为已批准或已完成。
 - 对表/任务下线、换源等决定，核对现有材料中的受影响服务，区分SQL明确引用、仅手工来源标注和缺少证据。记录决策不等于获得额外生产操作授权。
 - 完成后简要告知追加的编号和要点，并提供追踪文件链接。
+
+## Cursor Cloud specific instructions
+
+本仓库是迁移文档和离线分析材料，没有需要常驻的 Web 服务。
+
+用户级 Python 依赖（与当前核对脚本使用的 sqlglot 版本一致）：
+
+`python3 -m pip install --user 'sqlglot==30.18.0' 'pandas==3.0.6' 'openpyxl==3.1.5'`
+
+代表性检查：
+
+`python3 outputs/sql-source-audit/analyze.py`
+
+该脚本读取仓库根目录的 `大数据平台YARN上的任务梳理-云脑大数据平台.csv` 与 `大数据平台YARN上的任务梳理-项目数据来源及输出.csv`，标准输出第一行包含 `jobs`、`manual`、`sql_units`。运行会重写 `outputs/sql-source-audit/parsed.json`。
+
+以下脚本依赖本仓库之外的路径或文件，云端虚拟机默认不具备：
+
+- `scripts/extract_app_call_graph_context.py` 读取 `/Users/jun/project/sxf/2026/app-call-graph/results`
+- `scripts/hive_queryid_to_sql.sh` 默认扫描 `/matrix/data/logs/hive`
+- `scripts/analyze_operational_requirements.py` 读取 `需求/大数据平台-运营需求-收集.xlsx`
+- `scripts/build_join_workbook.py` 读取仓库根目录的 `大数据平台YARN上的任务梳理.xlsx`
