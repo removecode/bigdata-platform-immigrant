@@ -16,7 +16,13 @@
 
 用户给出旧平台查询语句时，转换成新平台 StarRocks（SR）语句。旧平台用 Hive 或 Trino 查询，语句一般是 Spark SQL 或 Trino SQL。新平台用 StarRocks 查询。
 
-新平台的库、表和路径与旧平台不同。转换时只使用用户当次给出的新平台名称，替换语句中的旧库、旧表和旧路径。用户当次没有给出对应新名称的对象，保留原名并标明「缺少新平台表名」，不自行补表名，也不按旧命名习惯推断新表名。
+新平台的库、表、路径和部分字段与旧平台不同。每次把旧平台 SQL 改成 StarRocks 之前，先读 `docs/StarRocks语句转换规则.md`，并替换该文件里每一条已确认规则。
+
+该文件目前包含 DEC-014 的库表对照，DEC-015 的字段规则，以及 DEC-016 的 `sodl` 时间规则。标识符 `log_app_id` 改为 `app_id`。已经写成 `app_id` 的列保持不动。`sodl.*` 不再写 `day` 和 `hour`：`day = 20261001` 改为 `insertdate = '2026-10-01'`，`hour = 0` 改为 `hour(from_unixtime(inserttimestamp)) = 0`，不用 `uploadtimestamp` 或 `recordtimestamp`。`sodl.*` 没有 `log_num`，`sum(log_num)` 改为 `count(1)`。`sodl.*` 的 `manage` 改为 `deviceId AS manage`；已经取成 `devid` 的写成 `deviceId AS devid`。语句里不要写 `date_format` 的 `%` 格式串，查询端的 MySQLdb 会把它当成 Python 占位符。复杂语句在最外层 `SELECT` 后加 `/*+ SET_VAR(new_planner_optimize_timeout = 60000) */`。本机该变量默认 3000 毫秒，用户环境在 3072 毫秒时规划失败。文件里没有的库、表和字段保留原名，库表标明「缺少新平台表名」，字段标明「缺少新平台字段名」，不自行补名。
+
+`sodl.*` 的表名在该文件写明「截图未列出 sodl 表」之前，保留原名并带上这句标注。`ti.ads_ti_ip_heat_produce` 不填进旧 SQL。非 `sodl` 表上的 `module_id`、`str1`–`str10`、`long1`、`hour`、`day` 仍按旧名保留。DEC-009 继续有效。
+
+用户后续确认新的库、表、路径或字段时，追加到 `docs/StarRocks语句转换规则.md`，并在 `docs/迁移事项进度与决策追踪.md` 末尾追加记录。不要只改本段。
 
 输出包含三部分：
 
@@ -26,7 +32,11 @@
 
 已确认的数据契约仍要遵守：`docs/迁移事项进度与决策追踪.md` 的 DEC-009 规定目标表字段按 `VARCHAR` 落地。数值比较、时间范围、排序、聚合和关联需要显式转换。当次没有给出字段实际编码时，标出这些位置，不把旧平台字段类型写成 StarRocks 物理类型。
 
-转换结果只是语句草稿。它不表示已经在生产 StarRocks 执行，也不表示可以切流。
+给出 StarRocks 语句之前，先在本机实验 StarRocks 执行通过。执行前让整段语句通过 Python 的空参数格式化（`sql % ()`），避免 MySQLdb 把 `%` 当成占位符。语句没有执行成功时，不交给用户。
+
+本机实验库的物理列仍是旧名。跑转换后的语句前，用 `lab/prepare_current_sr_names.py` 准备视图：`csc.ods_csc_log_audit` 把 `log_app_id` 映成 `app_id`；`sodl.network_security_log` 和 `sodl.sip_iocstat_log` 用 `day`、`hour` 生成 `insertdate`、`inserttimestamp`。这只适配本机实验库，不是用户当前 StarRocks 的物理表。执行后记下语句和行数。
+
+转换结果不是生产执行结果，也不表示可以切流。
 
 ## Cursor Cloud specific instructions
 
