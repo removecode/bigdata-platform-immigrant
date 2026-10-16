@@ -70,6 +70,20 @@
 
 `sodl.*` 不再写列 `manage`。当前列名是 `deviceId`。语句里写 `deviceId AS manage`。原语句已经把 `manage` 取成 `devid` 时，写成 `deviceId AS devid`，`GROUP BY` 改为 `deviceId`。
 
+## 规划时间
+
+确认日期：2026-10-16。决策：DEC-022。来源：用户执行黑域名语句，StarRocks 报 `planner use long time 3072 ms in logical phase`，并提示增大 `new_planner_optimize_timeout`。
+
+本机该变量默认值是 `3000` 毫秒。超过这个时间，语句在执行前就失败。复杂语句，以及 Hive 外表取元数据较慢时，会踩到这个上限。
+
+交给用户的这类语句在最外层 `SELECT` 后写：
+
+```sql
+/*+ SET_VAR(new_planner_optimize_timeout = 60000) */
+```
+
+这是一条语句里的优化器提示，不依赖会话里先执行 `SET`。不要把提示拆成第二条语句。
+
 ## 不在本文件中的对象
 
 以下名称在材料里出现过，当前没有用户确认的新名称，转换时保留原名并标明「缺少新平台表名」：

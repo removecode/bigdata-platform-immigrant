@@ -13,7 +13,8 @@
 -- long1、day、hour、record_count 的比较和求和按 DEC-009 需要按实际编码转换。
 
 -- 黑域名
-SELECT domain,
+-- 规划时间见 DEC-022。语句提示把 new_planner_optimize_timeout 放到 60000 毫秒。
+SELECT /*+ SET_VAR(new_planner_optimize_timeout = 60000) */ domain,
        sum(domain_num) AS domain_num,
        count(DISTINCT devid) AS device_num
 FROM
@@ -72,7 +73,7 @@ ORDER BY domain_num DESC
 LIMIT 100000;
 
 -- 黑文件
-SELECT md5,
+SELECT /*+ SET_VAR(new_planner_optimize_timeout = 60000) */ md5,
        count(1) AS md5_num,
        count(DISTINCT devid) AS device_num
 FROM
@@ -97,7 +98,7 @@ ORDER BY md5_num DESC
 LIMIT 100000;
 
 -- 黑 URL
-SELECT url,
+SELECT /*+ SET_VAR(new_planner_optimize_timeout = 60000) */ url,
        sum(url_num) AS url_num,
        count(DISTINCT devid) AS device_num
 FROM
