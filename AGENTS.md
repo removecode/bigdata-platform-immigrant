@@ -18,7 +18,7 @@
 
 新平台的库、表、路径和部分字段与旧平台不同。每次把旧平台 SQL 改成 StarRocks 之前，先读 `docs/StarRocks语句转换规则.md`，并替换该文件里每一条已确认规则。
 
-该文件目前包含 DEC-014 的库表对照，DEC-015 的字段规则，以及 DEC-016 的 `sodl` 时间规则。标识符 `log_app_id` 改为 `app_id`。已经写成 `app_id` 的列保持不动。`sodl.*` 不再写 `day` 和 `hour`：`day = 20261001` 改为 `insertdate = '2026-10-01'`，`hour = 0` 改为 `hour(from_unixtime(inserttimestamp)) = 0`，不用 `uploadtimestamp` 或 `recordtimestamp`。语句里不要写 `date_format` 的 `%` 格式串，查询端的 MySQLdb 会把它当成 Python 占位符。文件里没有的库、表和字段保留原名，库表标明「缺少新平台表名」，字段标明「缺少新平台字段名」，不自行补名。
+该文件目前包含 DEC-014 的库表对照，DEC-015 的字段规则，以及 DEC-016 的 `sodl` 时间规则。标识符 `log_app_id` 改为 `app_id`。已经写成 `app_id` 的列保持不动。`sodl.*` 不再写 `day` 和 `hour`：`day = 20261001` 改为 `insertdate = '2026-10-01'`，`hour = 0` 改为 `hour(from_unixtime(inserttimestamp)) = 0`，不用 `uploadtimestamp` 或 `recordtimestamp`。`sodl.network_security_log` 没有 `log_num`，`sum(log_num)` 改为 `count(1)`。语句里不要写 `date_format` 的 `%` 格式串，查询端的 MySQLdb 会把它当成 Python 占位符。文件里没有的库、表和字段保留原名，库表标明「缺少新平台表名」，字段标明「缺少新平台字段名」，不自行补名。
 
 `sodl.*` 的表名在该文件写明「截图未列出 sodl 表」之前，保留原名并带上这句标注。`ti.ads_ti_ip_heat_produce` 不填进旧 SQL。非 `sodl` 表上的 `module_id`、`str1`–`str10`、`long1`、`hour`、`day` 仍按旧名保留。DEC-009 继续有效。
 

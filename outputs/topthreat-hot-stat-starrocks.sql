@@ -8,7 +8,8 @@
 -- from_unixtime 按 all.sql L274 的秒级 Unix 时间推断。network_security_log、sip_iocstat_log 的类型未给出。
 -- module_id、str1、str10、long1 仍用旧名，标明「缺少新平台字段名」。
 -- 这些列来自旧压缩 SQL（log/LOG_COMPRESS_AUDIT_DETAIL.md L28–35），截图没有字段清单。
--- long1、day、hour、log_num、record_count 的比较和求和按 DEC-009 需要按实际编码转换。
+-- sodl.network_security_log 没有 log_num（DEC-019），该分支用 count(1)。
+-- long1、day、hour、record_count 的比较和求和按 DEC-009 需要按实际编码转换。
 
 -- 黑域名
 SELECT domain,
@@ -40,11 +41,10 @@ FROM
 
    SELECT domain,
           devid,
-          sum(log_num) AS domain_num
+          count(1) AS domain_num
    FROM
      (SELECT split(split(url, '//')[cardinality(split(url, '//'))], '/')[1] AS domain,
-             MANAGE AS devid,
-             log_num
+             MANAGE AS devid
       FROM sodl.network_security_log
       WHERE url IS NOT NULL
         AND url NOT IN ('', '-')
@@ -125,7 +125,7 @@ FROM
 
    SELECT url,
           manage AS devid,
-          sum(log_num) AS url_num
+          count(1) AS url_num
    FROM sodl.network_security_log
    WHERE url IS NOT NULL
      AND url NOT IN ('', '-')
