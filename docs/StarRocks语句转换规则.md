@@ -64,6 +64,12 @@
 
 旧字段清单里 `sodl.network_security_log` 仍有 `log_num`，见 `outputs/01a0f033-77ef-7e82-ab87-1ada9098deb2/build_sodl_fields.mjs`。当前 StarRocks 以用户说明为准，不用那份旧清单。`sodl.sip_iocstat_log` 的 `record_count` 不是 `log_num`，继续保留。
 
+## sodl 表的 manage
+
+确认日期：2026-10-16。决策：DEC-021。来源：用户说明「deviceId as manage」。
+
+`sodl.*` 不再写列 `manage`。当前列名是 `deviceId`。语句里写 `deviceId AS manage`。原语句已经把 `manage` 取成 `devid` 时，写成 `deviceId AS devid`，`GROUP BY` 改为 `deviceId`。
+
 ## 不在本文件中的对象
 
 以下名称在材料里出现过，当前没有用户确认的新名称，转换时保留原名并标明「缺少新平台表名」：

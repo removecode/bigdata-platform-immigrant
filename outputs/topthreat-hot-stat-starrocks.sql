@@ -9,6 +9,7 @@
 -- module_id、str1、str10、long1 仍用旧名，标明「缺少新平台字段名」。
 -- 这些列来自旧压缩 SQL（log/LOG_COMPRESS_AUDIT_DETAIL.md L28–35），截图没有字段清单。
 -- sodl.* 没有 log_num（DEC-020），原 sum(log_num) 改为 count(1)。
+-- sodl.* 的 manage 改为 deviceId（DEC-021）。热门威胁里该列取成 devid，写成 deviceId AS devid。
 -- long1、day、hour、record_count 的比较和求和按 DEC-009 需要按实际编码转换。
 
 -- 黑域名
@@ -44,7 +45,7 @@ FROM
           count(1) AS domain_num
    FROM
      (SELECT split(split(url, '//')[cardinality(split(url, '//'))], '/')[1] AS domain,
-             MANAGE AS devid
+             deviceId AS devid
       FROM sodl.network_security_log
       WHERE url IS NOT NULL
         AND url NOT IN ('', '-')
@@ -57,7 +58,7 @@ FROM
    UNION ALL
 
    SELECT ioc AS domain,
-          manage AS devid,
+          deviceId AS devid,
           sum(record_count) AS domain_num
    FROM sodl.sip_iocstat_log
    WHERE ioc_type = 'domain'
@@ -65,7 +66,7 @@ FROM
      AND ioc NOT IN ('', '-')
      AND insertdate = '2026-10-01'
      AND hour(from_unixtime(inserttimestamp)) = 0
-   GROUP BY ioc, manage) t
+   GROUP BY ioc, deviceId) t
 GROUP BY domain, devid
 ORDER BY domain_num DESC
 LIMIT 100000;
@@ -124,19 +125,19 @@ FROM
    UNION ALL
 
    SELECT url,
-          manage AS devid,
+          deviceId AS devid,
           count(1) AS url_num
    FROM sodl.network_security_log
    WHERE url IS NOT NULL
      AND url NOT IN ('', '-')
      AND insertdate = '2026-10-01'
      AND hour(from_unixtime(inserttimestamp)) = 0
-   GROUP BY url, manage
+   GROUP BY url, deviceId
 
    UNION ALL
 
    SELECT ioc AS url,
-          manage AS devid,
+          deviceId AS devid,
           sum(record_count) AS url_num
    FROM sodl.sip_iocstat_log
    WHERE ioc_type = 'url'
@@ -144,7 +145,7 @@ FROM
      AND ioc NOT IN ('', '-')
      AND insertdate = '2026-10-01'
      AND hour(from_unixtime(inserttimestamp)) = 0
-   GROUP BY ioc, manage) t
+   GROUP BY ioc, deviceId) t
 GROUP BY url, devid
 ORDER BY url_num DESC
 LIMIT 100000;
