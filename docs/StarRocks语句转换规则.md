@@ -42,7 +42,7 @@
 | 旧写法 | 当前写法 | 说明 |
 | --- | --- | --- |
 | `day = 20261001` | `insertdate = '2026-10-01'` | 用户给出的具体替换。八位 `YYYYMMDD` 写成 `'YYYY-MM-DD'` |
-| `hour = 0` | `date_format(from_unixtime(inserttimestamp), '%H') = '00'` | 小时取 `inserttimestamp`。不用 `uploadtimestamp`，不用 `recordtimestamp` |
+| `hour = 0` | `hour(from_unixtime(inserttimestamp)) = 0` | 小时取 `inserttimestamp`。不用 `uploadtimestamp`，不用 `recordtimestamp` |
 
 用户给出的三个时间戳：
 
@@ -51,6 +51,8 @@
 | `uploadtimestamp` | 日志上传时间戳，设备发出的时间 | 不用。口径偏客户端上报 |
 | `inserttimestamp` | 日志入库时间戳，数据湖收到的时间 | 用这个 |
 | `recordtimestamp` | 日志记录时间戳，事件发生的时间 | 不用。口径偏事件实际发生 |
+
+查询端使用 MySQLdb / SQLAlchemy 时，SQL 文本里的 `%` 会被当成 Python 格式化占位符。`date_format(..., '%H')` 会报 `not enough arguments for format string`。交给用户的语句不写这种格式串，小时用 `hour()`。见 DEC-017。
 
 **推断：** `from_unixtime(inserttimestamp)` 按秒级 Unix 时间解释。依据是 `all.sql` L274 对 `sodl.handle_info_log` 使用 `toDateTime(insertTimestamp)`，以及本机实验列 `inserttimestamp:BIGINT`（`lab/build_bulk_data.py` 对 `handle_info_log`、`operation_rdp_event_log`）。用户没有给出 `sodl.network_security_log`、`sodl.sip_iocstat_log` 上 `inserttimestamp` 的类型。若实际是毫秒或字符串，这个小时表达式要改。`from_unixtime` 使用 StarRocks 会话时区，旧 `hour` 的时区材料没有写明。按 DEC-009，这里不另加 `CAST`。
 

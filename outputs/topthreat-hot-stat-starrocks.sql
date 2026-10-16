@@ -4,7 +4,7 @@
 -- sodl.network_security_log、sodl.sip_iocstat_log：截图未列出 sodl 表，保留原名。
 -- 字段按 DEC-015：标识符 log_app_id 改为 app_id。
 -- csc.ods_csc_log_audit 仍用 day=20261001、hour=0。这不是 sodl 表，这两个字段标明「缺少新平台字段名」。
--- sodl.* 按 DEC-016：day=20261001 改为 insertdate='2026-10-01'；hour=0 改为 inserttimestamp 的小时。
+-- sodl.* 按 DEC-016、DEC-017：day=20261001 改为 insertdate='2026-10-01'；hour=0 改为 hour(from_unixtime(inserttimestamp)) = 0。
 -- from_unixtime 按 all.sql L274 的秒级 Unix 时间推断。network_security_log、sip_iocstat_log 的类型未给出。
 -- module_id、str1、str10、long1 仍用旧名，标明「缺少新平台字段名」。
 -- 这些列来自旧压缩 SQL（log/LOG_COMPRESS_AUDIT_DETAIL.md L28–35），截图没有字段清单。
@@ -49,7 +49,7 @@ FROM
       WHERE url IS NOT NULL
         AND url NOT IN ('', '-')
         AND insertdate = '2026-10-01'
-        AND date_format(from_unixtime(inserttimestamp), '%H') = '00') t
+        AND hour(from_unixtime(inserttimestamp)) = 0) t
    WHERE domain IS NOT NULL
      AND domain != ''
    GROUP BY domain, devid
@@ -64,7 +64,7 @@ FROM
      AND ioc IS NOT NULL
      AND ioc NOT IN ('', '-')
      AND insertdate = '2026-10-01'
-     AND date_format(from_unixtime(inserttimestamp), '%H') = '00'
+     AND hour(from_unixtime(inserttimestamp)) = 0
    GROUP BY ioc, manage) t
 GROUP BY domain, devid
 ORDER BY domain_num DESC
@@ -130,7 +130,7 @@ FROM
    WHERE url IS NOT NULL
      AND url NOT IN ('', '-')
      AND insertdate = '2026-10-01'
-     AND date_format(from_unixtime(inserttimestamp), '%H') = '00'
+     AND hour(from_unixtime(inserttimestamp)) = 0
    GROUP BY url, manage
 
    UNION ALL
@@ -143,7 +143,7 @@ FROM
      AND ioc IS NOT NULL
      AND ioc NOT IN ('', '-')
      AND insertdate = '2026-10-01'
-     AND date_format(from_unixtime(inserttimestamp), '%H') = '00'
+     AND hour(from_unixtime(inserttimestamp)) = 0
    GROUP BY ioc, manage) t
 GROUP BY url, devid
 ORDER BY url_num DESC
