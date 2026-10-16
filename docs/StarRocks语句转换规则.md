@@ -90,6 +90,8 @@
 
 材料里的项目 UDF 是 `default.format_json_list`、`default.calc_url_mask`、`default.sub_parent_domain`（见 `log/ODS_TO_DWB_DETAIL.md`、`all.sql`）。转换时语句里的 UDF 调用原样保留，包括函数名、`default.` 前缀和参数，不改写成 `parse_json`、`unnest`、`regexp_replace` 等内置函数。不修改 `lab/udf` 下的 UDF 源码。若某个 UDF 在当前 StarRocks 不可用或签名不同，在输出的第三部分标明，不自行替换。
 
+`default` 在 StarRocks 是保留字，`default.format_json_list(...)` 会报语法错误，函数库名要写成 `` `default`.format_json_list(...) ``。`explode` 没有对应写法，`LATERAL VIEW explode(UDF(...)) t AS x` 只能写成 `, unnest(UDF(...)) AS t(x)`。这两处是语法需要，函数名与参数不变。本机用 `lab/udf-sr` 里的孪生实现跑语句，见 ACT-046。
+
 ## 不在本文件中的对象
 
 以下名称在材料里出现过，当前没有用户确认的新名称，转换时保留原名并标明「缺少新平台表名」：
