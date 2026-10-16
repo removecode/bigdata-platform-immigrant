@@ -134,6 +134,13 @@ if [[ ! -d /var/lib/lab/hive/metastore_db ]]; then
   /opt/lab/hive/bin/schematool -dbType derby -initSchema
 fi
 
+mkdir -p /opt/lab/udf
+rm -rf /opt/lab/udf/src
+cp -a "${LAB_SRC}/udf/src" /opt/lab/udf/src
+install -m 0755 "${LAB_SRC}/udf/build.sh" /opt/lab/udf/build.sh
+install -m 0755 "${LAB_SRC}/udf/register.sh" /opt/lab/udf/register.sh
+bash /opt/lab/udf/build.sh
+
 install -m 0755 "${LAB_SRC}/start.sh" /opt/lab/start.sh
 install -m 0755 "${LAB_SRC}/seed.py" /opt/lab/seed.py
 install -m 0755 "${LAB_SRC}/query_platform.py" /opt/lab/query_platform.py

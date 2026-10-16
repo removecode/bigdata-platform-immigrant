@@ -21,5 +21,6 @@ HIVE_OPENS="\
 --add-opens=java.base/sun.util.calendar=ALL-UNNAMED \
 --add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED \
 --add-opens=java.management/sun.management=ALL-UNNAMED"
+export HIVE_AUX_JARS_PATH="${HIVE_AUX_JARS_PATH:-/opt/lab/udf/lab-udf.jar}"
 export HADOOP_OPTS="${HADOOP_OPTS:-} ${HIVE_OPENS} -Xmx384m"
 export HADOOP_CLIENT_OPTS="${HADOOP_CLIENT_OPTS:-} ${HIVE_OPENS} -Xmx512m"

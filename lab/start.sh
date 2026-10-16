@@ -86,11 +86,17 @@ if ! port_open 9083; then
 fi
 wait_port 9083 "Hive Metastore" 60 || { tail -n 100 /var/log/lab/hive-metastore.log || true; exit 1; }
 
+if [[ -x /opt/lab/udf/build.sh && ! -f /opt/lab/udf/lab-udf.jar ]]; then
+  bash /opt/lab/udf/build.sh
+fi
 if ! port_open 10000; then
   nohup /opt/lab/hive/bin/hive --service hiveserver2 >>/var/log/lab/hiveserver2.log 2>&1 &
   echo $! >/var/log/lab/hiveserver2.pid
 fi
 wait_port 10000 "HiveServer2" 90 || { tail -n 120 /var/log/lab/hiveserver2.log || true; exit 1; }
+if [[ -x /opt/lab/udf/register.sh ]]; then
+  bash /opt/lab/udf/register.sh
+fi
 
 if ! port_open 8080; then
   /opt/lab/trino/bin/launcher start
