@@ -84,6 +84,24 @@
 
 这是一条语句里的优化器提示，不依赖会话里先执行 `SET`。不要把提示拆成第二条语句。
 
+## 查询超时
+
+确认日期：2026-10-17。决策：DEC-024。来源：用户说明 filter-layout-ip-seg-stat-prc 的语句执行超时，要加 `SELECT /*+ SET_VAR(query_timeout=3600) */` 这类写法。
+
+只针对用户点名超时的语句。该语句的提示写成 `/*+ SET_VAR(new_planner_optimize_timeout = 60000, query_timeout = 3600) */`，两个变量放在同一个提示里。其他语句出现 `Query reached its timeout` 时，再按这个写法加，不预先给所有语句加。
+
+## 旧 SQL 来源不一致时
+
+`all.sql` 与 917 梳理 CSV 对同一条语句的转义层数不同时，以 `all.sql` 为准（DEC-024，来源：用户说明「以all.sql为准」）。
+
+## 用户的 UDF
+
+确认日期：2026-10-16。决策：DEC-023。来源：用户说明「我的udf你别改」。
+
+材料里的项目 UDF 是 `default.format_json_list`、`default.calc_url_mask`、`default.sub_parent_domain`（见 `log/ODS_TO_DWB_DETAIL.md`、`all.sql`）。转换时语句里的 UDF 调用原样保留，包括函数名、`default.` 前缀和参数，不改写成 `parse_json`、`unnest`、`regexp_replace` 等内置函数。不修改 `lab/udf` 下的 UDF 源码。若某个 UDF 在当前 StarRocks 不可用或签名不同，在输出的第三部分标明，不自行替换。
+
+`default` 在 StarRocks 是保留字，`default.format_json_list(...)` 会报语法错误，函数库名要写成 `` `default`.format_json_list(...) ``。`explode` 没有对应写法，`LATERAL VIEW explode(UDF(...)) t AS x` 只能写成 `, unnest(UDF(...)) AS t(x)`。这两处是语法需要，函数名与参数不变。本机用 `lab/udf-sr` 里的孪生实现跑语句，见 ACT-046。
+
 ## 不在本文件中的对象
 
 以下名称在材料里出现过，当前没有用户确认的新名称，转换时保留原名并标明「缺少新平台表名」：

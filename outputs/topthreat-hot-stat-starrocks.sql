@@ -2,6 +2,8 @@
 -- 库表按 docs/StarRocks语句转换规则.md（DEC-014）。
 -- default.log_audit_source 改为 csc.ods_csc_log_audit。
 -- sodl.network_security_log、sodl.sip_iocstat_log：截图未列出 sodl 表，保留原名。
+-- UDF 按 DEC-023 原样保留：default.format_json_list 不再改成 parse_json。StarRocks 里 default 是保留字，函数库名写成 `default`，这是语法需要，其余不变。
+-- LATERAL VIEW explode 只能改成 unnest(...) AS str10_tbl(str10_tmp)。
 -- 字段按 DEC-015：标识符 log_app_id 改为 app_id。
 -- csc.ods_csc_log_audit 仍用 day=20261001、hour=0。这不是 sodl 表，这两个字段标明「缺少新平台字段名」。
 -- sodl.* 按 DEC-016、DEC-017：day=20261001 改为 insertdate='2026-10-01'；hour=0 改为 hour(from_unixtime(inserttimestamp)) = 0。
@@ -25,7 +27,7 @@ FROM
      (SELECT lower(get_json_object(str10_tmp, '$.domain')) AS domain,
              str2 AS devid
       FROM csc.ods_csc_log_audit,
-           unnest(ifnull(cast(parse_json(regexp_replace(str10, '\\\\+"', '"')) AS ARRAY<JSON>), [])) AS str10_tbl(str10_tmp)
+           unnest(`default`.format_json_list(regexp_replace(str10, '\\\\+"', '"'))) AS str10_tbl(str10_tmp)
       WHERE app_id IN ('domain-proxy-svc', 'cloudcheck')
         AND module_id IN ('domain-proxy-svc', 'CloudCheck')
         AND str1 IN ('VNGAF', 'NGAF', 'EDR', 'EDR_BOTNET', 'SIP', 'SIP_SMTP', 'SIP_SMB',
@@ -81,7 +83,7 @@ FROM
           get_json_object(str10_tmp, '$.info.attr') AS attr,
           str2 AS devid
    FROM csc.ods_csc_log_audit,
-        unnest(ifnull(cast(parse_json(regexp_replace(str10, '\\\\+"', '"')) AS ARRAY<JSON>), [])) AS str10_tbl(str10_tmp)
+        unnest(`default`.format_json_list(regexp_replace(str10, '\\\\+"', '"'))) AS str10_tbl(str10_tmp)
    WHERE app_id = 'analysis-proxy-api'
      AND module_id IN ('file_hash', 'file_scan')
      AND str1 IN ('VNGAF', 'NGAF', 'EDR', 'EDR_BOTNET', 'SIP', 'SIP_SMTP', 'SIP_SMB',
@@ -109,7 +111,7 @@ FROM
      (SELECT lower(get_json_object(str10_tmp, '$.url')) AS url,
              str2 AS devid
       FROM csc.ods_csc_log_audit,
-           unnest(ifnull(cast(parse_json(regexp_replace(str10, '\\\\+"', '"')) AS ARRAY<JSON>), [])) AS str10_tbl(str10_tmp)
+           unnest(`default`.format_json_list(regexp_replace(str10, '\\\\+"', '"'))) AS str10_tbl(str10_tmp)
       WHERE app_id IN ('url-proxy-svc', 'cloudcheck')
         AND module_id IN ('url-proxy-svc', 'CloudCheck')
         AND str1 IN ('VNGAF', 'NGAF', 'EDR', 'EDR_BOTNET', 'SIP', 'SIP_SMTP', 'SIP_SMB',
