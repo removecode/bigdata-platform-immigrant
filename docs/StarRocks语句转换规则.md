@@ -84,6 +84,16 @@
 
 这是一条语句里的优化器提示，不依赖会话里先执行 `SET`。不要把提示拆成第二条语句。
 
+## 查询超时
+
+确认日期：2026-10-17。决策：DEC-024。来源：用户说明 filter-layout-ip-seg-stat-prc 的语句执行超时，要加 `SELECT /*+ SET_VAR(query_timeout=3600) */` 这类写法。
+
+只针对用户点名超时的语句。该语句的提示写成 `/*+ SET_VAR(new_planner_optimize_timeout = 60000, query_timeout = 3600) */`，两个变量放在同一个提示里。其他语句出现 `Query reached its timeout` 时，再按这个写法加，不预先给所有语句加。
+
+## 旧 SQL 来源不一致时
+
+`all.sql` 与 917 梳理 CSV 对同一条语句的转义层数不同时，以 `all.sql` 为准（DEC-024，来源：用户说明「以all.sql为准」）。
+
 ## 用户的 UDF
 
 确认日期：2026-10-16。决策：DEC-023。来源：用户说明「我的udf你别改」。
