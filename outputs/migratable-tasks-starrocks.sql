@@ -1,8 +1,8 @@
--- 目前可迁移任务的 StarRocks 语句（本机已执行，结果见 outputs/migratable-tasks-starrocks-results.tsv）
+-- 目前可迁移任务的 StarRocks 语句（已在 Cloud Agent 本机实验 StarRocks 3.5.21 用合成数据执行，17/17 通过，结果见 outputs/migratable-tasks-starrocks-results.tsv）
 -- 范围：ACT-048、ACT-049 之后的可迁移清单 —— 排除 default.ods_custom_upload_data 与 csc.ods_csc_ioc_vertex 未同步的任务，
 --       排除 DWB 未交付、可下线、待确认的任务（DEC-012、DEC-025）。
 -- 转换规则：docs/StarRocks语句转换规则.md（DEC-014 至 DEC-024）。本文件没有用户当次之外的新表名；缺少新平台表名的对象保留原名。
--- 本文件是语句草稿，不表示已在你的 StarRocks 或生产执行，也不表示可以切流。
+-- 本文件是语句草稿，只在本机合成数据上执行过，不表示已在你的 StarRocks 或生产执行，也不表示可以切流。
 -- 每条语句前的 `-- @stmt` 行供 lab/run_migratable.py 解析。
 
 -- @stmt 1 | filter-layout-ip-seg-stat-prc | hive_sql
