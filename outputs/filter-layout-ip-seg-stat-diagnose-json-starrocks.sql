@@ -57,3 +57,22 @@ SELECT 'csv_917', count(*),
        sum(CASE WHEN get_json_object(resp, '$.threat.reputation') IS NOT NULL THEN 1 ELSE 0 END),
        sum(CASE WHEN get_json_object(resp, '$.threat.reputation') = '2' AND get_json_object(resp, '$.threat.direction') = '2' THEN 1 ELSE 0 END)
 FROM v2;
+
+-- 查询 4：展开后的行数里，有多少是真元素，有多少是被值里的分号多拆出来的碎片（见 ACT-063）。
+-- 现在的预处理把元素之间的 `},{` 换成 `;{`，再按 `;` 拆。JSON 字段值里如果本身带分号（比如 User-Agent），也会被拆开。
+--   rows：取样的审计行数；
+--   avg_by_separator：按 `},{` 个数算出的平均元素数，每行 = `},{` 个数 + 1；
+--   avg_by_split：按现在的写法拆出来的平均行数；
+--   avg_raw_semicolons：str10 原文里本来就有的分号个数。
+-- avg_by_split 明显大于 avg_by_separator，说明有一部分展开是碎片，这部分碎片解析不出字段，却占用展开和解析的开销。
+SELECT count(*) AS rows_n,
+       avg((length(str10) - length(replace(str10, '},{', ''))) / 3 + 1) AS avg_by_separator,
+       avg(array_length(split(replace(regexp_replace(regexp_replace(regexp_replace(str10, '^\\[', ''), '~\\]', ''), '\\}\\,\\{', '\;\{'), '\"', '"'), ';'))) AS avg_by_split,
+       avg(length(str10) - length(replace(str10, ';', ''))) AS avg_raw_semicolons
+FROM (
+  SELECT str10
+  FROM csc.ods_csc_log_audit
+  WHERE app_id = 'ip-proxy-svc' AND day = 20261001 AND hour = 0
+    AND module_id = 'ip-proxy-svc' AND str5 REGEXP 'cf'
+  LIMIT 1000
+) a;
