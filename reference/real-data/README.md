@@ -33,3 +33,14 @@
 ## 追踪
 
 - 目录建立：**ACT-073**（`docs/迁移事项进度与决策追踪.md`）。
+- 本机 StarRocks 导入与 smoke：**ACT-074**；脚本 `load_lab_starrocks.py`，结果 `smoke-results.tsv`。
+
+## 本机用真实样例查询（ACT-074）
+
+```bash
+# 需 lab StarRocks（lab/install.sh && lab/start.sh）
+python3 reference/real-data/load_lab_starrocks.py
+```
+
+- 数据写入库 **`real_ref`**（与 `sodl.*` 生产表分离，列 subset + VARCHAR）。
+- **不是**把宽表全字段灌进 StarRocks；也**未**跑完整 topthreat / audit SQL（无 str10 样例）。
