@@ -3,6 +3,8 @@
 
 The shapes follow the substituted Hive/Trino statements in /workspace/all.sql
 and the DWB columns recorded in docs/迁移事项进度与决策追踪.md (ACT-027, ACT-028).
+Production-shaped samples (when available) live under reference/real-data/; prefer
+those column names and value patterns over ad-hoc placeholders (ACT-073).
 No new-platform table mapping was supplied with that SQL, so the physical
 names stay as written there (DEC-013). This is local lab data only.
 

@@ -1,0 +1,4 @@
+# 来源：用户 2026-11-03 粘贴
+v	recordtimestamp	uploadtimestamp	inserttimestamp	vendor	producttype	productver	deviceid	uuid	ioc	ioc_type	record_count	insertdate
+1	1793201593	1793201593	1793201594	sangfor	SIP	SIS3.0.92.0  Build20240815	ph5UYs3E2+tm14T6pdQ7lA==	SIP_IOCSTAT_1793201594_01a18324-df3c-7173-9cca-ff795a8b3f03	101.205.188.181	ip	2	2026-10-28
+2	1793201593	1793201593	1793201594	sangfor	SIP	SIS3.0.92.0  Build20240815	ph5UYs3E2+tm14T6pdQ7lA==	SIP_IOCSTAT_1793201594_01a18324-e0ed-78d5-9fee-a5d4a7a4a2e9	162.218.117.106	ip	16	2026-10-28
