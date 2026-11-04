@@ -1,0 +1,5 @@
+# 来源：用户 2026-11-03 粘贴（宽表抽键列）。topthreat 等 SQL 常用 url/deviceId/insertdate/inserttimestamp。
+# 注意：样例行为 moduletype=dns，dnsqueries 有域名时 url 可能为空；造数需覆盖 HTTP url 分支。
+row_label	v	recordtimestamp	uploadtimestamp	inserttimestamp	recordtime	vendor	producttype	manage	deviceid	srcip	dstip	moduletype	engine	severity	confidence	dnsqueries	url	highlight	manageip	insertdate
+1	1	1791215596	1791216303	1791216303	2026-10-05 23:53:16	sangfor	SIP	zciT9XiVY8fdlKwFiG2XGA==	LVvTZSqi63mEDUiO/GyAHw==	172.16.22.38	10.1.1.6	dns		30	40	www.glashuirglurhtgqoer.com	NULL	感染广告软件家族advertise	172.18.103.210	
+2	1	1791215857	1791216303	1791216303	2026-10-05 23:57:37	sangfor	SIP	zciT9XiVY8fdlKwFiG2XGA==	LVvTZSqi63mEDUiO/GyAHw==	10.20.20.240	10.1.1.6	dns		70	40	airobotheworld.gicp.net	NULL	感染僵尸网络家族malware	172.18.103.210	

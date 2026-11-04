@@ -1,0 +1,96 @@
+# 后台任务 YAML 示例：SQL 用 | 字面块，与 Hue 里粘贴的文本应逐字节一致。
+# 校验：python scripts/yaml_sql_runner.py --yaml outputs/app-queries-example.yaml --key filter_layout_ip_seg --sql-only
+#       python scripts/yaml_sql_runner.py --yaml ... --key filter_layout_ip_seg --diff /tmp/from_hue.sql
+#
+# 不要把整段 SQL 写在双引号里；不要用 Python 普通三引号内联同一段 SQL（会吃反斜杠，见 ACT-062）。
+# filter-layout 在 StarRocks 上请用 v2 预处理（ACT-067、ACT-068），不要用 migratable 第 1 条里的 v1。
+
+sqls:
+  - key: filter_layout_ip_seg
+    engine: starrocks
+    app: filter-layout-ip-seg-stat-prc
+    session:
+      catalog: paimon
+      query_timeout: 7200
+      new_planner_optimize_timeout: 60000
+      read_timeout: 7500
+    sql: |-
+      WITH rpt AS (
+        SELECT DISTINCT regexp_extract(ip, '^(\\d+\\.\\d+\\.\\d+)\\.', 1) AS ip_seg
+        FROM ti.ods_ti_db_intelligence_tb_ip_reputation_sync
+        WHERE direction = '2' AND reputation = '0'
+      ),
+      resp_data AS (
+        SELECT day AS date_day,
+               split(get_json_object(resp, '$.ip'), ':')[1] AS ip,
+               regexp_extract(split(get_json_object(resp, '$.ip'), ':')[1], '^(\\d+\\.\\d+\\.\\d+)\\.', 1) AS ip_c_seg
+        FROM csc.ods_csc_log_audit,
+             unnest(split(replace(regexp_replace(regexp_replace(regexp_replace(str10, '^\\[', ''), '~?\\]$', ''), '\\}\\,\\{', '};{'), '\\"', '"'), ';')) AS exploded_table(resp)
+        WHERE app_id = 'ip-proxy-svc' AND day BETWEEN 20260925 AND 20261001
+          AND module_id = 'ip-proxy-svc' AND str5 REGEXP 'cf'
+          AND get_json_object(resp, '$.threat.reputation') = '2'
+          AND get_json_object(resp, '$.threat.direction') = '2'
+      ),
+      agg_data AS (
+        SELECT ip_c_seg,
+               count(DISTINCT date_day) AS day_unique,
+               count(DISTINCT ip) AS ip_unique,
+               count(*) / (count(DISTINCT date_day) + 1) AS total
+        FROM resp_data
+        GROUP BY ip_c_seg
+      )
+      SELECT /*+ SET_VAR(new_planner_optimize_timeout = 60000, query_timeout = 7200) */ ip_c_seg, day_unique, ip_unique, total
+      FROM agg_data
+      WHERE day_unique >= 5
+        AND NOT EXISTS (SELECT 1 FROM rpt WHERE rpt.ip_seg = agg_data.ip_c_seg)
+
+  - key: filter_layout_explain_1h
+    engine: starrocks
+    app: filter-layout-ip-seg-stat-prc
+    session:
+      catalog: paimon
+      query_timeout: 7200
+      read_timeout: 7500
+    sql: |-
+      EXPLAIN ANALYZE
+      WITH rpt AS (
+        SELECT DISTINCT regexp_extract(ip, '^(\\d+\\.\\d+\\.\\d+)\\.', 1) AS ip_seg
+        FROM ti.ods_ti_db_intelligence_tb_ip_reputation_sync
+        WHERE direction = '2' AND reputation = '0'
+      ),
+      resp_data AS (
+        SELECT day AS date_day,
+               split(get_json_object(resp, '$.ip'), ':')[1] AS ip,
+               regexp_extract(split(get_json_object(resp, '$.ip'), ':')[1], '^(\\d+\\.\\d+\\.\\d+)\\.', 1) AS ip_c_seg
+        FROM csc.ods_csc_log_audit,
+             unnest(split(replace(regexp_replace(regexp_replace(regexp_replace(str10, '^\\[', ''), '~?\\]$', ''), '\\}\\,\\{', '};{'), '\\"', '"'), ';')) AS exploded_table(resp)
+        WHERE app_id = 'ip-proxy-svc' AND day = 20261001 AND hour = 0
+          AND module_id = 'ip-proxy-svc' AND str5 REGEXP 'cf'
+          AND get_json_object(resp, '$.threat.reputation') = '2'
+          AND get_json_object(resp, '$.threat.direction') = '2'
+      ),
+      agg_data AS (
+        SELECT ip_c_seg,
+               count(DISTINCT date_day) AS day_unique,
+               count(DISTINCT ip) AS ip_unique,
+               count(*) / (count(DISTINCT date_day) + 1) AS total
+        FROM resp_data
+        GROUP BY ip_c_seg
+      )
+      SELECT /*+ SET_VAR(new_planner_optimize_timeout = 60000, query_timeout = 7200) */ ip_c_seg, day_unique, ip_unique, total
+      FROM agg_data
+      WHERE day_unique >= 5
+        AND NOT EXISTS (SELECT 1 FROM rpt WHERE rpt.ip_seg = agg_data.ip_c_seg)
+
+  - key: hive_smoke
+    engine: hive
+    app: smoke-test
+    timeout: 3600
+    hive_configuration:
+      tez.queue.name: etl
+    sql: |-
+      SELECT 1 AS n, 'hive_query smoke' AS label
+      UNION ALL
+      SELECT 2 AS n, 'row_two' AS label
+      UNION ALL
+      SELECT 3 AS n, 'row_three' AS label
