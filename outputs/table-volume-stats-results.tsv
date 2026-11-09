@@ -1,0 +1,8 @@
+stat_id	stat_desc	source	window	insertdate	row_cnt	notes
+1	sodl.network_security_log daily row_cnt	user StarRocks execution	2026-10-26..2026-11-01	2026-10-26	4583137805	outputs/table-volume-stats-starrocks.sql L10-15
+1	sodl.network_security_log daily row_cnt	user StarRocks execution	2026-10-26..2026-11-01	2026-10-27	4572828331	
+1	sodl.network_security_log daily row_cnt	user StarRocks execution	2026-10-26..2026-11-01	2026-10-28	4443731582	
+1	sodl.network_security_log daily row_cnt	user StarRocks execution	2026-10-26..2026-11-01	2026-10-29	4637365610	
+1	sodl.network_security_log daily row_cnt	user StarRocks execution	2026-10-26..2026-11-01	2026-10-30	4600557640	
+1	sodl.network_security_log daily row_cnt	user StarRocks execution	2026-10-26..2026-11-01	2026-10-31	4300350559	
+1	sodl.network_security_log daily row_cnt	user StarRocks execution	2026-10-26..2026-11-01	2026-11-01	4162164163	
