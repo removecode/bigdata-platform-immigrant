@@ -1,0 +1,3 @@
+# csc.ods_csc_log_audit 热门威胁 domain 分支抽样列（用户 2026-11-10 @pull 1）
+# 窗口：log_time 2026-11-01 00:00:00，hour=0
+app_id	module_id	str1	devid	long1	year	month	day	hour	log_time	str10_len	str10

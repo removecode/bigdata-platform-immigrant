@@ -1,0 +1,4 @@
+# @pull 1 补充 cloudcheck 行（用户第二次贴回 row 3–4；row 5 截断未收录）
+app_id	module_id	str1	devid	long1	day	hour	log_time	str10_len	str10
+cloudcheck	CloudCheck	NGAF	179CF29A4189947B4F7B0FD516740D5F	0	20261101	0	2026-11-01 00:00:00.001	104	[{\"category\":{\"id\":\"B006_C073\",\"sub_str\":\"lilithgame.com\"},\"url\":\"static.lilithgame.com\"}]
+cloudcheck	CloudCheck	NGAF	CFE7A6D663253F69E1DB41A192140690	0	20261101	0	2026-11-01 00:00:00.001	145	[{\"category\":{\"id\":\"\",\"sub_str\":\"\"},\"url\":\"58.222.25.201\"},{\"category\":{\"id\":\"\",\"sub_str\":\"\"},\"url\":\"36.249.118.42\"}]

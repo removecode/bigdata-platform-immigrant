@@ -1,0 +1,7 @@
+compare	user_rows	mine_rows	only_user	only_mine	equal
+branch1_audit_expand_count	2	4	[]	"[[""domain-proxy-svc"", 64, 1], [""domain-proxy-svc"", 67, 2]]"	no
+branch1_audit_domain_rows	2	4	[]	"[[""single-object.example"", ""DEV_AUDIT_001""], [""tilde-bracket.example"", ""DEV_AUDIT_001""]]"	no
+branch2_net_domain_rows_dec016_hour	7	0	"[["""", ""DEV_NET_ORPHAN""], [""NULL"", ""LVvTZSqi63mEDUiO/GyAHw==""], [""a.com"", ""DEV_NET_SLASH""], [""www.glashuirglurhtgqoer.com"", ""DEV_NET_HTTP""], [""www.glashuirglurhtgqoer.com"", ""DEV_NET_NESTED""], [""www.pure-domain.example"", ""DEV_NET_PURE""]]"	[]	no
+branch2_net_domain_rows_same_ts_window	7	7	"[["""", ""DEV_NET_ORPHAN""], [""a.com"", ""DEV_NET_SLASH""], [""www.glashuirglurhtgqoer.com"", ""DEV_NET_NESTED""]]"	"[[""nested.evil.com"", ""DEV_NET_NESTED""], [""orphan-host.example"", ""DEV_NET_ORPHAN""], [""y"", ""DEV_NET_SLASH""]]"	no
+branch3_ioc_domain_rows	1	1	[]	[]	yes
+full_domain_stat	8	5	"[[""NULL"", 2, 1], [""a.com"", 1, 1], [""www.pure-domain.example"", 1, 1]]"	"[[""single-object.example"", 1, 1], [""tilde-bracket.example"", 1, 1]]"	no

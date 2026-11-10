@@ -1,0 +1,5 @@
+# 来源：用户 2026-11-03 粘贴。Tab 分隔；# 开头为注释行。
+# 说明：第 1 行样例除 insertdate 外多为 NULL；第 2 行为 DNS 查询样例。
+row_label	v	tenant	customer	recordtimestamp	uploadtimestamp	inserttimestamp	producttype	productver	manage	deviceid	srcip	dstip	queries	hostip	moduletype	insertdate
+1	1	NULL	NULL	NULL	1793550071	NULL	NULL	NULL	NULL	vz8oVLswSF9GwolLdkOq5A==	vz8oVLswSF9GwolLdkOq5A==	NULL	NULL	NULL	NULL	NULL	2026-11-02
+2	1	NULL	NULL	toTweguUHDhUQQzri0Zhvg==	1793550071	NULL	NGAF	NULL	vz8oVLswSF9GwolLdkOq5A==	vz8oVLswSF9GwolLdkOq5A==	172.16.35.157	119.29.29.29	nlogtj.yukeweb.com	NULL	NULL	2026-11-02

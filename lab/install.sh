@@ -76,13 +76,14 @@ if old is None:
 new = (
     'JAVA_OPTS="-Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx768m -XX:+UseG1GC '
     '-Xlog:gc*:${LOG_DIR}/fe.gc.log.$DATE:time -XX:ErrorFile=${LOG_DIR}/hs_err_pid%p.log '
-    '-Djava.security.policy=${STARROCKS_HOME}/conf/udf_security.policy"'
+    '-Djava.security.manager=allow -Djava.security.policy=${STARROCKS_HOME}/conf/udf_security.policy"'
 )
 text = text.replace(old, new, 1)
 extra = """
 JAVA_HOME = %s
 meta_dir = /var/lib/lab/starrocks/fe/meta
 priority_networks = 127.0.0.1/32
+enable_udf = true
 """ % java_home
 marker = "# lab-local-memory"
 if marker not in text:
@@ -140,6 +141,10 @@ cp -a "${LAB_SRC}/udf/src" /opt/lab/udf/src
 install -m 0755 "${LAB_SRC}/udf/build.sh" /opt/lab/udf/build.sh
 install -m 0755 "${LAB_SRC}/udf/register.sh" /opt/lab/udf/register.sh
 bash /opt/lab/udf/build.sh
+
+mkdir -p /opt/lab/udf-sr
+cp -a "${LAB_SRC}/udf-sr/." /opt/lab/udf-sr/
+bash /opt/lab/udf-sr/build.sh
 
 install -m 0755 "${LAB_SRC}/start.sh" /opt/lab/start.sh
 install -m 0755 "${LAB_SRC}/seed.py" /opt/lab/seed.py

@@ -1,0 +1,3 @@
+# 宽表列名（用户 2026-11-03 粘贴表头）。完整物理列以 StarRocks/Paimon 元数据为准；本文件仅作造数字段名索引。
+# 下列为表头首段 + 末段关键列；中间协议字段见生产 DDL。
+v	tenant	customer	recordtimestamp	uploadtimestamp	inserttimestamp	recordtime	uploadtime	vendor	producttype	productver	manage	originproducttype	originproductver	deviceid	uuid	sessionid	srcip	srcport	dstip	dstport	threatclass	threattype	threatsubtype	moduletype	engine	severity	confidence	url	httpuri	dnsqueries	filename	filehash	highlight	manageip	deviceip	devuid	insertdate
