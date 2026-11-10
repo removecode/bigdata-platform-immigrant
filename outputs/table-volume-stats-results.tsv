@@ -1,15 +1,38 @@
-stat_id	stat_desc	source	window	insertdate	all_cnt	severity_gt_50_cnt	severity_gt_50_action2_cnt	notes
-1	sodl.network_security_log daily row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-26	4583137805			ACT-079 @stat1
-1	sodl.network_security_log daily row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-27	4572828331			
-1	sodl.network_security_log daily row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-28	4443731582			
-1	sodl.network_security_log daily row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-29	4637365610			
-1	sodl.network_security_log daily row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-30	4600557640			
-1	sodl.network_security_log daily row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-31	4300350559			
-1	sodl.network_security_log daily row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-11-01	4162164163			
-3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-26	4583137805	1506863697	178505273	ACT-081 @stat3
-3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-27	4572828331	1512926403	178698677	
-3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-28	4443731582	1480973574	177849107	
-3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-29	4637365610	1517461620	174643931	
-3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-30	4600557640	1529250815	160020977	
-3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-31	4300350559	1397818648	147925290	
-3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-11-01	4162164163	1427053453	134530493	
+stat_id	stat_desc	source	window	insertdate	hr	row_cnt	all_cnt	severity_gt_50_cnt	severity_gt_50_action2_cnt	notes
+1	sodl.network_security_log daily	row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-26		4583137805				ACT-079
+1	sodl.network_security_log daily	row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-27		4572828331				
+1	sodl.network_security_log daily	row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-28		4443731582				
+1	sodl.network_security_log daily	row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-29		4637365610				
+1	sodl.network_security_log daily	row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-30		4600557640				
+1	sodl.network_security_log daily	row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-10-31		4300350559				
+1	sodl.network_security_log daily	row_cnt	user StarRocks	2026-10-26..2026-11-01	2026-11-01		4162164163				
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	0	193694749			ACT-082
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	1	186694776			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	2	194461009			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	3	189356270			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	4	177051410			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	5	170176022			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	6	168613351			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	7	167984840			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	8	171425256			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	9	175445032			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	10	171658648			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	11	166500623			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	12	164882574			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	13	165859406			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	14	191625459			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	15	175193201			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	16	181301053			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	17	176958301			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	18	174149001			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	19	166151879			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	20	163166207			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	21	149281765			
+2	sodl.network_security_log hourly	row_cnt	user StarRocks	insertdate=2026-11-01	2026-11-01	22	170956374			
+3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-26		4583137805	4583137805	1506863697	178505273	ACT-081
+3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-27		4572828331	4572828331	1512926403	178698677	
+3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-28		4443731582	4443731582	1480973574	177849107	
+3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-29		4637365610	4637365610	1517461620	174643931	
+3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-30		4600557640	4600557640	1529250815	160020977	
+3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-10-31		4300350559	4300350559	1397818648	147925290	
+3	sodl.network_security_log filter hits	user StarRocks	2026-10-26..2026-11-01	2026-11-01		4162164163	4162164163	1427053453	134530493	
