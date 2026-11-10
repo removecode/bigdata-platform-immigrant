@@ -1,6 +1,6 @@
 # audit str10 / format_json_list
 
-本目录预留：用户尚未提供 `csc.ods_csc_log_audit`（或旧 `default.log_audit_source`）中带 **`str10`** 的真实行。
+本目录收录用户 2026-11-10 贴回的 **domain / file** audit 样例（见 `samples-domain-2026-11-01.tsv`、`samples-file-2026-11-01-*`）。**url 分支 @pull 3、file 大 str10 全文、row5 截断行** 仍待补。
 
 补样时请包含：
 

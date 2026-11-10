@@ -7,7 +7,7 @@
 1. **只追加、不删改历史样例**；新批次用子目录或文件名带日期，例如 `sodl.network_security_log/samples-2026-11-03.tsv`。
 2. 样例中的 ID、IP、域名等视为**已脱敏或低敏**引用；勿再粘贴生产密码、密钥。
 3. 造数脚本应优先读本目录 `schema-columns.txt` 与 `samples-*.tsv`，而不是凭空填 `shopN.brandXX.com` 一类占位域名（除非任务明确允许）。
-4. **缺什么就标什么**：当前没有 `csc.ods_csc_log_audit` / `str10` + `format_json_list` 的真实行；热门威胁 audit 分支仍依赖后续补样。
+4. **缺什么就标什么**：audit `str10` 已部分收录，见 [`audit-str10/`](./audit-str10/)（domain 4 行 + file 元数据 4 行 + file row4 str10）；url 分支与大字段全文仍缺。
 
 ## 已收录表
 

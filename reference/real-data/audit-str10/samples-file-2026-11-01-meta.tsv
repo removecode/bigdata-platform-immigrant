@@ -1,0 +1,7 @@
+# 来源：用户 2026-11-10 @pull 2；str10 见同目录 samples-file-2026-11-01-str10.jsonl
+# row 5 粘贴截断为 "a"，未收录 str10
+row_id	app_id	module_id	str1	devid	long1	day	hour	log_time	str10_len
+1	analysis-proxy-api	file_hash	EDR	091087D9651CB145472F902E780B09C1	0	20261101	0	2026-11-01 00:00:00.000	7959
+2	analysis-proxy-api	file_hash	EDR	1403124A839E34FD2D0337CFA411233E	0	20261101	0	2026-11-01 00:00:00.001	18501
+3	analysis-proxy-api	file_hash	EDR	1403124A839E34FD2D0337CFA411233E	0	20261101	0	2026-11-01 00:00:00.004	18477
+4	analysis-proxy-api	file_hash	EDR	A07D82C35038B804D2BC4DDC9D371CAE	0	20261101	0	2026-11-01 00:00:00.004	371
