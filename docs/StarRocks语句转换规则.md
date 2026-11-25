@@ -116,9 +116,24 @@ StarRocks / 查询侧库名以用户环境为准：Hive/Paimon 写 `paimon.ti.*`
 | `sodl.dwb_sodl_domain_info` | `ti.dwb_ti_domain_info` | 同上 |
 | `default.dwb_md5_info` | `ti.dwb_ti_md5_info` | 旧 `md5`→`filehash`，`attr`→`file_attr` |
 | `sodl.dwb_sodl_md5_info` | `ti.dwb_ti_md5_info` | 同上 |
-| `default.dwb_url_info` | **缺少新平台表名** | 用户本次未提供 `dwb_ti_url_info` |
-| `sodl.dwb_sodl_url_info` | **缺少新平台表名** | 同上 |
+| `default.dwb_url_info` | `ti.dwb_ti_url_info` | DEC-027 已确认存在（21 列，`docs/DWB合并表-paimon-ti-字段结构-SR.md`） |
+| `sodl.dwb_sodl_url_info` | `ti.dwb_ti_url_info` | 同上 |
 | `default.dwb_md5_record` | **缺少新平台表名** | `yara-sample-query-job` 仍无合并目标 |
+
+DEC-027（2026-11-25）：用户确认老大数据平台上新旧中间表已合并，当前 StarRocks（`10.115.51.1`，catalog `paimon`，库 `ti`）实际表结构见 `docs/DWB合并表-paimon-ti-字段结构-SR.md`。以该文件为准；DEC-026 里「URL 表待补」「待补 sodl INSERT」两句已被 DEC-027 取代。
+
+实际物理类型（与 DEC-009「统一 VARCHAR」不同，以现网为准）：`threatclass`、`threattype`、`threatsubtype`、`action`、`dstport` 为 `INT`；`log_num`、`attack_count`、`day` 为 `BIGINT`；其余为 `VARCHAR`。分区键 `src_log`、`day`（`SHOW PARTITIONS` 的 PartitionKey 显示为 `day,src_log`，取值对应关系以现网为准）。
+
+相对旧 `sodl.dwb_sodl_*` 的字段变化（按现网四张表核对）：
+
+| 表 | 旧 sodl 有、合并后没有 | 合并后新增 |
+| --- | --- | --- |
+| `dwb_ti_domain_info` | `titype`、`city`、`province`、`country`、`industry`、`sub_industry` | `attr`、`agentid`、`tenant` |
+| `dwb_ti_ip_info` | 同上 | `object`、`direction`、`dstport`、`attr`、`agentid`、`tenant` |
+| `dwb_ti_md5_info` | `oid`、`city`、`province`、`country`、`industry`、`sub_industry` | `srcip`、`agentid`、`tenant` |
+| `dwb_ti_url_info` | `titype`、`city`、`province`、`country`、`industry`、`sub_industry` | `action`、`tenant` |
+
+旧 `default.dwb_*` 的 `extends`、`source`、`attr`（MD5/URL）、`dev_version` 等同样没有同名列。地域/行业画像列在合并表里都没有，依赖它们的语句（如 `black-ti-context-produce-prc` 的攻击 IP、MD5 行业/地域统计）不能只改表名，需另取设备画像（如 `default.ods_devicemanager_deviceinfo`，仍缺少新平台表名）。
 
 分区：两列分区 `` `day` ``（`bigint`，`yyyyMMdd`）+ `src_log`（`string`）。用户已给出的 audit 分区常量：`ip-proxy-svc`、`domain-proxy-svc`、`analysis-proxy-api`。
 
