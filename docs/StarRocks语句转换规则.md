@@ -102,15 +102,49 @@
 
 `default` 在 StarRocks 是保留字，`default.format_json_list(...)` 会报语法错误，函数库名要写成 `` `default`.format_json_list(...) ``。`explode` 没有对应写法，`LATERAL VIEW explode(UDF(...)) t AS x` 只能写成 `, unnest(UDF(...)) AS t(x)`。这两处是语法需要，函数名与参数不变。本机用 `lab/udf-sr` 里的孪生实现跑语句，见 ACT-046。
 
+## 统一 TI 中间表（新旧 DWB 合并）
+
+确认日期：2026-11-25。决策：DEC-026。来源：用户提供的 Paimon 建表与 audit 写入 SQL（归档 `outputs/paimon-dwb-ti-audit-merge.sql`）。
+
+StarRocks / 查询侧库名以用户环境为准：Hive/Paimon 写 `paimon.ti.*`；若在 SR 上通过 catalog 查 `ti`，则下列新名为 `ti.dwb_ti_*`。
+
+| 旧平台名 | 合并后名 | 说明 |
+| --- | --- | --- |
+| `default.dwb_ip_info` | `ti.dwb_ti_ip_info` | 旧链按 `src_log='log_audit'` 等过滤；合并后同一物理表用分区列 `src_log` 区分来源 |
+| `sodl.dwb_sodl_ip_info` | `ti.dwb_ti_ip_info` | 同上；旧 SQL 的 `threatclass`、`reqruleid`、`network_security_log` 等写入对应 `src_log` 分区（**用户本条未给出 sodl INSERT，分区值待补**） |
+| `default.dwb_domain_info` | `ti.dwb_ti_domain_info` | 旧 `devid`→`manage`，`domain`/`row_key` 见字段表 |
+| `sodl.dwb_sodl_domain_info` | `ti.dwb_ti_domain_info` | 同上 |
+| `default.dwb_md5_info` | `ti.dwb_ti_md5_info` | 旧 `md5`→`filehash`，`attr`→`file_attr` |
+| `sodl.dwb_sodl_md5_info` | `ti.dwb_ti_md5_info` | 同上 |
+| `default.dwb_url_info` | **缺少新平台表名** | 用户本次未提供 `dwb_ti_url_info` |
+| `sodl.dwb_sodl_url_info` | **缺少新平台表名** | 同上 |
+| `default.dwb_md5_record` | **缺少新平台表名** | `yara-sample-query-job` 仍无合并目标 |
+
+分区：两列分区 `` `day` ``（`bigint`，`yyyyMMdd`）+ `src_log`（`string`）。用户已给出的 audit 分区常量：`ip-proxy-svc`、`domain-proxy-svc`、`analysis-proxy-api`。
+
+消费者 SQL 改写要点（DEC-009 仍有效）：
+
+| 旧字段（旧 DWB） | 新字段（`dwb_ti_*`） |
+| --- | --- |
+| `dip` | `dstip` |
+| `devid` | `manage` |
+| `dev_version` | `productver` |
+| `prod` | `producttype` |
+| `md5` | `filehash` |
+| `attr`（旧 MD5） | `file_attr` |
+| `source`（旧 MD5 部分 SQL） | 视语义映射 `upload_source` 或保留过滤条件待确认 |
+
+原先 `UNION ALL` 读 `default.dwb_*` 与 `sodl.dwb_sodl_*` 的语句，改为单表 `ti.dwb_ti_*`，用 `` `day` `` 与 `src_log IN (...)` 表达原链路；**不能**在未对齐各 `src_log` 枚举前删除分支过滤。
+
+本条 INSERT 仅覆盖 audit 源（`ods_csc_log_audit_tmp` / `ods_csc_log_audit_longterm`），不等于已完成与旧 Hive DWB、sodl DWB 的数值对账。
+
 ## 不在本文件中的对象
 
 以下名称在材料里出现过，当前没有用户确认的新名称，转换时保留原名并标明「缺少新平台表名」：
 
-- `default.dwb_*`
-- `sodl.dwb_sodl_*`
 - `default.log_stats_source`
 - `csc.ods_csc_log_stats`
-- `business.*`
+- `business.*`（`ctig-report` 在 `all-starrocks.sql` 的 business 改写与 DWB 原版并存，以当次任务目标表为准）
 
 `module_id`、`str1`–`str10`、`long1` 只在旧压缩 SQL 的选择列表中出现。它们不在本文件的字段表里，语句中保留原名，并标明「缺少新平台字段名」。
 
