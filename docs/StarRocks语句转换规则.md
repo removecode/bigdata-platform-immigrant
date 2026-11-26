@@ -18,6 +18,7 @@
 | `csc.ods_csc_db_url_intelligence_tb_url_reputation_sync` | `ti.ods_ti_db_url_intelligence_tb_url_reputation_sync` | 截图表名。旧名见 `log/DATA_FLOW.md` L109，映射见 L39 |
 | `sri.ods_sri_ti_tags` | `ti.ods_ti_db_scia_analysis_tb_syn_ti_tags_sync` | 截图表名含 `scia_analysis` 与 `syn_ti_tags`。`syn_ti_tags_mongo2hive.py` 的来源是 `SCIA_ANALYSIS` / `SynTiTags`，Hive 路径 `/hive/ods/sri/ti_tags`，见映射 L69 |
 | `sri.ods_sri_hashinfo` | `ti.ods_ti_db_fc_hashinfo_tb_fc_hashinfo_sync` | 截图中的 hashinfo 表。旧表材料来自 Mongo 文件云查。两边字符串不完全相同 |
+| `default.ods_custom_upload_data` | `paimon.ti.ods_ti_db_custom_upload_tb_custom_upload_sync` | 2026-11-26 用户确认（DEC-031）。只确认了表名；列 `part1`、`part2`、`str1`–`str5` 是否同名未确认，转换时保留旧列名并标明「缺少新平台字段名」，待用户核对。此前 ACT-048 记录该表未同步，现用户已给出新名，是否已有数据未验证 |
 
 `sodl` 库在截图中存在，表没有展开。`sodl.*` 保留原名，并标明「截图未列出 sodl 表」。
 

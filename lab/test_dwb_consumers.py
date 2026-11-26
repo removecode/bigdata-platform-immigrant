@@ -2,8 +2,8 @@
 """Run outputs/dwb-consumers-after-starrocks.sql on the lab StarRocks with synthetic data.
 
 Scratch DB `dwb_cons` holds: dwb_ti_domain_info / dwb_ti_ip_info (real merged-table columns and types,
-VARCHAR shortened), the two reputation tables, and ods_custom_upload_data. Names are rewritten
-only for execution (paimon.ti. / ti.ods_ti_ / `default`.ods_custom_upload_data -> dwb_cons.).
+VARCHAR shortened), the two reputation tables, and the custom-upload sync table. Names are rewritten
+only for execution (paimon.ti. / ti.ods_ti_ -> dwb_cons.).
 Each statement is checked against a hand-computed expectation. Never touches the user's cluster.
 """
 
@@ -51,7 +51,7 @@ def make_tables(cur):
         "DUPLICATE KEY(domain) DISTRIBUTED BY HASH(domain) BUCKETS 1 PROPERTIES('replication_num'='1')"
     )
     cur.execute(
-        f"CREATE TABLE {DB}.ods_custom_upload_data (part1 varchar(64), part2 varchar(64), str1 varchar(256)) "
+        f"CREATE TABLE {DB}.ods_ti_db_custom_upload_tb_custom_upload_sync (part1 varchar(64), part2 varchar(64), str1 varchar(256)) "
         "DUPLICATE KEY(part1) DISTRIBUTED BY HASH(part1) BUCKETS 1 PROPERTIES('replication_num'='1')"
     )
 
@@ -123,7 +123,7 @@ def seed(cur):
         "('gone.com','category=x,family=y','source=s,rule=r','t2',0,'1')"
     )
     cur.execute(
-        f"INSERT INTO {DB}.ods_custom_upload_data VALUES ('test_dev','test_devid','dev12'),('test_dev','test_devid','devTest')"
+        f"INSERT INTO {DB}.ods_ti_db_custom_upload_tb_custom_upload_sync VALUES ('test_dev','test_devid','dev12'),('test_dev','test_devid','devTest')"
     )
 
 
@@ -153,7 +153,6 @@ def split_statements(text):
 def lab_rewrite(sql):
     sql = sql.replace("paimon.ti.", f"{DB}.")
     sql = sql.replace("ti.ods_ti_", f"{DB}.ods_ti_")
-    sql = sql.replace("`default`.ods_custom_upload_data", f"{DB}.ods_custom_upload_data")
     return sql
 
 

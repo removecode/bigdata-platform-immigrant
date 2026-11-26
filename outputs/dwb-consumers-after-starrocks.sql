@@ -6,7 +6,8 @@
 --   [A1] 旧 sodl 来源分区的 src_log 值沿用旧名：network_security_log、endpoint_security_log、
 --        sip_iocstat_log、dns_log、url_log、http_log（log/ODS_TO_DWB_DETAIL.md L238-245）
 --   [A2] 旧 default.dwb_domain_info（audit 链）对应 src_log='domain-proxy-svc'（推断，依据用户的 audit INSERT）
---   [A3] default.ods_custom_upload_data 没有新平台表名，保留原名（缺少新平台表名）
+--   [A3] default.ods_custom_upload_data → paimon.ti.ods_ti_db_custom_upload_tb_custom_upload_sync（2026-11-26 用户确认，DEC-031）；
+--        仅确认表名，列 part1、part2、str1 沿用旧名，缺少新平台字段名，待用户核对
 -- 类型：合并表 day、log_num、attack_count 为 BIGINT，threatclass 为 INT，数值比较无需 CAST。
 
 -- @stmt 1 black-ti-context-produce-prc / INFO_EXIST_CHECK_SQL（domain）
@@ -157,7 +158,7 @@ GROUP BY ds.domain, ds.deleted_time;
 
 -- @stmt 5 domain-hit-devnum-cronjob / hive_sql
 -- 改动：default.dwb_domain_info → paimon.ti.dwb_ti_domain_info，devid → manage；加 [A2] 的 src_log = 'domain-proxy-svc'（旧表只有 audit 链数据）；
---       default.ods_custom_upload_data 保留原名（[A3]）；窗口取 start=20260902、end=20261002
+--       default.ods_custom_upload_data → paimon.ti.ods_ti_db_custom_upload_tb_custom_upload_sync（[A3]，列名沿用旧名）；窗口取 start=20260902、end=20261002
 SELECT /*+ SET_VAR(new_planner_optimize_timeout = 60000) */
        domain, devnum, total_times
 FROM (
@@ -169,7 +170,7 @@ FROM (
       AND src_log = 'domain-proxy-svc'
       AND manage NOT IN (
           SELECT str1 AS dev
-          FROM `default`.ods_custom_upload_data
+          FROM paimon.ti.ods_ti_db_custom_upload_tb_custom_upload_sync
           WHERE part1 = 'test_dev' AND part2 = 'test_devid'
       )
     GROUP BY domain
@@ -264,7 +265,7 @@ LIMIT 1;
 
 -- @stmt 11 active-domain-elt-job / ACTIVE_DOMAIN_SQL
 -- 改动：新旧两个域名表的 UNION ALL 合并为单表读取；csc.ods_csc_db_domain_intelligence_tb_domain_reputation_sync → ti.ods_ti_db_domain_intelligence_tb_domain_reputation_sync；
---       devid → manage；default.ods_custom_upload_data 保留原名（[A3]）。
+--       devid → manage；default.ods_custom_upload_data → paimon.ti.ods_ti_db_custom_upload_tb_custom_upload_sync（[A3]，列名沿用旧名）。
 --       不加 src_log 过滤：audit 域名分区 row_key 为 NULL，被 row_key IS NOT NULL 排除，旧 default 分支在 audit 来源上不再有数据（口径变化，见交付说明）
 WITH black_dns AS (
 SELECT domain,
@@ -278,7 +279,7 @@ WHERE deleted_time = 0
   AND reputation = '0'),
      test_dev AS (
 SELECT str1 AS dev1
-FROM `default`.ods_custom_upload_data
+FROM paimon.ti.ods_ti_db_custom_upload_tb_custom_upload_sync
 WHERE part1 = 'test_dev'
   AND part2 = 'test_devid')
 
