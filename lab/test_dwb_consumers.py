@@ -17,12 +17,15 @@ import pymysql
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_dwb_discovery as r  # noqa: E402
+import seed_custom_upload as su  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 SQL_PATH = ROOT / "outputs" / "dwb-consumers-after-starrocks.sql"
 OUT_PATH = ROOT / "outputs" / "dwb-consumers-after-starrocks-results.tsv"
 DB = "dwb_cons"
 
+TEST1 = su.SAMPLES[4][0]
+TEST2 = su.SAMPLES[5][0]
 SODL_DOMAIN = ["network_security_log", "dns_log", "sip_iocstat_log", "endpoint_security_log", "url_log"]
 
 
@@ -50,10 +53,7 @@ def make_tables(cur):
         "deleted_time bigint, reputation varchar(8)) "
         "DUPLICATE KEY(domain) DISTRIBUTED BY HASH(domain) BUCKETS 1 PROPERTIES('replication_num'='1')"
     )
-    cur.execute(
-        f"CREATE TABLE {DB}.ods_ti_db_custom_upload_tb_custom_upload_sync (part1 varchar(64), part2 varchar(64), str1 varchar(256)) "
-        "DUPLICATE KEY(part1) DISTRIBUTED BY HASH(part1) BUCKETS 1 PROPERTIES('replication_num'='1')"
-    )
+    cur.execute(su.ddl(f"{DB}.ods_ti_db_custom_upload_tb_custom_upload_sync"))
 
 
 def insert(cur, tbl, rows):
@@ -84,7 +84,8 @@ def seed(cur):
     d("network_security_log", 20260929, "devA", "old.evil.net", 99)
     # domain-hit-devnum: 12 audit devices incl. 1 test device, one row each in window; sodl rows excluded
     for i in range(1, 13):
-        d("domain-proxy-svc", 20260910 + i % 5, f"dev{i:02d}", "hit.example.org", 1)
+        d("domain-proxy-svc", 20260910 + i % 5, f"dev{i:02d}" if i != 12 else TEST1, "hit.example.org", 1)
+    d("domain-proxy-svc", 20260915, "B7CF33F1", "hit.example.org", 1)  # af_test_device_id is not part1=test_dev, must still be counted
     for i in range(1, 6):
         d("domain-proxy-svc", 20260915, f"dev{i:02d}", "other.example.org", 1)
     for i in range(20, 30):
@@ -93,7 +94,7 @@ def seed(cur):
     # active-domain / black-ti domain (day 20261001)
     d("network_security_log", 20261001, "devA", "bad.com", 3, 3, "bad.com", 209)
     d("dns_log", 20261001, "devB", "bad.com", 5, 5, "bad.com", None)
-    d("network_security_log", 20261001, "devTest", "bad.com", 9, 9, "bad.com", 209)
+    d("network_security_log", 20261001, TEST2, "bad.com", 9, 9, "bad.com", 209)
     d("domain-proxy-svc", 20261001, "devC", "bad.com", 100, 100, None, None)
     d("network_security_log", 20261001, "devA", "bad.com", 9, 9, "", 209)
     # a day that only has audit rows: the sodl gate must not pass
@@ -122,9 +123,7 @@ def seed(cur):
         "('bad.com','category=c2,family=fam1','source=s1,rule=r1','t1',0,'0'),"
         "('gone.com','category=x,family=y','source=s,rule=r','t2',0,'1')"
     )
-    cur.execute(
-        f"INSERT INTO {DB}.ods_ti_db_custom_upload_tb_custom_upload_sync VALUES ('test_dev','test_devid','dev12'),('test_dev','test_devid','devTest')"
-    )
+    su.load(cur, f"{DB}.ods_ti_db_custom_upload_tb_custom_upload_sync")
 
 
 def split_statements(text):
@@ -194,11 +193,11 @@ def main():
             # 17 = devA 3 + devB 5 + devTest 9 (this task has no test-device filter); audit row (row_key NULL) and row_key='' row excluded
             row = rows[0] if len(rows) == 1 else None
             ok = row and row[0] == "bad.com" and int(row[2]) == 17
-            ok = ok and sorted(eval(row[3])) == ["devA", "devB", "devTest"]
+            ok = ok and sorted(eval(row[3])) == sorted(["devA", "devB", TEST2])
             ok = ok and sorted(eval(row[6])) == ["0@5", "209@12"]
             check = "ok" if ok else f"unexpected {rows}"
         if n == 5:
-            check = "ok" if rows == (("hit.example.org", 11, 11),) else f"unexpected {rows}"
+            check = "ok" if rows == (("hit.example.org", 12, 12),) else f"unexpected {rows}"
         if n == 6:
             got = sorted((a, int(b), int(c)) for a, b, c in rows)
             check = "ok" if got == [("1.x", 99, 1), ("amazonaws.com", 12, 2), ("com.cn", 12, 2), ("evil.net", 11, 1)] else f"unexpected {got}"
