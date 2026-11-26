@@ -1,0 +1,13 @@
+stmt	status	rows	check
+1 black-ti-context-produce-prc / INFO_EXIST_CHECK_SQL（domain）	ok	1	ok
+2 black-ti-context-produce-prc / INFO_EXIST_CHECK_SQL（ip）	ok	1	ok
+3 black-ti-context-produce-prc / C2_IP_ACTIVE_STAT_SQL	ok	1	ok
+4 black-ti-context-produce-prc / DOMAIN_ACTIVE_STAT_SQL	ok	1	ok
+5 domain-hit-devnum-cronjob / hive_sql	ok	1	ok
+6 domain-heat-stats-cron-job / second_level_domain.sql	ok	4	ok
+7 domain-heat-stats-cron-job / third_level_domain.sql	ok	1	ok
+8 domain-heat-stats-cron-job / cloud_domain.sql	ok	1	ok
+9 active-domain-elt-job / INFO_EXIST_CHECK_SQL（旧 default.dwb_domain_info）	ok	1	ok
+10 active-domain-elt-job / INFO_EXIST_CHECK_SQL（旧 sodl.dwb_sodl_domain_info）	ok	1	ok
+11 active-domain-elt-job / ACTIVE_DOMAIN_SQL	ok	1	ok
+gate(audit-only day)	ok	0	should be 0
