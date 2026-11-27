@@ -1,0 +1,441 @@
+# 由 lab/run_yaml_sql.py 从 outputs/migratable-tasks-starrocks.sql 生成；SQL 用 | 字面块，不经过 YAML 转义。
+sqls:
+- id: 1
+  app: filter-layout-ip-seg-stat-prc
+  segment: hive_sql
+  sql: |-
+    WITH rpt AS (
+      SELECT DISTINCT regexp_extract(ip, '^(\\d+\\.\\d+\\.\\d+)\\.', 1) AS ip_seg
+      FROM ti.ods_ti_db_intelligence_tb_ip_reputation_sync
+      WHERE direction = '2' AND reputation = '0'
+    ),
+    resp_data AS (
+      SELECT day AS date_day,
+             split(get_json_object(resp, '$.ip'), ':')[1] AS ip,
+             regexp_extract(split(get_json_object(resp, '$.ip'), ':')[1], '^(\\d+\\.\\d+\\.\\d+)\\.', 1) AS ip_c_seg
+      FROM csc.ods_csc_log_audit,
+           unnest(split(replace(regexp_replace(regexp_replace(regexp_replace(str10, '^\\[', ''), '~\\]', ''), '\\}\\,\\{', '\;\{'), '\"', '"'), ';')) AS exploded_table(resp)
+      WHERE app_id = 'ip-proxy-svc' AND day BETWEEN 20260925 AND 20261001
+        AND module_id = 'ip-proxy-svc' AND str5 REGEXP 'cf'
+        AND get_json_object(resp, '$.threat.reputation') = '2'
+        AND get_json_object(resp, '$.threat.direction') = '2'
+    ),
+    agg_data AS (
+      SELECT ip_c_seg,
+             count(DISTINCT date_day) AS day_unique,
+             count(DISTINCT ip) AS ip_unique,
+             count(*) / (count(DISTINCT date_day) + 1) AS total
+      FROM resp_data
+      GROUP BY ip_c_seg
+    )
+    SELECT /*+ SET_VAR(new_planner_optimize_timeout = 60000, query_timeout = 3600) */ ip_c_seg, day_unique, ip_unique, total
+    FROM agg_data
+    WHERE day_unique >= 5
+      AND NOT EXISTS (SELECT 1 FROM rpt WHERE rpt.ip_seg = agg_data.ip_c_seg);
+- id: 2
+  app: ip-security-log-etl-prc
+  segment: C2_IP_SECURITY_LOG_SQL
+  sql: |-
+    SELECT distinct dstip
+    FROM sodl.network_security_log
+    WHERE insertdate = '2026-10-01'
+        AND regexp_extract(dstip, '^((0\\.0\\.0\\.0)|(127\\.0\\.0\\.1)|(localhost)|(10\\.)|(172\\.1[6-9]\\.)|(172\\.2[0-9]\\.)|(172\\.3[0-1]\\.)|(192\\.168\\.))', 1) = ''
+        AND regexp_extract(dstip, '^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})$', 1) != ''
+        AND engine not in ('premise_ioc', 'cloud_ioc', 'sase_ioc')
+        AND severity > 50
+        AND (threatclass in (209, 208, 216, 214,  203, 40)
+            OR concat_ws('-', cast(threatclass as String),
+                              cast(threattype as String),
+                              cast(threatsubtype as String)) = '212-10-0')
+    limit 100000;
+- id: 3
+  app: domain-security-log-etl-prc
+  segment: INFO_EXIST_CHECK_SQL
+  sql: |-
+    SELECT 1 FROM sodl.network_security_log WHERE insertdate = '2026-10-01' LIMIT 1;
+- id: 4
+  app: domain-security-log-etl-prc
+  segment: DOMAIN_SECURITY_LOG_EXTRACT_SQL
+  sql: |-
+    SELECT DOMAIN,
+           array_agg(DISTINCT producttype) AS producttype_list,
+           array_agg(DISTINCT CONCAT(CAST(threatclass AS STRING), '-', CAST(threattype AS STRING),
+           '-', CAST(threatsubtype AS STRING))) AS type_list,
+           array_sort(array_agg(DISTINCT engine)) AS engine_list,
+           COUNT(DISTINCT engine) AS engine_num
+    FROM
+      (SELECT regexp_extract(url, '^(?:https?://)?(?:www\\.)?([^/]+)', 1) AS DOMAIN,
+              *
+       FROM sodl.network_security_log
+       WHERE insertdate = '2026-10-01'
+         AND engine NOT IN ('premise_ioc', 'cloud_ioc', 'sase_ioc')
+         AND severity > 50
+         AND (threatclass IN (209, 208, 216, 214, 203, 40)
+              OR CONCAT(CAST(threatclass AS STRING), '-', CAST(threattype AS STRING), '-',
+              CAST(threatsubtype AS STRING)) = '212-10-0')
+         AND action = 2) s
+    WHERE NOT (DOMAIN REGEXP '\\d+\\.\\d+\\.\\d+\\.\\d+$' OR DOMAIN REGEXP ':')
+    GROUP BY DOMAIN;
+- id: 5
+  app: topthreat_hot_stat
+  segment: black_domain_stat
+  sql: |-
+    SELECT /*+ SET_VAR(new_planner_optimize_timeout = 60000) */ domain,
+           sum(domain_num) AS domain_num,
+           count(DISTINCT devid) AS device_num
+    FROM
+      (SELECT domain,
+              devid,
+              count(1) AS domain_num
+       FROM
+         (SELECT lower(get_json_object(str10_tmp, '$.domain')) AS domain,
+                 str2 AS devid
+          FROM csc.ods_csc_log_audit,
+               unnest(`default`.format_json_list(regexp_replace(str10, '\\\\+"', '"'))) AS str10_tbl(str10_tmp)
+          WHERE app_id IN ('domain-proxy-svc', 'cloudcheck')
+            AND module_id IN ('domain-proxy-svc', 'CloudCheck')
+            AND str1 IN ('VNGAF', 'NGAF', 'EDR', 'EDR_BOTNET', 'SIP', 'SIP_SMTP', 'SIP_SMB',
+                         'AC', 'VAC', 'CWPP', 'SASE', 'EDR_WEBSITE', 'EDR_NPE',
+                         'EDR_CLOUD_IDENTIFY', 'EDR_PK')
+            AND long1 = 0
+            AND get_json_object(str10_tmp, '$.info.attr') = '0'
+            AND day = 20261001
+            AND hour = 0) a
+       WHERE domain IS NOT NULL
+         AND domain NOT IN ('', '-')
+       GROUP BY domain, devid
+
+       UNION ALL
+
+       SELECT domain,
+              devid,
+              count(1) AS domain_num
+       FROM
+         (SELECT split(split(url, '//')[cardinality(split(url, '//'))], '/')[1] AS domain,
+                 deviceId AS devid
+          FROM sodl.network_security_log
+          WHERE url IS NOT NULL
+            AND url NOT IN ('', '-')
+            AND insertdate = '2026-10-01'
+            AND hour(from_unixtime(inserttimestamp)) = 0) t
+       WHERE domain IS NOT NULL
+         AND domain != ''
+       GROUP BY domain, devid
+
+       UNION ALL
+
+       SELECT ioc AS domain,
+              deviceId AS devid,
+              sum(record_count) AS domain_num
+       FROM sodl.sip_iocstat_log
+       WHERE ioc_type = 'domain'
+         AND ioc IS NOT NULL
+         AND ioc NOT IN ('', '-')
+         AND insertdate = '2026-10-01'
+         AND hour(from_unixtime(inserttimestamp)) = 0
+       GROUP BY ioc, deviceId) t
+    GROUP BY domain, devid
+    ORDER BY domain_num DESC
+    LIMIT 100000;
+- id: 6
+  app: topthreat_hot_stat
+  segment: blcak_file_stat
+  sql: |-
+    SELECT /*+ SET_VAR(new_planner_optimize_timeout = 60000) */ md5,
+           count(1) AS md5_num,
+           count(DISTINCT devid) AS device_num
+    FROM
+      (SELECT lower(get_json_object(str10_tmp, '$.filemd5')) AS md5,
+              get_json_object(str10_tmp, '$.info.attr') AS attr,
+              str2 AS devid
+       FROM csc.ods_csc_log_audit,
+            unnest(`default`.format_json_list(regexp_replace(str10, '\\\\+"', '"'))) AS str10_tbl(str10_tmp)
+       WHERE app_id = 'analysis-proxy-api'
+         AND module_id IN ('file_hash', 'file_scan')
+         AND str1 IN ('VNGAF', 'NGAF', 'EDR', 'EDR_BOTNET', 'SIP', 'SIP_SMTP', 'SIP_SMB',
+                      'AC', 'VAC', 'CWPP', 'SASE', 'EDR_WEBSITE', 'EDR_NPE',
+                      'EDR_CLOUD_IDENTIFY', 'EDR_PK')
+         AND long1 = 0
+         AND day = 20261001
+         AND hour = 0) a
+    WHERE md5 IS NOT NULL
+      AND md5 NOT IN ('', '-')
+      AND attr = '0'
+    GROUP BY md5, devid
+    ORDER BY md5_num DESC
+    LIMIT 100000;
+- id: 7
+  app: topthreat_hot_stat
+  segment: blcak_url_stat
+  sql: |-
+    SELECT /*+ SET_VAR(new_planner_optimize_timeout = 60000) */ url,
+           sum(url_num) AS url_num,
+           count(DISTINCT devid) AS device_num
+    FROM
+      (SELECT url,
+              devid,
+              count(1) AS url_num
+       FROM
+         (SELECT lower(get_json_object(str10_tmp, '$.url')) AS url,
+                 str2 AS devid
+          FROM csc.ods_csc_log_audit,
+               unnest(`default`.format_json_list(regexp_replace(str10, '\\\\+"', '"'))) AS str10_tbl(str10_tmp)
+          WHERE app_id IN ('url-proxy-svc', 'cloudcheck')
+            AND module_id IN ('url-proxy-svc', 'CloudCheck')
+            AND str1 IN ('VNGAF', 'NGAF', 'EDR', 'EDR_BOTNET', 'SIP', 'SIP_SMTP', 'SIP_SMB',
+                         'AC', 'VAC', 'CWPP', 'SASE', 'EDR_WEBSITE', 'EDR_NPE',
+                         'EDR_CLOUD_IDENTIFY', 'EDR_PK')
+            AND long1 = 0
+            AND get_json_object(str10_tmp, '$.info.attr') = '0'
+            AND day = 20261001
+            AND hour = 0) a
+       WHERE url IS NOT NULL
+         AND url NOT IN ('', '-')
+       GROUP BY url, devid
+
+       UNION ALL
+
+       SELECT url,
+              deviceId AS devid,
+              count(1) AS url_num
+       FROM sodl.network_security_log
+       WHERE url IS NOT NULL
+         AND url NOT IN ('', '-')
+         AND insertdate = '2026-10-01'
+         AND hour(from_unixtime(inserttimestamp)) = 0
+       GROUP BY url, deviceId
+
+       UNION ALL
+
+       SELECT ioc AS url,
+              deviceId AS devid,
+              sum(record_count) AS url_num
+       FROM sodl.sip_iocstat_log
+       WHERE ioc_type = 'url'
+         AND ioc IS NOT NULL
+         AND ioc NOT IN ('', '-')
+         AND insertdate = '2026-10-01'
+         AND hour(from_unixtime(inserttimestamp)) = 0
+       GROUP BY ioc, deviceId) t
+    GROUP BY url, devid
+    ORDER BY url_num DESC
+    LIMIT 100000;
+- id: 8
+  app: top-visit-host-produce-job
+  segment: DNS_LOG_STAT_SQL
+  sql: |-
+    SELECT queries as domain,
+           count(1) AS num
+    FROM sodl.dns_log
+    WHERE insertdate = '2026-10-01'
+      AND producttype in ('AF', 'NGAF', 'VNGAF')
+      AND qr=0
+      AND length(queries) > 3
+      AND locate('.', queries) != 0
+    GROUP BY queries;
+- id: 9
+  app: top-visit-host-produce-job
+  segment: IP_LOG_STAT_SQL
+  sql: |-
+    with ip_stat as (
+    SELECT concat(split(ip, '.')[1], '.', split(ip, '.')[2], '.', split(ip, '.')[3]) AS c_segment
+    FROM
+        (SELECT get_json_object(replace(str4, '\\', ''), '$[*].ip') AS ip_list
+          FROM csc.ods_csc_log_audit
+          WHERE day = 20261001
+            AND app_id='ip-proxy-svc'
+            AND module_id='ip-proxy-svc'
+            AND str1='NGAF'
+            AND str5='[cf]') s
+       , unnest(split(regexp_replace(ip_list, '\\[|\\]|\\"', ''), ',')) AS exploded_table(ip)
+       WHERE locate('.', ip) != 0
+    )
+    SELECT c_segment as ip,
+           count(1) as num
+    FROM ip_stat
+    GROUP BY c_segment
+    LIMIT 500000;
+- id: 10
+  app: top-visit-host-produce-job
+  segment: URL_LOG_STAT_SQL
+  sql: |-
+    SELECT host,
+           count(1) AS num
+    FROM sodl.url_log
+    WHERE insertdate = '2026-10-01'
+      AND host is not null
+      AND locate('.', host)  != 0
+      AND producttype in ('AF', 'NGAF', 'VNGAF')
+    GROUP BY host;
+- id: 11
+  app: dashboard-stats-job
+  segment: DEVICE_STATS_SQL
+  sql: |-
+    SELECT product,
+    count(DISTINCT(dev_id)) as dev_num
+    FROM `default`.ods_devicemanager_deviceinfo
+    GROUP BY product;
+- id: 12
+  app: dashboard-stats-job
+  segment: IP_SECURITY_SQL
+  sql: |-
+    SELECT t1.threatclass as threatclass,
+    t1.threattype as threattype,
+    t1.threatsubtype as threatsubtype,
+    t1.producttype as producttype,
+    t1.url as ioc,
+    regexp_extract(t2.customer_info, 'city=(.*?)[,}]', 1) AS city,
+    regexp_extract(t2.customer_info, 'ip=(.*?)[,}]', 1) AS ip
+    FROM sodl.network_security_log t1
+    LEFT JOIN `default`.ods_devicemanager_deviceinfo t2 ON t1.deviceId = t2.dev_id
+    WHERE t1.reqruleid >='14000000'
+    AND t1.reqruleid < '14999999'
+    AND t1.titype = 2
+    AND t1.threatclass=209
+    AND t1.threattype NOT IN (9,
+    14,
+    15)
+    AND t1.producttype != 'NULL'
+    AND t1.deviceId != 'NULL'
+    AND t1.url != 'NULL'
+    AND t2.customer_info != 'NULL'
+    AND t1.insertdate = '2025-08-25'
+    AND hour(from_unixtime(t1.inserttimestamp)) = 1
+    LIMIT 1000;
+- id: 13
+  app: dashboard-stats-job
+  segment: DOMAIN_SECURITY_SQL
+  sql: |-
+    SELECT t1.threatclass as threatclass,
+    t1.threattype as threattype,
+    t1.threatsubtype as threatsubtype,
+    t1.producttype as producttype,
+    t1.url as ioc,
+    regexp_extract(t2.customer_info, 'city=(.*?)[,}]', 1) AS city,
+    regexp_extract(t2.customer_info, 'ip=(.*?)[,}]', 1) AS ip
+    FROM sodl.network_security_log t1
+    LEFT JOIN `default`.ods_devicemanager_deviceinfo t2 ON t1.deviceId = t2.dev_id
+    WHERE t1.reqruleid >='14000000'
+    AND t1.reqruleid < '14999999'
+    AND t1.titype = 0
+    AND t1.threatclass=209
+    AND t1.threattype NOT IN (9,
+    14,
+    15)
+    AND t1.producttype != 'NULL'
+    AND t1.deviceId != 'NULL'
+    AND t1.url != 'NULL'
+    AND t2.customer_info != 'NULL'
+    AND t1.insertdate = '2025-08-25'
+    AND hour(from_unixtime(t1.inserttimestamp)) = 1
+    LIMIT 1000;
+- id: 14
+  app: dashboard-stats-job
+  segment: URL_SECURITY_SQL
+  sql: |-
+    SELECT t1.threatclass as threatclass,
+    t1.threattype as threattype,
+    t1.threatsubtype as threatsubtype,
+    t1.producttype as producttype,
+    t1.url as ioc,
+    regexp_extract(t2.customer_info, 'city=(.*?)[,}]', 1) AS city,
+    regexp_extract(t2.customer_info, 'ip=(.*?)[,}]', 1) AS ip
+    FROM sodl.network_security_log t1
+    LEFT JOIN `default`.ods_devicemanager_deviceinfo t2 ON t1.deviceId = t2.dev_id
+    WHERE t1.reqruleid >='14000000'
+    AND t1.reqruleid < '14999999'
+    AND t1.titype = 1
+    AND t1.threatclass=214
+    AND t1.threattype NOT IN (2,
+    3)
+    AND t1.producttype != 'NULL'
+    AND t1.deviceId != 'NULL'
+    AND t1.dstip != 'NULL'
+    AND t1.url != 'NULL'
+    AND t2.customer_info != 'NULL'
+    AND t1.insertdate = '2025-08-25'
+    AND hour(from_unixtime(t1.inserttimestamp)) = 1
+    LIMIT 1000;
+- id: 15
+  app: dashboard-stats-job
+  segment: FILE_SECURITY_SQL
+  sql: |-
+    SELECT t1.threatclass as threatclass,
+    t1.threattype as threattype,
+    t1.threatsubtype as threatsubtype,
+    t1.producttype as producttype,
+    t1.filemd5 as ioc,
+    regexp_extract(t2.customer_info, 'city=(.*?)[,}]', 1) AS city,
+    regexp_extract(t2.customer_info, 'ip=(.*?)[,}]', 1) AS ip
+    FROM sodl.endpoint_security_log t1
+    LEFT JOIN `default`.ods_devicemanager_deviceinfo t2 ON t1.deviceId = t2.dev_id
+    WHERE t1.threatclass=209
+    AND t1.threattype NOT IN (9,
+    14,
+    15)
+    AND t1.producttype != 'NULL'
+    AND t1.deviceId != 'NULL'
+    AND t1.filemd5 != 'NULL'
+    AND t1.filemd5 != ''
+    AND t2.customer_info != 'NULL'
+    AND t1.insertdate = '2025-08-25'
+    AND hour(from_unixtime(t1.inserttimestamp)) = 1
+    LIMIT 1000;
+- id: 16
+  app: attack-ip-analysis-cronjob
+  segment: 5b) WEAK_PASSWORD_SQL
+  sql: |-
+    select
+      'weak_password_log' as log_type,
+      srcip as ip,
+      count(distinct pwd) as pwd_num,
+      array_agg(DISTINCT pwd) as pwd_list
+    from
+    (
+      SELECT
+        srcip,
+        regexp_extract(requesthead, '(pwd|password)=([^&; ]+)', 2) as pwd
+      FROM sodl.network_security_log
+      WHERE insertdate = '2026-10-01'
+        AND regexp_extract(srcip, '^((0\\.0\\.0\\.0)|(127\\.0\\.0\\.1)|(localhost)|(10\\.)|(172\\.1[6-9]\\.)|(172\\.2[0-9]\\.)|(172\\.3[0-1]\\.)|(192\\.168\\.))', 1) = ''
+        AND regexp_extract(srcip, '^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})$', 1) != ''
+        AND concat_ws('-',cast(threatclass as String),
+                            cast(threattype as String)) in ('94-4')
+        and regexp_extract(requesthead, '(pwd|password)=([^&; ]+)', 2) != ''
+      union
+      SELECT
+        srcip,
+        regexp_extract(requestbody, '(pwd|password)=([^&; ]+)', 2)  as pwd
+      FROM sodl.network_security_log
+      WHERE insertdate = '2026-10-01'
+        AND regexp_extract(srcip, '^((0\\.0\\.0\\.0)|(127\\.0\\.0\\.1)|(localhost)|(10\\.)|(172\\.1[6-9]\\.)|(172\\.2[0-9]\\.)|(172\\.3[0-1]\\.)|(192\\.168\\.))', 1) = ''
+        AND regexp_extract(srcip, '^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})$', 1) != ''
+        AND concat_ws('-',cast(threatclass as String),
+                            cast(threattype as String)) in ('94-4')
+        and regexp_extract(requestbody, '(pwd|password)=([^&; ]+)', 2) != ''
+    )a
+    group by srcip;
+- id: 17
+  app: attack-ip-analysis-cronjob
+  segment: 6) WIKI_RELATED_SQL
+  sql: |-
+    SELECT
+        'network_security_log' as table_name,
+        concat_ws('-',cast(threatclass as String),
+                cast(threattype as String),
+                cast(threatsubtype as String)) AS attack_type,
+        1 AS attack_count,
+        deviceId AS device_id,
+        reqruleid as sid,
+        srcip,
+        requesthead,
+        requestbody,
+        insertdate AS day
+    FROM sodl.network_security_log
+    WHERE insertdate = '2026-10-01'
+    AND (length(requesthead) + length(requestbody)) > 10
+    AND regexp_extract(srcip, '^((0\\.0\\.0\\.0)|(127\\.0\\.0\\.1)|(localhost)|(10\\.)|(172\\.1[6-9]\\.)|(172\\.2[0-9]\\.)|(172\\.3[0-1]\\.)|(192\\.168\\.))', 1) = ''
+    AND (requesthead != '' OR requestbody != '')
+    AND (regexp_extract(requesthead, '[^a-zA-Z](wget|curl|downloadfile|downloadstring|powershell|certutil|bitsadmin|mshta|ncat|msiexec|msxsl|rundll32|regsvr32|tftp|ipc$|pubprn.vbs|wmiexec|psexec|ftp:|jndi:|ldap:|rmi:)[^a-zA-Z0-9)_;,|]', 1) != ''
+        OR
+        regexp_extract(requestbody, '[^a-zA-Z](wget|curl|downloadfile|downloadstring|powershell|certutil|bitsadmin|mshta|ncat|msiexec|msxsl|rundll32|regsvr32|tftp|ipc$|pubprn.vbs|wmiexec|psexec|ftp:|jndi:|ldap:|rmi:)[^a-zA-Z0-9)_;,|]', 1) != '');

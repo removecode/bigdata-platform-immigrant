@@ -18,6 +18,7 @@
 | `csc.ods_csc_db_url_intelligence_tb_url_reputation_sync` | `ti.ods_ti_db_url_intelligence_tb_url_reputation_sync` | 截图表名。旧名见 `log/DATA_FLOW.md` L109，映射见 L39 |
 | `sri.ods_sri_ti_tags` | `ti.ods_ti_db_scia_analysis_tb_syn_ti_tags_sync` | 截图表名含 `scia_analysis` 与 `syn_ti_tags`。`syn_ti_tags_mongo2hive.py` 的来源是 `SCIA_ANALYSIS` / `SynTiTags`，Hive 路径 `/hive/ods/sri/ti_tags`，见映射 L69 |
 | `sri.ods_sri_hashinfo` | `ti.ods_ti_db_fc_hashinfo_tb_fc_hashinfo_sync` | 截图中的 hashinfo 表。旧表材料来自 Mongo 文件云查。两边字符串不完全相同 |
+| `default.ods_custom_upload_data` | `paimon.ti.ods_ti_db_custom_upload_tb_custom_upload_sync` | 2026-11-26 用户确认（DEC-031）。只确认了表名；列 `part1`、`part2`、`str1`–`str5` 是否同名未确认，转换时保留旧列名并标明「缺少新平台字段名」，待用户核对。此前 ACT-048 记录该表未同步，现用户已给出新名，是否已有数据未验证 |
 
 `sodl` 库在截图中存在，表没有展开。`sodl.*` 保留原名，并标明「截图未列出 sodl 表」。
 
@@ -84,15 +85,82 @@
 
 这是一条语句里的优化器提示，不依赖会话里先执行 `SET`。不要把提示拆成第二条语句。
 
+## 查询超时
+
+确认日期：2026-10-17。决策：DEC-024。来源：用户说明 filter-layout-ip-seg-stat-prc 的语句执行超时，要加 `SELECT /*+ SET_VAR(query_timeout=3600) */` 这类写法。
+
+只针对用户点名超时的语句。该语句的提示写成 `/*+ SET_VAR(new_planner_optimize_timeout = 60000, query_timeout = 3600) */`，两个变量放在同一个提示里。其他语句出现 `Query reached its timeout` 时，再按这个写法加，不预先给所有语句加。
+
+## 旧 SQL 来源不一致时
+
+`all.sql` 与 917 梳理 CSV 对同一条语句的转义层数不同时，以 `all.sql` 为准（DEC-024，来源：用户说明「以all.sql为准」）。
+
+## 用户的 UDF
+
+确认日期：2026-10-16。决策：DEC-023。来源：用户说明「我的udf你别改」。
+
+材料里的项目 UDF 是 `default.format_json_list`、`default.calc_url_mask`、`default.sub_parent_domain`（见 `log/ODS_TO_DWB_DETAIL.md`、`all.sql`）。转换时语句里的 UDF 调用原样保留，包括函数名、`default.` 前缀和参数，不改写成 `parse_json`、`unnest`、`regexp_replace` 等内置函数。不修改 `lab/udf` 下的 UDF 源码。若某个 UDF 在当前 StarRocks 不可用或签名不同，在输出的第三部分标明，不自行替换。
+
+`default` 在 StarRocks 是保留字，`default.format_json_list(...)` 会报语法错误，函数库名要写成 `` `default`.format_json_list(...) ``。`explode` 没有对应写法，`LATERAL VIEW explode(UDF(...)) t AS x` 只能写成 `, unnest(UDF(...)) AS t(x)`。这两处是语法需要，函数名与参数不变。本机用 `lab/udf-sr` 里的孪生实现跑语句，见 ACT-046。
+
+## 统一 TI 中间表（新旧 DWB 合并）
+
+确认日期：2026-11-25。决策：DEC-026。来源：用户提供的 Paimon 建表与 audit 写入 SQL（归档 `outputs/paimon-dwb-ti-audit-merge.sql`）。
+
+StarRocks / 查询侧库名以用户环境为准：Hive/Paimon 写 `paimon.ti.*`；若在 SR 上通过 catalog 查 `ti`，则下列新名为 `ti.dwb_ti_*`。
+
+| 旧平台名 | 合并后名 | 说明 |
+| --- | --- | --- |
+| `default.dwb_ip_info` | `ti.dwb_ti_ip_info` | 旧链按 `src_log='log_audit'` 等过滤；合并后同一物理表用分区列 `src_log` 区分来源 |
+| `sodl.dwb_sodl_ip_info` | `ti.dwb_ti_ip_info` | 同上；旧 SQL 的 `threatclass`、`reqruleid`、`network_security_log` 等写入对应 `src_log` 分区（**用户本条未给出 sodl INSERT，分区值待补**） |
+| `default.dwb_domain_info` | `ti.dwb_ti_domain_info` | 旧 `devid`→`manage`，`domain`/`row_key` 见字段表 |
+| `sodl.dwb_sodl_domain_info` | `ti.dwb_ti_domain_info` | 同上 |
+| `default.dwb_md5_info` | `ti.dwb_ti_md5_info` | 旧 `md5`→`filehash`，`attr`→`file_attr` |
+| `sodl.dwb_sodl_md5_info` | `ti.dwb_ti_md5_info` | 同上 |
+| `default.dwb_url_info` | `ti.dwb_ti_url_info` | DEC-027 已确认存在（21 列，`docs/DWB合并表-paimon-ti-字段结构-SR.md`） |
+| `sodl.dwb_sodl_url_info` | `ti.dwb_ti_url_info` | 同上 |
+| `default.dwb_md5_record` | **缺少新平台表名** | `yara-sample-query-job` 仍无合并目标 |
+
+DEC-027（2026-11-25）：用户确认老大数据平台上新旧中间表已合并，当前 StarRocks（`10.115.51.1`，catalog `paimon`，库 `ti`）实际表结构见 `docs/DWB合并表-paimon-ti-字段结构-SR.md`。以该文件为准；DEC-026 里「URL 表待补」「待补 sodl INSERT」两句已被 DEC-027 取代。
+
+实际物理类型（与 DEC-009「统一 VARCHAR」不同，以现网为准）：`threatclass`、`threattype`、`threatsubtype`、`action`、`dstport` 为 `INT`；`log_num`、`attack_count`、`day` 为 `BIGINT`；其余为 `VARCHAR`。分区键 `src_log`、`day`（`SHOW PARTITIONS` 的 PartitionKey 显示为 `day,src_log`，取值对应关系以现网为准）。
+
+相对旧 `sodl.dwb_sodl_*` 的字段变化（按现网四张表核对）：
+
+| 表 | 旧 sodl 有、合并后没有 | 合并后新增 |
+| --- | --- | --- |
+| `dwb_ti_domain_info` | `titype`、`city`、`province`、`country`、`industry`、`sub_industry` | `attr`、`agentid`、`tenant` |
+| `dwb_ti_ip_info` | 同上 | `object`、`direction`、`dstport`、`attr`、`agentid`、`tenant` |
+| `dwb_ti_md5_info` | `oid`、`city`、`province`、`country`、`industry`、`sub_industry` | `srcip`、`agentid`、`tenant` |
+| `dwb_ti_url_info` | `titype`、`city`、`province`、`country`、`industry`、`sub_industry` | `action`、`tenant` |
+
+旧 `default.dwb_*` 的 `extends`、`source`、`attr`（MD5/URL）、`dev_version` 等同样没有同名列。地域/行业画像列在合并表里都没有，依赖它们的语句（如 `black-ti-context-produce-prc` 的攻击 IP、MD5 行业/地域统计）不能只改表名，需另取设备画像（如 `default.ods_devicemanager_deviceinfo`，仍缺少新平台表名）。
+
+分区：两列分区 `` `day` ``（`bigint`，`yyyyMMdd`）+ `src_log`（`string`）。用户已给出的 audit 分区常量：`ip-proxy-svc`、`domain-proxy-svc`、`analysis-proxy-api`。
+
+消费者 SQL 改写要点（DEC-009 仍有效）：
+
+| 旧字段（旧 DWB） | 新字段（`dwb_ti_*`） |
+| --- | --- |
+| `dip` | `dstip` |
+| `devid` | `manage` |
+| `dev_version` | `productver` |
+| `prod` | `producttype` |
+| `md5` | `filehash` |
+| `attr`（旧 MD5） | `file_attr` |
+| `source`（旧 MD5 部分 SQL） | 视语义映射 `upload_source` 或保留过滤条件待确认 |
+
+原先 `UNION ALL` 读 `default.dwb_*` 与 `sodl.dwb_sodl_*` 的语句，改为单表 `ti.dwb_ti_*`，用 `` `day` `` 与 `src_log IN (...)` 表达原链路；**不能**在未对齐各 `src_log` 枚举前删除分支过滤。
+
+本条 INSERT 仅覆盖 audit 源（`ods_csc_log_audit_tmp` / `ods_csc_log_audit_longterm`），不等于已完成与旧 Hive DWB、sodl DWB 的数值对账。
+
 ## 不在本文件中的对象
 
 以下名称在材料里出现过，当前没有用户确认的新名称，转换时保留原名并标明「缺少新平台表名」：
 
-- `default.dwb_*`
-- `sodl.dwb_sodl_*`
 - `default.log_stats_source`
 - `csc.ods_csc_log_stats`
-- `business.*`
+- `business.*`（`ctig-report` 在 `all-starrocks.sql` 的 business 改写与 DWB 原版并存，以当次任务目标表为准）
 
 `module_id`、`str1`–`str10`、`long1` 只在旧压缩 SQL 的选择列表中出现。它们不在本文件的字段表里，语句中保留原名，并标明「缺少新平台字段名」。
 

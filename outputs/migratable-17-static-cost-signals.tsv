@@ -1,0 +1,18 @@
+id	task	segment	score	ara_mb_s	day_span	unnest	get_json_object	udf_format_json_list	regex	union_all	count_distinct	array_agg	select_star	not_exists	tables	table_names
+1	filter-layout-ip-seg-stat-prc	hive_sql	854	4174666032	77	1	4	0	6	0	3	0	0	1	2	csc.ods_csc_log_audit,ti.ods_ti_db_intelligence_tb_ip_reputation_sync
+5	topthreat_hot_stat	black_domain_stat	72	92080199	1	1	2	1	1	2	1	0	0	0	3	csc.ods_csc_log_audit,sodl.network_security_log,sodl.sip_iocstat_log
+7	topthreat_hot_stat	blcak_url_stat	72	60947554	1	1	2	1	1	2	1	0	0	0	3	csc.ods_csc_log_audit,sodl.network_security_log,sodl.sip_iocstat_log
+6	topthreat_hot_stat	blcak_file_stat	56	24667215	1	1	2	1	1	0	1	0	0	0	1	csc.ods_csc_log_audit
+16	attack-ip-analysis-cronjob	5b) WEAK_PASSWORD_SQL	40		1	0	0	0	8	0	1	1	0	0	1	sodl.network_security_log
+9	top-visit-host-produce-job	IP_LOG_STAT_SQL	36	509969502	1	1	1	0	1	0	0	0	0	0	1	csc.ods_csc_log_audit
+4	domain-security-log-etl-prc	DOMAIN_SECURITY_LOG_EXTRACT_SQL	29	81530103	1	0	0	0	3	0	1	3	0	0	1	sodl.network_security_log
+12	dashboard-stats-job	IP_SECURITY_SQL	19	7890698	1	0	0	0	2	0	0	0	0	0	2	`default`.ods_devicemanager_deviceinfo,sodl.network_security_log
+13	dashboard-stats-job	DOMAIN_SECURITY_SQL	19	13078388	1	0	0	0	2	0	0	0	0	0	2	`default`.ods_devicemanager_deviceinfo,sodl.network_security_log
+14	dashboard-stats-job	URL_SECURITY_SQL	19	14022017	1	0	0	0	2	0	0	0	0	0	2	`default`.ods_devicemanager_deviceinfo,sodl.network_security_log
+15	dashboard-stats-job	FILE_SECURITY_SQL	19	1660490	1	0	0	0	2	0	0	0	0	0	2	`default`.ods_devicemanager_deviceinfo,sodl.endpoint_security_log
+17	attack-ip-analysis-cronjob	6) WIKI_RELATED_SQL	19	165305676	1	0	0	0	3	0	0	0	0	0	1	sodl.network_security_log
+2	ip-security-log-etl-prc	C2_IP_SECURITY_LOG_SQL	16	114652903	1	0	0	0	2	0	0	0	0	0	1	sodl.network_security_log
+11	dashboard-stats-job	DEVICE_STATS_SQL	14	4204875	1	0	0	0	0	0	1	0	0	0	1	`default`.ods_devicemanager_deviceinfo
+3	domain-security-log-etl-prc	INFO_EXIST_CHECK_SQL	10		1	0	0	0	0	0	0	0	0	0	1	sodl.network_security_log
+8	top-visit-host-produce-job	DNS_LOG_STAT_SQL	10	206765545	1	0	0	0	0	0	0	0	0	0	1	sodl.dns_log
+10	top-visit-host-produce-job	URL_LOG_STAT_SQL	10	59697052	1	0	0	0	0	0	0	0	0	0	1	sodl.url_log

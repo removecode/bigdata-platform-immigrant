@@ -1,0 +1,23 @@
+label	status	rows	ms	note
+@dwb 0a	ok	1	5	
+@dwb 0b	ok	5	3	
+@dwb 0c	ok	4	6	
+@dwb 0d	ok	4	0	
+@dwb 0e（旧	ERR	0	1	(5501, "Getting analyzing error. Detail message: Unknown database 'sodl'.")
+@dwb 0f	ok	5	0	
+@dwb 1	ok	26	83	
+@dwb 2	ok	13	48	
+@dwb 3a	ok	4	73	
+@dwb 3b	ok	4	76	
+@dwb 3c	ok	3	71	
+@dwb 3d	ok	2	59	
+@dwb 4	ok	52	24	
+@dwb 5	ok	26	17	
+@dwb 6	ok	56	24	
+@dwb 7	ok	10	60	
+@dwb 8	ok	8	73	
+@dwb 8b	ok	8	25	
+@dwb 8c	ok	6	18	
+@dwb 8d	ok	4	14	
+@dwb 9	ok	4	33	
+@dwb 10	ok	4	36	

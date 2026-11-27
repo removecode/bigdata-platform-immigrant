@@ -1,0 +1,18 @@
+id	status	rows	seconds	app	segment	error
+1	ok	25	0.05	filter-layout-ip-seg-stat-prc	hive_sql	
+2	ok	867	0.02	ip-security-log-etl-prc	C2_IP_SECURITY_LOG_SQL	
+3	ok	1	0.01	domain-security-log-etl-prc	INFO_EXIST_CHECK_SQL	
+4	ok	135	0.04	domain-security-log-etl-prc	DOMAIN_SECURITY_LOG_EXTRACT_SQL	
+5	ok	553	0.05	topthreat_hot_stat	black_domain_stat	
+6	ok	481	0.02	topthreat_hot_stat	blcak_file_stat	
+7	ok	566	0.04	topthreat_hot_stat	blcak_url_stat	
+8	ok	443	0.01	top-visit-host-produce-job	DNS_LOG_STAT_SQL	
+9	ok	1200	0.02	top-visit-host-produce-job	IP_LOG_STAT_SQL	
+10	ok	80	0.01	top-visit-host-produce-job	URL_LOG_STAT_SQL	
+11	ok	3	0.01	dashboard-stats-job	DEVICE_STATS_SQL	
+12	ok	12	0.05	dashboard-stats-job	IP_SECURITY_SQL	
+13	ok	15	0.02	dashboard-stats-job	DOMAIN_SECURITY_SQL	
+14	ok	30	0.02	dashboard-stats-job	URL_SECURITY_SQL	
+15	ok	14	0.03	dashboard-stats-job	FILE_SECURITY_SQL	
+16	ok	126	0.03	attack-ip-analysis-cronjob	5b) WEAK_PASSWORD_SQL	
+17	ok	2585	0.03	attack-ip-analysis-cronjob	6) WIKI_RELATED_SQL	

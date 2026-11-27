@@ -22,6 +22,8 @@
 
 `sodl.*` 的表名在该文件写明「截图未列出 sodl 表」之前，保留原名并带上这句标注。`ti.ads_ti_ip_heat_produce` 不填进旧 SQL。非 `sodl` 表上的 `module_id`、`str1`–`str10`、`long1`、`hour`、`day` 仍按旧名保留。DEC-009 继续有效。
 
+用户的 UDF（`default.format_json_list`、`default.calc_url_mask`、`default.sub_parent_domain`）在转换时原样保留，不改写成内置函数，也不修改 `lab/udf`（DEC-023）。
+
 用户后续确认新的库、表、路径或字段时，追加到 `docs/StarRocks语句转换规则.md`，并在 `docs/迁移事项进度与决策追踪.md` 末尾追加记录。不要只改本段。
 
 输出包含三部分：

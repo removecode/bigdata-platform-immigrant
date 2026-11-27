@@ -1,0 +1,1 @@
+v	recordtimestamp	uploadtimestamp	inserttimestamp	vendor	producttype	productver	agentid	originproducttype	originproductver	deviceid	uuid	ioc	ioc_type	record_count	insertdate
